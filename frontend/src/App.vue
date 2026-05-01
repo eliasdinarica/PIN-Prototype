@@ -1,22 +1,13 @@
 <script setup>
-import ProfileSetup from './components/ProfileSetup.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import AppNav from '@/components/AppNav.vue'
 
-async function handleComplete(answers) {
-  try {
-    await fetch('http://localhost:8000/api/profiles/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        language: answers.language,
-        has_children: answers.hasChildren,
-      }),
-    })
-  } catch (error) {
-    console.error('Failed to create profile:', error)
-  }
-}
+const route = useRoute()
+const showNav = computed(() => route.path !== '/')
 </script>
 
 <template>
-  <ProfileSetup @complete="handleComplete" />
+  <AppNav v-if="showNav" />
+  <RouterView />
 </template>

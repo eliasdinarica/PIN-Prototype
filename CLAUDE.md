@@ -12,6 +12,7 @@ les ressources sont regroupées en catégories comme l'argent, le travail, etc
 
 par défaut tu dois m'écrire le texte de l'app en anglais
 
+/!\ important, l'app doit être écrite en FALC, la méthode d'écriture simplifiée!
 ## Responsive
 
 l'app est pensée pour mobile, c'est la priorité, en revanche le support ordinateur doit aussi être ergonomique et fonctionnel tout de même.

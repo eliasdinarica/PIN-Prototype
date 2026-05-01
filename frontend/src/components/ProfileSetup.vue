@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+const props = defineProps({
+  initialAnswers: { type: Object, default: () => ({}) },
+})
 const emit = defineEmits(['complete'])
 
 const questions = [
@@ -19,6 +22,22 @@ const questions = [
     ],
   },
   {
+    id: 'status',
+    type: 'choice',
+    label: 'What is your permit type?',
+    sublabel: 'This is your Swiss residence permit. It is the card you got when you arrived.',
+    options: [
+      { value: 'N', label: 'Permit N' },
+      { value: 'F', label: 'Permit F' },
+      { value: 'S', label: 'Permit S' },
+      { value: 'B', label: 'Permit B' },
+      { value: 'C', label: 'Permit C' },
+      { value: 'L', label: 'Permit L' },
+      { value: 'G', label: 'Permit G' },
+      { value: 'other', label: 'I do not know' },
+    ],
+  },
+  {
     id: 'hasChildren',
     type: 'boolean',
     label: 'Do you have children?',
@@ -28,7 +47,7 @@ const questions = [
 
 const currentStep = ref(0)
 const slideDirection = ref('next')
-const answers = ref({})
+const answers = ref({ ...props.initialAnswers })
 const completed = ref(false)
 
 const question = computed(() => questions[currentStep.value])
