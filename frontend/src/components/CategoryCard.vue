@@ -1,8 +1,13 @@
 <script setup>
-defineProps({
+import { computed } from 'vue'
+import * as HeroIcons from '@heroicons/vue/24/outline'
+
+const props = defineProps({
   category: { type: Object, required: true },
 })
 defineEmits(['click'])
+
+const icon = computed(() => HeroIcons[props.category.icon] || HeroIcons.StarIcon)
 </script>
 
 <template>
@@ -13,7 +18,9 @@ defineEmits(['click'])
     <div>
       <div class="flex items-start justify-between gap-2 mb-3">
         <h2 class="font-bold text-indigo-950 text-base leading-snug">{{ category.name }}</h2>
-        <span class="text-3xl leading-none shrink-0">{{ category.emoji }}</span>
+        <div class="w-9 h-9 bg-indigo-50 group-hover:bg-indigo-100 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-200">
+          <component :is="icon" class="w-5 h-5 text-indigo-600" />
+        </div>
       </div>
       <p class="text-sm text-gray-500 leading-relaxed">{{ category.description }}</p>
     </div>

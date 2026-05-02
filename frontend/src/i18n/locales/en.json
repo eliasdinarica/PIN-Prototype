@@ -1,0 +1,38 @@
+{
+  "profile": {
+    "step": "Step {current} of {total}",
+    "language": {
+      "label": "What is your preferred language?",
+      "sublabel": "Resources will be displayed in the language you choose."
+    },
+    "status": {
+      "label": "What is your permit type?",
+      "sublabel": "This is your Swiss residence permit. It is the card you got when you arrived.",
+      "unknown": "I do not know"
+    },
+    "hasChildren": {
+      "label": "Do you have children?",
+      "sublabel": "This helps us recommend the right family resources."
+    },
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "done": {
+      "title": "You're all set!",
+      "subtitle": "We are preparing your personalized resources."
+    }
+  },
+  "nav": {
+    "editProfile": "Edit profile"
+  },
+  "categories": {
+    "eyebrow": "Your resources",
+    "title": "What do you need help with?",
+    "empty": "No categories yet.",
+    "explore": "Explore"
+  },
+  "detail": {
+    "empty": "No documents in this category yet.",
+    "openTab": "Open in new tab"
+  }
+}

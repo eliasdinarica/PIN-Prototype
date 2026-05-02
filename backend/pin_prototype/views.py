@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
-from .models import Profile, Category, Resource
-from .serializers import ProfileSerializer, CategorySerializer, ResourceSerializer
+from .models import Profile, Category, Resource, Tag
+from .serializers import ProfileSerializer, CategorySerializer, ResourceSerializer, TagSerializer
 
 
 class ProfileViewSet(ModelViewSet):
@@ -16,3 +16,8 @@ class CategoryViewSet(ModelViewSet):
 class ResourceViewSet(ModelViewSet):
     queryset = Resource.objects.all().order_by('name')
     serializer_class = ResourceSerializer
+
+
+class TagViewSet(ModelViewSet):
+    queryset = Tag.objects.all().order_by('label')
+    serializer_class = TagSerializer

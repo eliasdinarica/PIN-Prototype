@@ -1,0 +1,38 @@
+{
+  "profile": {
+    "step": "Schritt {current} von {total}",
+    "language": {
+      "label": "Welche Sprache bevorzugen Sie?",
+      "sublabel": "Die Ressourcen werden in der von Ihnen gewählten Sprache angezeigt."
+    },
+    "status": {
+      "label": "Was ist Ihr Aufenthaltstyp?",
+      "sublabel": "Das ist Ihre Schweizer Aufenthaltsbewilligung. Die Karte, die Sie bei Ihrer Ankunft erhalten haben.",
+      "unknown": "Ich weiß es nicht"
+    },
+    "hasChildren": {
+      "label": "Haben Sie Kinder?",
+      "sublabel": "Das hilft uns, die richtigen Familienressourcen zu empfehlen."
+    },
+    "yes": "Ja",
+    "no": "Nein",
+    "back": "Zurück",
+    "done": {
+      "title": "Alles bereit!",
+      "subtitle": "Wir bereiten Ihre personalisierten Ressourcen vor."
+    }
+  },
+  "nav": {
+    "editProfile": "Profil bearbeiten"
+  },
+  "categories": {
+    "eyebrow": "Ihre Ressourcen",
+    "title": "Wobei brauchen Sie Hilfe?",
+    "empty": "Noch keine Kategorien.",
+    "explore": "Erkunden"
+  },
+  "detail": {
+    "empty": "Noch keine Dokumente in dieser Kategorie.",
+    "openTab": "In neuem Tab öffnen"
+  }
+}

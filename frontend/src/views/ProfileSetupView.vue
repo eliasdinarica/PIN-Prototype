@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ProfileSetup from '@/components/ProfileSetup.vue'
 
 const router = useRouter()
+const { locale } = useI18n()
 const ready = ref(false)
 const initialAnswers = ref({})
 const profileId = ref(localStorage.getItem('profileId'))
@@ -18,6 +20,10 @@ onMounted(async () => {
           language: profile.language,
           status: profile.status,
           hasChildren: profile.has_children,
+        }
+        if (profile.language) {
+          locale.value = profile.language
+          localStorage.setItem('profileLanguage', profile.language)
         }
       } else {
         localStorage.removeItem('profileId')
@@ -51,6 +57,10 @@ async function handleComplete(answers) {
     if (res.ok) {
       const data = await res.json()
       localStorage.setItem('profileId', data.id)
+      if (answers.language) {
+        localStorage.setItem('profileLanguage', answers.language)
+        locale.value = answers.language
+      }
     }
   } catch (error) {
     console.error('Failed to save profile:', error)

@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import CategoryCard from '@/components/CategoryCard.vue'
 
 const router = useRouter()
+const { t } = useI18n()
 const categories = ref([])
 const loading = ref(true)
 
@@ -23,8 +25,8 @@ onMounted(async () => {
     <div class="max-w-5xl mx-auto px-5 py-12">
 
       <!-- Header -->
-      <p class="text-xs font-semibold tracking-wider uppercase text-violet-500 mb-2">Your resources</p>
-      <h1 class="text-3xl font-bold text-indigo-950 mb-10">What do you need help with?</h1>
+      <p class="text-xs font-semibold tracking-wider uppercase text-violet-500 mb-2">{{ t('categories.eyebrow') }}</p>
+      <h1 class="text-3xl font-bold text-indigo-950 mb-10">{{ t('categories.title') }}</h1>
 
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-20">
@@ -33,7 +35,7 @@ onMounted(async () => {
 
       <!-- Empty -->
       <div v-else-if="categories.length === 0" class="bg-white rounded-2xl p-12 text-center text-gray-400 shadow-sm">
-        No categories yet.
+        {{ t('categories.empty') }}
       </div>
 
       <!-- Grid -->

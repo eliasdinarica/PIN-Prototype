@@ -1,10 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import * as HeroIcons from '@heroicons/vue/24/outline'
+import { ArrowLeftIcon, InboxIcon, DocumentTextIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import ResourceCard from '@/components/ResourceCard.vue'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const category = ref(null)
 const loading = ref(true)
 const openedResource = ref(null)
@@ -32,6 +36,8 @@ function closeModal() {
   openedResource.value = null
 }
 
+const categoryIcon = computed(() => category.value ? (HeroIcons[category.value.icon] || HeroIcons.StarIcon) : null)
+
 onMounted(async () => {
   try {
     const res = await fetch(`http://localhost:8000/api/categories/${route.params.id}/`)
@@ -52,10 +58,12 @@ onMounted(async () => {
           class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-50 text-violet-500 hover:text-indigo-600 transition-colors cursor-pointer bg-transparent border-none text-lg"
           @click="router.push('/categories')"
         >
-          ←
+          <ArrowLeftIcon class="w-5 h-5" />
         </button>
         <template v-if="category">
-          <span class="text-xl leading-none">{{ category.emoji }}</span>
+          <div class="w-7 h-7 bg-indigo-50 rounded-lg flex items-center justify-center shrink-0">
+            <component :is="categoryIcon" class="w-4 h-4 text-indigo-600" />
+          </div>
           <h1 class="font-bold text-indigo-950 truncate">{{ category.name }}</h1>
         </template>
       </div>
@@ -72,8 +80,8 @@ onMounted(async () => {
 
       <!-- Empty -->
       <div v-if="category.resources.length === 0" class="bg-white rounded-2xl p-12 text-center shadow-sm">
-        <div class="text-4xl mb-3">📭</div>
-        <p class="text-gray-400 text-sm">No documents in this category yet.</p>
+        <InboxIcon class="w-12 h-12 text-gray-300 mb-3" />
+        <p class="text-gray-400 text-sm">{{ t('detail.empty') }}</p>
       </div>
 
       <!-- Resources -->
@@ -104,7 +112,7 @@ onMounted(async () => {
 
           <!-- Modal header -->
           <div class="flex items-center gap-3 px-5 py-3 border-b border-gray-100 shrink-0">
-            <span class="text-xl">📄</span>
+            <DocumentTextIcon class="w-5 h-5 text-indigo-400 shrink-0" />
             <div class="flex-1 min-w-0">
               <h2 class="font-semibold text-indigo-950 truncate text-sm">{{ openedResource.name }}</h2>
             </div>
@@ -113,13 +121,13 @@ onMounted(async () => {
               target="_blank"
               class="text-xs font-medium text-indigo-500 hover:text-indigo-700 transition-colors no-underline shrink-0"
             >
-              Open in new tab ↗
+              {{ t('detail.openTab') }}
             </a>
             <button
               class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer bg-transparent border-none text-lg shrink-0"
               @click="closeModal"
             >
-              ✕
+              <XMarkIcon class="w-4 h-4" />
             </button>
           </div>
 

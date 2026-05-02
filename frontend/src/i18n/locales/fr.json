@@ -1,0 +1,38 @@
+{
+  "profile": {
+    "step": "Étape {current} sur {total}",
+    "language": {
+      "label": "Quelle est votre langue ?",
+      "sublabel": "Les ressources seront affichées dans la langue que vous choisissez."
+    },
+    "status": {
+      "label": "Quel est votre type de permis ?",
+      "sublabel": "C'est votre permis de séjour suisse. C'est la carte reçue à votre arrivée.",
+      "unknown": "Je ne sais pas"
+    },
+    "hasChildren": {
+      "label": "Avez-vous des enfants ?",
+      "sublabel": "Cela nous aide à vous recommander les bonnes ressources pour les familles."
+    },
+    "yes": "Oui",
+    "no": "Non",
+    "back": "Retour",
+    "done": {
+      "title": "Vous êtes prêt !",
+      "subtitle": "Nous préparons vos ressources personnalisées."
+    }
+  },
+  "nav": {
+    "editProfile": "Modifier le profil"
+  },
+  "categories": {
+    "eyebrow": "Vos ressources",
+    "title": "De quoi avez-vous besoin ?",
+    "empty": "Aucune catégorie pour l'instant.",
+    "explore": "Explorer"
+  },
+  "detail": {
+    "empty": "Aucun document dans cette catégorie pour l'instant.",
+    "openTab": "Ouvrir dans un nouvel onglet"
+  }
+}

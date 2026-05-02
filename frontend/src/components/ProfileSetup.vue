@@ -1,31 +1,36 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ArrowLeftIcon, CheckIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   initialAnswers: { type: Object, default: () => ({}) },
 })
-const emit = defineEmits(['complete'])
+const emit = defineEmits(['complete', 'languageChange'])
 
-const questions = [
+const { t, locale } = useI18n()
+
+const questions = computed(() => [
   {
     id: 'language',
     type: 'choice',
-    label: 'What is your preferred language?',
-    sublabel: 'Resources will be displayed in the language you choose.',
+    label: t('profile.language.label'),
+    sublabel: t('profile.language.sublabel'),
     options: [
       { value: 'en', label: 'English' },
       { value: 'fr', label: 'Français' },
+      { value: 'de', label: 'Deutsch' },
+      { value: 'it', label: 'Italiano' },
       { value: 'es', label: 'Español' },
-      { value: 'ar', label: 'العربية' },
       { value: 'pt', label: 'Português' },
-      { value: 'zh', label: '中文' },
+      { value: 'ru', label: 'Русский' },
     ],
   },
   {
     id: 'status',
     type: 'choice',
-    label: 'What is your permit type?',
-    sublabel: 'This is your Swiss residence permit. It is the card you got when you arrived.',
+    label: t('profile.status.label'),
+    sublabel: t('profile.status.sublabel'),
     options: [
       { value: 'N', label: 'Permit N' },
       { value: 'F', label: 'Permit F' },
@@ -34,29 +39,36 @@ const questions = [
       { value: 'C', label: 'Permit C' },
       { value: 'L', label: 'Permit L' },
       { value: 'G', label: 'Permit G' },
-      { value: 'other', label: 'I do not know' },
+      { value: 'other', label: t('profile.status.unknown') },
     ],
   },
   {
     id: 'hasChildren',
     type: 'boolean',
-    label: 'Do you have children?',
-    sublabel: 'This helps us recommend the right family resources.',
+    label: t('profile.hasChildren.label'),
+    sublabel: t('profile.hasChildren.sublabel'),
   },
-]
+])
 
 const currentStep = ref(0)
 const slideDirection = ref('next')
 const answers = ref({ ...props.initialAnswers })
 const completed = ref(false)
 
-const question = computed(() => questions[currentStep.value])
+const question = computed(() => questions.value[currentStep.value])
 const isFirst = computed(() => currentStep.value === 0)
-const isLast = computed(() => currentStep.value === questions.length - 1)
-const progressPct = computed(() => Math.round(((currentStep.value + 1) / questions.length) * 100))
+const isLast = computed(() => currentStep.value === questions.value.length - 1)
+const progressPct = computed(() => Math.round(((currentStep.value + 1) / questions.value.length) * 100))
 
 function select(value) {
   answers.value[question.value.id] = value
+
+  if (question.value.id === 'language') {
+    locale.value = value
+    localStorage.setItem('profileLanguage', value)
+    emit('languageChange', value)
+  }
+
   if (!isLast.value) {
     slideDirection.value = 'next'
     currentStep.value++
@@ -87,7 +99,7 @@ function back() {
           />
         </div>
         <p class="text-xs font-semibold tracking-wider uppercase text-violet-500 mb-8">
-          Step {{ currentStep + 1 }} of {{ questions.length }}
+          {{ t('profile.step', { current: currentStep + 1, total: questions.length }) }}
         </p>
 
         <Transition
@@ -126,7 +138,7 @@ function back() {
                   : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-600 hover:bg-indigo-600 hover:text-white'"
                 @click="select(true)"
               >
-                Yes
+                {{ t('profile.yes') }}
               </button>
               <button
                 class="py-5 border-2 rounded-2xl text-base font-semibold cursor-pointer transition-all duration-150"
@@ -135,7 +147,7 @@ function back() {
                   : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-600 hover:bg-indigo-600 hover:text-white'"
                 @click="select(false)"
               >
-                No
+                {{ t('profile.no') }}
               </button>
             </div>
           </div>
@@ -146,22 +158,21 @@ function back() {
           class="mt-6 self-start text-sm font-medium text-violet-500 hover:text-indigo-600 transition-colors duration-150 cursor-pointer bg-transparent border-none p-0"
           @click="back"
         >
-          ← Back
+          <ArrowLeftIcon class="w-4 h-4 inline" /> {{ t('profile.back') }}
         </button>
       </template>
 
       <!-- Done -->
       <template v-else>
         <div class="flex-1 flex flex-col items-center justify-center text-center gap-3">
-          <div class="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl mb-2">
-            ✓
+          <div class="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center mb-2">
+            <CheckIcon class="w-8 h-8" />
           </div>
-          <h2 class="text-2xl font-bold text-indigo-950">You're all set!</h2>
-          <p class="text-sm text-gray-500">We're preparing your personalized resources.</p>
+          <h2 class="text-2xl font-bold text-indigo-950">{{ t('profile.done.title') }}</h2>
+          <p class="text-sm text-gray-500">{{ t('profile.done.subtitle') }}</p>
         </div>
       </template>
 
     </div>
   </div>
 </template>
-

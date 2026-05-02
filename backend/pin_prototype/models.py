@@ -5,10 +5,11 @@ class Profile(models.Model):
     LANGUAGE_CHOICES = [
         ('en', 'English'),
         ('fr', 'Français'),
+        ('de', 'Deutsch'),
+        ('it', 'Italiano'),
         ('es', 'Español'),
-        ('ar', 'العربية'),
         ('pt', 'Português'),
-        ('zh', '中文'),
+        ('ru', 'Русский'),
     ]
 
     STATUS_CHOICES = [
@@ -32,9 +33,30 @@ class Profile(models.Model):
 
 
 class Category(models.Model):
+    ICON_CHOICES = [
+        ('CurrencyDollarIcon', 'Money & Budget'),
+        ('BriefcaseIcon', 'Work'),
+        ('AcademicCapIcon', 'Education'),
+        ('HomeIcon', 'Housing'),
+        ('HeartIcon', 'Health'),
+        ('UsersIcon', 'Family'),
+        ('TruckIcon', 'Mobility'),
+        ('ScaleIcon', 'Rights & Duties'),
+        ('HandRaisedIcon', 'Help'),
+        ('GlobeAltIcon', 'Global / International'),
+        ('DocumentTextIcon', 'Documents'),
+        ('BuildingOfficeIcon', 'Administration'),
+        ('PhoneIcon', 'Contact'),
+        ('MapPinIcon', 'Location'),
+        ('ComputerDesktopIcon', 'Technology'),
+        ('ShieldCheckIcon', 'Security'),
+        ('ChatBubbleLeftIcon', 'Communication'),
+        ('StarIcon', 'Other'),
+    ]
+
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    emoji = models.CharField(max_length=10, blank=True)
+    icon = models.CharField(max_length=50, blank=True, choices=ICON_CHOICES)
 
     class Meta:
         verbose_name_plural = 'categories'
@@ -43,8 +65,16 @@ class Category(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    label = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.label
+
+
 class Resource(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='resources')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     file = models.FileField(upload_to='resources/')

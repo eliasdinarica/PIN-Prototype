@@ -1,0 +1,38 @@
+{
+  "profile": {
+    "step": "Paso {current} de {total}",
+    "language": {
+      "label": "¿Cuál es tu idioma preferido?",
+      "sublabel": "Los recursos se mostrarán en el idioma que elijas."
+    },
+    "status": {
+      "label": "¿Cuál es tu tipo de permiso?",
+      "sublabel": "Es tu permiso de residencia suizo. La tarjeta que recibiste al llegar.",
+      "unknown": "No sé"
+    },
+    "hasChildren": {
+      "label": "¿Tienes hijos?",
+      "sublabel": "Esto nos ayuda a recomendar los recursos familiares adecuados."
+    },
+    "yes": "Sí",
+    "no": "No",
+    "back": "Atrás",
+    "done": {
+      "title": "¡Todo listo!",
+      "subtitle": "Estamos preparando tus recursos personalizados."
+    }
+  },
+  "nav": {
+    "editProfile": "Editar perfil"
+  },
+  "categories": {
+    "eyebrow": "Tus recursos",
+    "title": "¿Con qué necesitas ayuda?",
+    "empty": "Sin categorías aún.",
+    "explore": "Explorar"
+  },
+  "detail": {
+    "empty": "No hay documentos en esta categoría aún.",
+    "openTab": "Abrir en nueva pestaña"
+  }
+}
