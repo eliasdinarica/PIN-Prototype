@@ -5,6 +5,10 @@
       "label": "Welche Sprache bevorzugen Sie?",
       "sublabel": "Die Ressourcen werden in der von Ihnen gewählten Sprache angezeigt."
     },
+    "otherLanguages": {
+      "label": "Welche anderen Sprachen sprechen Sie?",
+      "sublabel": "Wählen Sie alle zutreffenden aus."
+    },
     "status": {
       "label": "Was ist Ihr Aufenthaltstyp?",
       "sublabel": "Das ist Ihre Schweizer Aufenthaltsbewilligung. Die Karte, die Sie bei Ihrer Ankunft erhalten haben.",
@@ -14,12 +18,39 @@
       "label": "Haben Sie Kinder?",
       "sublabel": "Das hilft uns, die richtigen Familienressourcen zu empfehlen."
     },
+    "originSector": {
+      "label": "In welchem Bereich haben Sie in Ihrem Heimatland gearbeitet?",
+      "sublabel": "Wählen Sie die Kategorie, die Ihrer Arbeit oder Ausbildung am besten entspricht."
+    },
+    "arrivedOverYear": {
+      "label": "Sind Sie seit mehr als einem Jahr in der Schweiz?"
+    },
+    "birthDate": {
+      "label": "Wann wurden Sie geboren?",
+      "sublabel": "Ihr Geburtsdatum hilft uns, Ressourcen für Sie anzupassen."
+    },
     "yes": "Ja",
     "no": "Nein",
+    "next": "Weiter",
+    "skip": "Überspringen",
     "back": "Zurück",
     "done": {
       "title": "Alles bereit!",
       "subtitle": "Wir bereiten Ihre personalisierten Ressourcen vor."
+    },
+    "sectors": {
+      "healthcare": "Gesundheit",
+      "education": "Bildung",
+      "engineering": "Technik",
+      "trade": "Handel",
+      "agriculture": "Landwirtschaft",
+      "construction": "Bau",
+      "it": "IT & Technologie",
+      "arts": "Kunst & Kultur",
+      "administration": "Verwaltung",
+      "catering": "Gastronomie",
+      "transport": "Transport",
+      "other": "Andere"
     }
   },
   "nav": {

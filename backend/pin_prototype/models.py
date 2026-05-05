@@ -23,9 +23,28 @@ class Profile(models.Model):
         ('other', 'Other'),
     ]
 
+    ORIGIN_SECTOR_CHOICES = [
+        ('healthcare', 'Healthcare'),
+        ('education', 'Education'),
+        ('engineering', 'Engineering & Technical'),
+        ('trade', 'Trade & Commerce'),
+        ('agriculture', 'Agriculture'),
+        ('construction', 'Construction'),
+        ('it', 'IT & Technology'),
+        ('arts', 'Arts & Culture'),
+        ('administration', 'Administration'),
+        ('catering', 'Catering & Food Service'),
+        ('transport', 'Transport & Logistics'),
+        ('other', 'Other'),
+    ]
+
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES)
+    other_languages = models.CharField(max_length=50, blank=True)
     status = models.CharField(max_length=5, choices=STATUS_CHOICES, default='other')
     has_children = models.BooleanField()
+    origin_sector = models.CharField(max_length=20, choices=ORIGIN_SECTOR_CHOICES, blank=True)
+    arrived_over_year_ago = models.BooleanField(null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

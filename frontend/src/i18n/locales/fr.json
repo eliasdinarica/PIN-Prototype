@@ -5,6 +5,10 @@
       "label": "Quelle est votre langue ?",
       "sublabel": "Les ressources seront affichées dans la langue que vous choisissez."
     },
+    "otherLanguages": {
+      "label": "Quelles autres langues parlez-vous ?",
+      "sublabel": "Choisissez toutes celles qui s'appliquent."
+    },
     "status": {
       "label": "Quel est votre type de permis ?",
       "sublabel": "C'est votre permis de séjour suisse. C'est la carte reçue à votre arrivée.",
@@ -14,12 +18,39 @@
       "label": "Avez-vous des enfants ?",
       "sublabel": "Cela nous aide à vous recommander les bonnes ressources pour les familles."
     },
+    "originSector": {
+      "label": "Quel était votre domaine de travail dans votre pays d'origine ?",
+      "sublabel": "Choisissez la catégorie qui correspond le mieux à votre travail ou formation."
+    },
+    "arrivedOverYear": {
+      "label": "Êtes-vous en Suisse depuis plus d'un an ?"
+    },
+    "birthDate": {
+      "label": "Quelle est votre date de naissance ?",
+      "sublabel": "Votre date de naissance nous aide à personnaliser les ressources pour vous."
+    },
     "yes": "Oui",
     "no": "Non",
+    "next": "Suivant",
+    "skip": "Passer",
     "back": "Retour",
     "done": {
       "title": "Vous êtes prêt !",
       "subtitle": "Nous préparons vos ressources personnalisées."
+    },
+    "sectors": {
+      "healthcare": "Santé",
+      "education": "Éducation",
+      "engineering": "Ingénierie",
+      "trade": "Commerce",
+      "agriculture": "Agriculture",
+      "construction": "Construction",
+      "it": "Informatique",
+      "arts": "Arts et culture",
+      "administration": "Administration",
+      "catering": "Restauration",
+      "transport": "Transport",
+      "other": "Autre"
     }
   },
   "nav": {

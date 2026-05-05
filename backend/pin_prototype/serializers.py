@@ -5,7 +5,7 @@ from .models import Profile, Category, Resource, Tag
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['id', 'language', 'status', 'has_children', 'created_at']
+        fields = ['id', 'language', 'other_languages', 'status', 'has_children', 'origin_sector', 'arrived_over_year_ago', 'birth_date', 'created_at']
         read_only_fields = ['id', 'created_at']
 
 

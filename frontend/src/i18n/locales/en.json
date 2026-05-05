@@ -5,6 +5,10 @@
       "label": "What is your preferred language?",
       "sublabel": "Resources will be displayed in the language you choose."
     },
+    "otherLanguages": {
+      "label": "What other languages do you speak?",
+      "sublabel": "Choose all that apply."
+    },
     "status": {
       "label": "What is your permit type?",
       "sublabel": "This is your Swiss residence permit. It is the card you got when you arrived.",
@@ -14,12 +18,39 @@
       "label": "Do you have children?",
       "sublabel": "This helps us recommend the right family resources."
     },
+    "originSector": {
+      "label": "What was your job area in your home country?",
+      "sublabel": "Choose the category that best fits your work or training."
+    },
+    "arrivedOverYear": {
+      "label": "Have you been in Switzerland for more than 1 year?"
+    },
+    "birthDate": {
+      "label": "When were you born?",
+      "sublabel": "Your date of birth helps us tailor resources for you."
+    },
     "yes": "Yes",
     "no": "No",
+    "next": "Next",
+    "skip": "Skip",
     "back": "Back",
     "done": {
       "title": "You're all set!",
       "subtitle": "We are preparing your personalized resources."
+    },
+    "sectors": {
+      "healthcare": "Healthcare",
+      "education": "Education",
+      "engineering": "Engineering",
+      "trade": "Trade & Commerce",
+      "agriculture": "Agriculture",
+      "construction": "Construction",
+      "it": "IT & Technology",
+      "arts": "Arts & Culture",
+      "administration": "Administration",
+      "catering": "Catering & Food",
+      "transport": "Transport",
+      "other": "Other"
     }
   },
   "nav": {

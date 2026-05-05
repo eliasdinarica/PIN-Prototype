@@ -5,6 +5,10 @@
       "label": "Qual é o seu idioma preferido?",
       "sublabel": "Os recursos serão exibidos no idioma que você escolher."
     },
+    "otherLanguages": {
+      "label": "Quais outros idiomas você fala?",
+      "sublabel": "Escolha todos os que se aplicam."
+    },
     "status": {
       "label": "Qual é o seu tipo de licença?",
       "sublabel": "É a sua autorização de residência suíça. O cartão que você recebeu quando chegou.",
@@ -14,12 +18,39 @@
       "label": "Você tem filhos?",
       "sublabel": "Isso nos ajuda a recomendar os recursos familiares certos."
     },
+    "originSector": {
+      "label": "Em qual setor você trabalhava no seu país de origem?",
+      "sublabel": "Escolha a categoria que melhor se adapta ao seu trabalho ou formação."
+    },
+    "arrivedOverYear": {
+      "label": "Você está na Suíça há mais de um ano?"
+    },
+    "birthDate": {
+      "label": "Quando você nasceu?",
+      "sublabel": "Sua data de nascimento nos ajuda a personalizar os recursos para você."
+    },
     "yes": "Sim",
     "no": "Não",
+    "next": "Próximo",
+    "skip": "Pular",
     "back": "Voltar",
     "done": {
       "title": "Está tudo pronto!",
       "subtitle": "Estamos preparando seus recursos personalizados."
+    },
+    "sectors": {
+      "healthcare": "Saúde",
+      "education": "Educação",
+      "engineering": "Engenharia",
+      "trade": "Comércio",
+      "agriculture": "Agricultura",
+      "construction": "Construção",
+      "it": "Informática",
+      "arts": "Arte e cultura",
+      "administration": "Administração",
+      "catering": "Gastronomia",
+      "transport": "Transporte",
+      "other": "Outro"
     }
   },
   "nav": {

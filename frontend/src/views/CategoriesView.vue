@@ -20,17 +20,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-violet-50 to-violet-100">
+  <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200">
 
     <div class="max-w-5xl mx-auto px-5 py-12">
 
       <!-- Header -->
-      <p class="text-xs font-semibold tracking-wider uppercase text-violet-500 mb-2">{{ t('categories.eyebrow') }}</p>
-      <h1 class="text-3xl font-bold text-indigo-950 mb-10">{{ t('categories.title') }}</h1>
+      <p class="text-xs font-semibold tracking-wider uppercase text-surface-500 mb-2">{{ t('categories.eyebrow') }}</p>
+      <h1 class="text-3xl font-bold text-surface-950 mb-10">{{ t('categories.title') }}</h1>
 
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-20">
-        <div class="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+        <div class="w-8 h-8 border-4 border-surface-200 border-t-surface-600 rounded-full animate-spin" />
       </div>
 
       <!-- Empty -->

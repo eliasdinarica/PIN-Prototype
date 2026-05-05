@@ -4,8 +4,8 @@ from .models import Profile, Category, Resource, Tag
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'language', 'status', 'has_children', 'created_at']
-    list_filter = ['language', 'status', 'has_children']
+    list_display = ['id', 'language', 'status', 'has_children', 'origin_sector', 'arrived_over_year_ago', 'birth_date', 'created_at']
+    list_filter = ['language', 'status', 'has_children', 'origin_sector', 'arrived_over_year_ago']
     readonly_fields = ['created_at']
 
 
@@ -18,6 +18,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'icon', 'name', 'description']
+
 
 
 @admin.register(Resource)
