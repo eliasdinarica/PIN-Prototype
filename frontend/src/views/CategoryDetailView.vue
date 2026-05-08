@@ -3,7 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import * as HeroIcons from '@heroicons/vue/24/outline'
-import { InboxIcon, DocumentTextIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { InboxIcon, DocumentTextIcon, XMarkIcon, SparklesIcon } from '@heroicons/vue/24/outline'
 import ResourceCard from '@/components/ResourceCard.vue'
 
 const route = useRoute()
@@ -29,7 +29,11 @@ async function loadCategory(id) {
   loading.value = true
   category.value = null
   try {
-    const res = await fetch(`http://localhost:8000/api/categories/${id}/`)
+    const profileId = localStorage.getItem('profileId')
+    const url = profileId
+      ? `http://localhost:8000/api/categories/${id}/?profile=${profileId}`
+      : `http://localhost:8000/api/categories/${id}/`
+    const res = await fetch(url)
     category.value = await res.json()
   } finally {
     loading.value = false
@@ -58,7 +62,11 @@ function closeModal() {
 }
 
 onMounted(async () => {
-  const allRes = await fetch('http://localhost:8000/api/categories/')
+  const profileId = localStorage.getItem('profileId')
+  const listUrl = profileId
+    ? `http://localhost:8000/api/categories/?profile=${profileId}`
+    : 'http://localhost:8000/api/categories/'
+  const allRes = await fetch(listUrl)
   categories.value = await allRes.json()
 
   const id = route.params.id || categories.value[0]?.id
@@ -86,7 +94,7 @@ watch(() => route.params.id, (newId) => {
         <button
           v-for="cat in categories"
           :key="cat.id"
-          class="flex items-center gap-2 rounded-full border-2 transition-all duration-200 cursor-pointer"
+          class="relative flex items-center gap-2 rounded-full border-2 transition-all duration-200 cursor-pointer"
           :class="String(cat.id) === String(route.params.id)
             ? 'bg-brand-600 border-brand-600 pl-3 pr-4 py-2'
             : 'bg-surface-700 border-surface-600 p-2.5 hover:border-surface-400'"
@@ -101,6 +109,15 @@ watch(() => route.params.id, (newId) => {
             v-if="String(cat.id) === String(route.params.id)"
             class="text-white text-sm font-semibold whitespace-nowrap"
           >{{ cat.name }}</span>
+          <SparklesIcon
+            v-if="cat.is_recommended && String(cat.id) === String(route.params.id)"
+            class="w-3 h-3 text-white/70 shrink-0"
+          />
+          <!-- dot indicator for inactive recommended pills -->
+          <span
+            v-if="cat.is_recommended && String(cat.id) !== String(route.params.id)"
+            class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 border-2 border-surface-800 rounded-full"
+          />
         </button>
       </div>
     </div>
@@ -129,7 +146,12 @@ watch(() => route.params.id, (newId) => {
               :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-300'"
             />
           </div>
-          <span class="truncate">{{ cat.name }}</span>
+          <span class="truncate flex-1">{{ cat.name }}</span>
+          <SparklesIcon
+            v-if="cat.is_recommended"
+            class="w-3.5 h-3.5 shrink-0"
+            :class="String(cat.id) === String(route.params.id) ? 'text-white/60' : 'text-brand-400'"
+          />
         </button>
       </aside>
 

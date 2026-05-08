@@ -51,6 +51,21 @@ class Profile(models.Model):
         return f"Profile #{self.pk} — {self.get_language_display()}"
 
 
+class Audience(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    statuses = models.CharField(max_length=50, blank=True, help_text="Comma-separated permit codes, e.g. N,F,S. Empty = any.")
+    has_children = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
+    origin_sectors = models.CharField(max_length=200, blank=True, help_text="Comma-separated sectors, e.g. healthcare,education. Empty = any.")
+    arrived_over_year = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
+    min_age = models.IntegerField(null=True, blank=True)
+    max_age = models.IntegerField(null=True, blank=True)
+    relevant_tags = models.ManyToManyField('Tag', blank=True, related_name='audiences', help_text="Resources with these tags are shown first when this audience matches.")
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
     ICON_CHOICES = [
         ('CurrencyDollarIcon', 'Money & Budget'),
@@ -76,6 +91,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50, blank=True, choices=ICON_CHOICES)
+    audiences = models.ManyToManyField(Audience, blank=True, related_name='categories', help_text="Leave empty to show to everyone.")
+    priority = models.IntegerField(default=0, help_text="Higher = shown first when relevance is equal.")
 
     class Meta:
         verbose_name_plural = 'categories'
