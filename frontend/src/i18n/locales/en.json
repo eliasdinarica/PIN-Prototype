@@ -29,10 +29,20 @@
       "label": "When were you born?",
       "sublabel": "Your date of birth helps us tailor resources for you."
     },
+    "timeline": {
+      "language": "Language",
+      "otherLanguages": "Other langs",
+      "status": "Permit",
+      "hasChildren": "Children",
+      "originSector": "Work sector",
+      "arrivedOverYear": "Time in CH",
+      "birthDate": "Birth date"
+    },
     "yes": "Yes",
     "no": "No",
     "next": "Next",
     "skip": "Skip",
+    "saveExit": "Save & exit",
     "back": "Back",
     "done": {
       "title": "You're all set!",
@@ -60,10 +70,14 @@
     "eyebrow": "Your resources",
     "title": "What do you need help with?",
     "empty": "No categories yet.",
-    "explore": "Explore"
+    "explore": "Explore",
+    "recommended": "Recommended",
+    "others": "Other categories"
   },
   "detail": {
     "empty": "No documents in this category yet.",
-    "openTab": "Open in new tab"
+    "openTab": "Open in new tab",
+    "recommended": "Recommended",
+    "others": "Other documents"
   }
 }

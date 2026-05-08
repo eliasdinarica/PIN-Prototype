@@ -121,13 +121,15 @@ class CategoryViewSet(ModelViewSet):
                 profile = Profile.objects.get(pk=profile_id)
                 tag_ids = _matched_tag_ids(profile)
 
-                if tag_ids:
-                    def score(resource_data):
-                        return len({t['id'] for t in resource_data.get('tags', [])} & tag_ids)
+                def score(r):
+                    return len({t['id'] for t in r.get('tags', [])} & tag_ids)
 
-                    data['resources'] = sorted(data['resources'], key=score, reverse=True)
+                scored = sorted([(r, score(r)) for r in data['resources']], key=lambda x: -x[1])
+                data['resources'] = [{**r, 'is_recommended': s > 0} for r, s in scored]
             except Profile.DoesNotExist:
-                pass
+                data['resources'] = [{**r, 'is_recommended': False} for r in data['resources']]
+        else:
+            data['resources'] = [{**r, 'is_recommended': False} for r in data['resources']]
 
         return Response(data)
 

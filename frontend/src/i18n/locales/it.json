@@ -29,10 +29,20 @@
       "label": "Quando sei nato/a?",
       "sublabel": "La tua data di nascita ci aiuta a personalizzare le risorse per te."
     },
+    "timeline": {
+      "language": "Lingua",
+      "otherLanguages": "Altre lingue",
+      "status": "Permesso",
+      "hasChildren": "Figli",
+      "originSector": "Settore",
+      "arrivedOverYear": "Arrivo in CH",
+      "birthDate": "Data di nascita"
+    },
     "yes": "Sì",
     "no": "No",
     "next": "Avanti",
     "skip": "Salta",
+    "saveExit": "Salva ed esci",
     "back": "Indietro",
     "done": {
       "title": "Sei pronto!",
@@ -60,10 +70,14 @@
     "eyebrow": "Le tue risorse",
     "title": "Di cosa hai bisogno?",
     "empty": "Nessuna categoria per ora.",
-    "explore": "Esplora"
+    "explore": "Esplora",
+    "recommended": "Consigliate",
+    "others": "Altre categorie"
   },
   "detail": {
     "empty": "Nessun documento in questa categoria per ora.",
-    "openTab": "Apri in nuova scheda"
+    "openTab": "Apri in nuova scheda",
+    "recommended": "Consigliati",
+    "others": "Altri documenti"
   }
 }

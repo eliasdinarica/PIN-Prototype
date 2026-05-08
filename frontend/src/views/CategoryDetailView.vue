@@ -17,6 +17,12 @@ const openedResource = ref(null)
 const pdfBlobUrl = ref(null)
 const pdfLoading = ref(false)
 
+const recommendedCats = computed(() => categories.value.filter(c => c.is_recommended))
+const otherCats = computed(() => categories.value.filter(c => !c.is_recommended))
+
+const recommendedResources = computed(() => (category.value?.resources || []).filter(r => r.is_recommended))
+const otherResources = computed(() => (category.value?.resources || []).filter(r => !r.is_recommended))
+
 function getCategoryIcon(cat) {
   return HeroIcons[cat.icon] || HeroIcons.StarIcon
 }
@@ -88,37 +94,60 @@ watch(() => route.params.id, (newId) => {
 <template>
   <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200">
 
-    <!-- Mobile sticky header: category pills -->
+    <!-- Mobile sticky header -->
     <div class="sticky top-0 z-10 bg-surface-800 border-b border-surface-700 lg:hidden">
-      <div v-if="categories.length" class="flex flex-wrap gap-2 px-4 py-3">
-        <button
-          v-for="cat in categories"
-          :key="cat.id"
-          class="relative flex items-center gap-2 rounded-full border-2 transition-all duration-200 cursor-pointer"
-          :class="String(cat.id) === String(route.params.id)
-            ? 'bg-brand-600 border-brand-600 pl-3 pr-4 py-2'
-            : 'bg-surface-700 border-surface-600 p-2.5 hover:border-surface-400'"
-          @click="router.push(`/categories/${cat.id}`)"
-        >
-          <component
-            :is="getCategoryIcon(cat)"
-            class="w-5 h-5 shrink-0 transition-colors duration-200"
-            :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-300'"
-          />
-          <span
-            v-if="String(cat.id) === String(route.params.id)"
-            class="text-white text-sm font-semibold whitespace-nowrap"
-          >{{ cat.name }}</span>
-          <SparklesIcon
-            v-if="cat.is_recommended && String(cat.id) === String(route.params.id)"
-            class="w-3 h-3 text-white/70 shrink-0"
-          />
-          <!-- dot indicator for inactive recommended pills -->
-          <span
-            v-if="cat.is_recommended && String(cat.id) !== String(route.params.id)"
-            class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-brand-500 border-2 border-surface-800 rounded-full"
-          />
-        </button>
+      <div v-if="categories.length" class="flex flex-col gap-1.5 px-4 py-3">
+
+        <!-- Recommended row -->
+        <div v-if="recommendedCats.length" class="flex flex-wrap gap-2">
+          <button
+            v-for="cat in recommendedCats"
+            :key="cat.id"
+            class="flex items-center gap-1.5 rounded-full border-2 transition-all duration-200 cursor-pointer"
+            :class="String(cat.id) === String(route.params.id)
+              ? 'bg-brand-600 border-brand-600 pl-3 pr-4 py-2'
+              : 'bg-surface-700 border-surface-600 p-2.5 hover:border-surface-400'"
+            @click="router.push(`/categories/${cat.id}`)"
+          >
+            <component
+              :is="getCategoryIcon(cat)"
+              class="w-5 h-5 shrink-0"
+              :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-300'"
+            />
+            <span
+              v-if="String(cat.id) === String(route.params.id)"
+              class="text-white text-sm font-semibold whitespace-nowrap"
+            >{{ cat.name }}</span>
+            <SparklesIcon
+              v-if="String(cat.id) === String(route.params.id)"
+              class="w-3 h-3 text-white/60 shrink-0"
+            />
+          </button>
+        </div>
+
+        <!-- Others row — muted, smaller -->
+        <div v-if="otherCats.length" class="flex flex-wrap gap-1.5">
+          <button
+            v-for="cat in otherCats"
+            :key="cat.id"
+            class="flex items-center gap-1.5 rounded-full border transition-all duration-200 cursor-pointer"
+            :class="String(cat.id) === String(route.params.id)
+              ? 'bg-surface-600 border-surface-500 pl-2.5 pr-3 py-1.5'
+              : 'bg-surface-800 border-surface-600/50 p-2 hover:border-surface-500'"
+            @click="router.push(`/categories/${cat.id}`)"
+          >
+            <component
+              :is="getCategoryIcon(cat)"
+              class="w-4 h-4 shrink-0"
+              :class="String(cat.id) === String(route.params.id) ? 'text-surface-200' : 'text-surface-500'"
+            />
+            <span
+              v-if="String(cat.id) === String(route.params.id)"
+              class="text-surface-200 text-xs font-medium whitespace-nowrap"
+            >{{ cat.name }}</span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -127,32 +156,73 @@ watch(() => route.params.id, (newId) => {
 
       <!-- Desktop sidebar -->
       <aside v-if="categories.length" class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-8">
-        <button
-          v-for="cat in categories"
-          :key="cat.id"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer border-2 text-left w-full"
-          :class="String(cat.id) === String(route.params.id)
-            ? 'bg-surface-700 text-white border-surface-700'
-            : 'bg-surface-800/40 text-surface-200 border-transparent hover:bg-surface-800 hover:text-white'"
-          @click="router.push(`/categories/${cat.id}`)"
-        >
-          <div
-            class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-            :class="String(cat.id) === String(route.params.id) ? 'bg-white/20' : 'bg-surface-700'"
+
+        <!-- Recommended section -->
+        <template v-if="recommendedCats.length">
+          <p class="text-xs font-semibold uppercase tracking-wider text-brand-400 px-3 mb-1 flex items-center gap-1.5">
+            <SparklesIcon class="w-3.5 h-3.5" />
+            {{ t('categories.recommended') }}
+          </p>
+          <button
+            v-for="cat in recommendedCats"
+            :key="cat.id"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer border-2 text-left w-full"
+            :class="String(cat.id) === String(route.params.id)
+              ? 'bg-surface-700 text-white border-surface-700'
+              : 'bg-surface-800/40 text-surface-200 border-transparent hover:bg-surface-800 hover:text-white'"
+            @click="router.push(`/categories/${cat.id}`)"
           >
-            <component
-              :is="getCategoryIcon(cat)"
-              class="w-4 h-4"
-              :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-300'"
-            />
-          </div>
-          <span class="truncate flex-1">{{ cat.name }}</span>
-          <SparklesIcon
-            v-if="cat.is_recommended"
-            class="w-3.5 h-3.5 shrink-0"
-            :class="String(cat.id) === String(route.params.id) ? 'text-white/60' : 'text-brand-400'"
-          />
-        </button>
+            <div
+              class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+              :class="String(cat.id) === String(route.params.id) ? 'bg-white/20' : 'bg-surface-700'"
+            >
+              <component
+                :is="getCategoryIcon(cat)"
+                class="w-4 h-4"
+                :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-300'"
+              />
+            </div>
+            <span class="truncate flex-1">{{ cat.name }}</span>
+          </button>
+        </template>
+
+        <!-- Divider -->
+        <div
+          v-if="recommendedCats.length && otherCats.length"
+          class="my-2 border-t border-surface-700/50"
+        />
+
+        <!-- Other categories section -->
+        <template v-if="otherCats.length">
+          <p
+            v-if="recommendedCats.length"
+            class="text-xs font-semibold uppercase tracking-wider text-surface-500 px-3 mb-1"
+          >
+            {{ t('categories.others') }}
+          </p>
+          <button
+            v-for="cat in otherCats"
+            :key="cat.id"
+            class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer border-2 text-left w-full"
+            :class="String(cat.id) === String(route.params.id)
+              ? 'bg-surface-700 text-white border-surface-700'
+              : 'bg-transparent text-surface-400 border-transparent hover:bg-surface-800/60 hover:text-surface-200'"
+            @click="router.push(`/categories/${cat.id}`)"
+          >
+            <div
+              class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
+              :class="String(cat.id) === String(route.params.id) ? 'bg-white/20' : 'bg-surface-700/60'"
+            >
+              <component
+                :is="getCategoryIcon(cat)"
+                class="w-3.5 h-3.5"
+                :class="String(cat.id) === String(route.params.id) ? 'text-white' : 'text-surface-500'"
+              />
+            </div>
+            <span class="truncate flex-1">{{ cat.name }}</span>
+          </button>
+        </template>
+
       </aside>
 
       <!-- Resources content -->
@@ -181,15 +251,49 @@ watch(() => route.params.id, (newId) => {
             <p class="text-gray-400 text-sm">{{ t('detail.empty') }}</p>
           </div>
 
-          <!-- Resources -->
-          <div v-else class="flex flex-col gap-3">
-            <ResourceCard
-              v-for="resource in category.resources"
-              :key="resource.id"
-              :resource="resource"
-              @open="openResource"
+          <template v-else>
+            <!-- Recommended resources -->
+            <template v-if="recommendedResources.length">
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-400 mb-3 flex items-center gap-1.5">
+                <SparklesIcon class="w-3.5 h-3.5" />
+                {{ t('detail.recommended') }}
+              </p>
+              <div class="flex flex-col gap-3">
+                <ResourceCard
+                  v-for="resource in recommendedResources"
+                  :key="resource.id"
+                  :resource="resource"
+                  :recommended="true"
+                  @open="openResource"
+                />
+              </div>
+            </template>
+
+            <!-- Divider -->
+            <div
+              v-if="recommendedResources.length && otherResources.length"
+              class="my-5 border-t border-surface-200"
             />
-          </div>
+
+            <!-- Other resources -->
+            <template v-if="otherResources.length">
+              <p
+                v-if="recommendedResources.length"
+                class="text-xs font-semibold uppercase tracking-wider text-surface-400 mb-3"
+              >
+                {{ t('detail.others') }}
+              </p>
+              <div class="flex flex-col gap-3">
+                <ResourceCard
+                  v-for="resource in otherResources"
+                  :key="resource.id"
+                  :resource="resource"
+                  :recommended="false"
+                  @open="openResource"
+                />
+              </div>
+            </template>
+          </template>
         </template>
 
       </div>

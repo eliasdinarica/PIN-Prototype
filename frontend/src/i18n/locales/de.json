@@ -29,10 +29,20 @@
       "label": "Wann wurden Sie geboren?",
       "sublabel": "Ihr Geburtsdatum hilft uns, Ressourcen für Sie anzupassen."
     },
+    "timeline": {
+      "language": "Sprache",
+      "otherLanguages": "Andere Spr.",
+      "status": "Aufenthalt",
+      "hasChildren": "Kinder",
+      "originSector": "Berufsfeld",
+      "arrivedOverYear": "Zeit in CH",
+      "birthDate": "Geburtsdatum"
+    },
     "yes": "Ja",
     "no": "Nein",
     "next": "Weiter",
     "skip": "Überspringen",
+    "saveExit": "Speichern & beenden",
     "back": "Zurück",
     "done": {
       "title": "Alles bereit!",
@@ -60,10 +70,14 @@
     "eyebrow": "Ihre Ressourcen",
     "title": "Wobei brauchen Sie Hilfe?",
     "empty": "Noch keine Kategorien.",
-    "explore": "Erkunden"
+    "explore": "Erkunden",
+    "recommended": "Empfohlen",
+    "others": "Weitere Kategorien"
   },
   "detail": {
     "empty": "Noch keine Dokumente in dieser Kategorie.",
-    "openTab": "In neuem Tab öffnen"
+    "openTab": "In neuem Tab öffnen",
+    "recommended": "Empfohlen",
+    "others": "Weitere Dokumente"
   }
 }

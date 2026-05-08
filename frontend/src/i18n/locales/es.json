@@ -29,10 +29,20 @@
       "label": "¿Cuándo naciste?",
       "sublabel": "Tu fecha de nacimiento nos ayuda a personalizar los recursos para ti."
     },
+    "timeline": {
+      "language": "Idioma",
+      "otherLanguages": "Otros idiomas",
+      "status": "Permiso",
+      "hasChildren": "Hijos",
+      "originSector": "Sector",
+      "arrivedOverYear": "Tiempo en CH",
+      "birthDate": "Fecha de nac."
+    },
     "yes": "Sí",
     "no": "No",
     "next": "Siguiente",
     "skip": "Omitir",
+    "saveExit": "Guardar y salir",
     "back": "Atrás",
     "done": {
       "title": "¡Todo listo!",
@@ -60,10 +70,14 @@
     "eyebrow": "Tus recursos",
     "title": "¿Con qué necesitas ayuda?",
     "empty": "Sin categorías aún.",
-    "explore": "Explorar"
+    "explore": "Explorar",
+    "recommended": "Recomendadas",
+    "others": "Otras categorías"
   },
   "detail": {
     "empty": "No hay documentos en esta categoría aún.",
-    "openTab": "Abrir en nueva pestaña"
+    "openTab": "Abrir en nueva pestaña",
+    "recommended": "Recomendados",
+    "others": "Otros documentos"
   }
 }

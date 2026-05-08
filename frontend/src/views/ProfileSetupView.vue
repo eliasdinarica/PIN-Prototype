@@ -41,6 +41,10 @@ onMounted(async () => {
   ready.value = true
 })
 
+async function handleFinish(answers) {
+  await handleComplete(answers)
+}
+
 async function handleComplete(answers) {
   try {
     const isUpdate = !!profileId.value
@@ -79,5 +83,5 @@ async function handleComplete(answers) {
 </script>
 
 <template>
-  <ProfileSetup v-if="ready" :initial-answers="initialAnswers" @complete="handleComplete" />
+  <ProfileSetup v-if="ready" :initial-answers="initialAnswers" :is-editing="!!profileId" @complete="handleComplete" @finish="handleFinish" />
 </template>
