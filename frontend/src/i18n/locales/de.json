@@ -72,7 +72,9 @@
     "empty": "Noch keine Kategorien.",
     "explore": "Erkunden",
     "recommended": "Empfohlen",
-    "others": "Weitere Kategorien"
+    "others": "Weitere Kategorien",
+    "forYou": "Für Sie",
+    "forYouDesc": "Die am besten zu Ihrem Profil passenden Ressourcen aus allen Kategorien."
   },
   "detail": {
     "empty": "Noch keine Dokumente in dieser Kategorie.",

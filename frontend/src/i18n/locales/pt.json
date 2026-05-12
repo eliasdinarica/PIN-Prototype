@@ -72,7 +72,9 @@
     "empty": "Sem categorias ainda.",
     "explore": "Explorar",
     "recommended": "Recomendadas",
-    "others": "Outras categorias"
+    "others": "Outras categorias",
+    "forYou": "Para você",
+    "forYouDesc": "Os recursos mais adequados ao seu perfil, de todas as categorias."
   },
   "detail": {
     "empty": "Sem documentos nesta categoria ainda.",

@@ -72,7 +72,9 @@
     "empty": "Aucune catégorie pour l'instant.",
     "explore": "Explorer",
     "recommended": "Recommandées",
-    "others": "Autres catégories"
+    "others": "Autres catégories",
+    "forYou": "Pour vous",
+    "forYouDesc": "Les ressources les plus adaptées à votre profil, toutes catégories confondues."
   },
   "detail": {
     "empty": "Aucun document dans cette catégorie pour l'instant.",

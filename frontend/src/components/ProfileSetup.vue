@@ -245,7 +245,7 @@ watch(currentStep, async () => {
       </div>
 
       <!-- Form card -->
-      <div class="bg-white rounded-2xl p-8 lg:p-10 w-full shadow-lg flex flex-col min-h-96">
+      <div class="bg-surface-500 rounded-2xl p-8 lg:p-10 w-full shadow-lg flex flex-col min-h-96">
 
         <template v-if="!completed">
 
@@ -257,7 +257,7 @@ watch(currentStep, async () => {
                 class="flex items-center gap-1.5 rounded-full border-2 transition-all duration-200 cursor-pointer shrink-0"
                 :class="i === currentStep
                   ? 'bg-brand-600 border-brand-600 pl-2.5 pr-3 py-1.5'
-                  : isPassed(i) ? 'bg-surface-600 border-surface-600 p-1.5' : 'bg-white border-surface-200 p-1.5'"
+                  : isPassed(i) ? 'bg-surface-600 border-surface-600 p-1.5' : 'bg-surface-600 border-surface-400 p-1.5'"
                 @click="goToStep(i)"
               >
                 <CheckIcon v-if="isPassed(i)" class="w-3.5 h-3.5 text-white shrink-0" />
@@ -282,8 +282,8 @@ watch(currentStep, async () => {
             mode="out-in"
           >
             <div :key="currentStep" class="flex-1 flex flex-col">
-              <h2 class="text-2xl font-bold text-surface-800 leading-snug mb-2">{{ question.label }}</h2>
-              <p v-if="question.sublabel" class="text-sm text-gray-500 leading-relaxed mb-6">{{ question.sublabel }}</p>
+              <h2 class="text-2xl font-bold text-white leading-snug mb-2">{{ question.label }}</h2>
+              <p v-if="question.sublabel" class="text-sm text-surface-300 leading-relaxed mb-6">{{ question.sublabel }}</p>
               <div v-else class="mb-6" />
 
               <!-- Single choice -->
@@ -293,8 +293,8 @@ watch(currentStep, async () => {
                   :key="opt.value"
                   class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
                   :class="answers[question.id] === opt.value
-                    ? 'border-surface-600 bg-surface-600 text-white'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-surface-300 hover:bg-surface-50 hover:text-surface-700'"
+                    ? 'border-white bg-surface-600 text-white'
+                    : 'border-surface-400 bg-surface-400  text-surface-600 hover:border-surface-200 hover:text-white'"
                   @click="select(opt.value)"
                 >
                   {{ opt.label }}
@@ -308,8 +308,8 @@ watch(currentStep, async () => {
                   :key="opt.value"
                   class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
                   :class="(answers[question.id] || []).includes(opt.value)
-                    ? 'border-surface-600 bg-surface-600 text-white'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-surface-300 hover:bg-surface-50 hover:text-surface-700'"
+                    ? 'border-white bg-surface-600 text-white'
+                    : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
                   @click="toggle(opt.value)"
                 >
                   {{ opt.label }}
@@ -321,8 +321,8 @@ watch(currentStep, async () => {
                 <button
                   class="py-5 border-2 rounded-2xl text-base font-semibold cursor-pointer transition-all duration-150"
                   :class="answers[question.id] === true
-                    ? 'border-surface-600 bg-surface-600 text-white'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-surface-600 hover:bg-surface-600 hover:text-white'"
+                    ? 'border-white bg-surface-600 text-white'
+                    : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
                   @click="select(true)"
                 >
                   {{ t('profile.yes') }}
@@ -330,8 +330,8 @@ watch(currentStep, async () => {
                 <button
                   class="py-5 border-2 rounded-2xl text-base font-semibold cursor-pointer transition-all duration-150"
                   :class="answers[question.id] === false
-                    ? 'border-surface-600 bg-surface-600 text-white'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-surface-600 hover:bg-surface-600 hover:text-white'"
+                    ? 'border-white bg-surface-600 text-white'
+                    : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
                   @click="select(false)"
                 >
                   {{ t('profile.no') }}
@@ -342,7 +342,7 @@ watch(currentStep, async () => {
               <div v-else-if="question.type === 'date'">
                 <input
                   type="date"
-                  class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-base text-surface-800 focus:outline-none focus:border-surface-600 transition-colors duration-150"
+                  class="w-full border-2 border-surface-400 bg-surface-600 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-surface-200 transition-colors duration-150"
                   :value="answers[question.id] || ''"
                   @input="answers[question.id] = $event.target.value"
                 />
@@ -354,7 +354,7 @@ watch(currentStep, async () => {
           <div class="mt-8 flex items-center gap-3">
             <button
               v-if="!isFirst"
-              class="flex items-center gap-1 text-sm font-medium text-surface-400 hover:text-surface-700 transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
+              class="flex items-center gap-1 text-sm font-medium text-surface-300 hover:text-white transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
               @click="back"
             >
               <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
@@ -362,7 +362,7 @@ watch(currentStep, async () => {
             <div class="flex-1" />
             <button
               v-if="!question.required"
-              class="text-sm text-surface-400 hover:text-surface-500 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
+              class="text-sm text-surface-300 hover:text-surface-100 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
               @click="skip"
             >
               {{ t('profile.skip') }}
@@ -371,7 +371,7 @@ watch(currentStep, async () => {
               class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 border-none shrink-0"
               :class="canAdvance
                 ? 'bg-surface-700 text-white hover:bg-surface-800 cursor-pointer'
-                : 'bg-surface-100 text-surface-300 cursor-not-allowed'"
+                : 'bg-surface-700 text-surface-500 cursor-not-allowed'"
               @click="goNext"
             >
               {{ t('profile.next') }}
@@ -385,8 +385,8 @@ watch(currentStep, async () => {
             <div class="w-16 h-16 bg-surface-600 text-white rounded-full flex items-center justify-center mb-2">
               <CheckIcon class="w-8 h-8" />
             </div>
-            <h2 class="text-2xl font-bold text-surface-800">{{ t('profile.done.title') }}</h2>
-            <p class="text-sm text-gray-500">{{ t('profile.done.subtitle') }}</p>
+            <h2 class="text-2xl font-bold text-white">{{ t('profile.done.title') }}</h2>
+            <p class="text-sm text-surface-300">{{ t('profile.done.subtitle') }}</p>
           </div>
         </template>
 

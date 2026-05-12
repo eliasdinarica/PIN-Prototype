@@ -1,5 +1,6 @@
 from datetime import date as date_cls
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Profile, Audience, Category, Resource, Tag
 from .serializers import ProfileSerializer, CategorySerializer, ResourceSerializer, TagSerializer
@@ -44,15 +45,17 @@ def _audience_matches(audience, profile, age):
     return True
 
 
-def _matched_tag_ids(profile):
+def _matched_audiences_data(profile):
     age = _compute_age(profile.birth_date)
-    audiences = Audience.objects.prefetch_related('relevant_tags').all()
-    tag_ids = set()
-    for audience in audiences:
+    result = []
+    for audience in Audience.objects.prefetch_related('relevant_tags').all():
         if _audience_matches(audience, profile, age):
-            for tag in audience.relevant_tags.all():
-                tag_ids.add(tag.id)
-    return tag_ids
+            result.append(frozenset(t.id for t in audience.relevant_tags.all()))
+    return result
+
+
+def _matched_tag_ids(profile):
+    return {tid for tids in _matched_audiences_data(profile) for tid in tids}
 
 
 class ProfileViewSet(ModelViewSet):
@@ -119,7 +122,7 @@ class CategoryViewSet(ModelViewSet):
         if profile_id:
             try:
                 profile = Profile.objects.get(pk=profile_id)
-                tag_ids = _matched_tag_ids(profile)
+                tag_ids = {tid for tids in _matched_audiences_data(profile) for tid in tids}
 
                 def score(r):
                     return len({t['id'] for t in r.get('tags', [])} & tag_ids)
@@ -132,6 +135,35 @@ class CategoryViewSet(ModelViewSet):
             data['resources'] = [{**r, 'is_recommended': False} for r in data['resources']]
 
         return Response(data)
+
+
+@api_view(['GET'])
+def top_resources(request):
+    profile_id = request.query_params.get('profile')
+    limit = min(int(request.query_params.get('limit', 8)), 20)
+
+    if not profile_id:
+        return Response([])
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+    except Profile.DoesNotExist:
+        return Response([])
+
+    tag_ids = _matched_tag_ids(profile)
+    if not tag_ids:
+        return Response([])
+
+    results = []
+    for cat in Category.objects.prefetch_related('resources__tags').all():
+        for resource in cat.resources.all():
+            resource_tag_ids = {t.id for t in resource.tags.all()}
+            score = len(resource_tag_ids & tag_ids)
+            if score > 0:
+                data = ResourceSerializer(resource, context={'request': request}).data
+                results.append({**data, 'score': score, 'category': {'id': cat.id, 'name': cat.name}})
+
+    results.sort(key=lambda x: -x['score'])
+    return Response(results[:limit])
 
 
 class ResourceViewSet(ModelViewSet):
