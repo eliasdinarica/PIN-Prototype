@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import * as HeroIcons from '@heroicons/vue/24/outline'
@@ -19,6 +19,18 @@ const loading = ref(true)
 const openedResource = ref(null)
 const pdfBlobUrl = ref(null)
 const pdfLoading = ref(false)
+const activePillEl = ref(null)
+const pillsScrollRef = ref(null)
+const otherPillsRef = ref(null)
+const visibleSection = ref('recommended')
+
+function onPillsScroll() {
+  const container = pillsScrollRef.value
+  const othersDiv = otherPillsRef.value
+  if (!container || !othersDiv) return
+  const viewportCenter = container.scrollLeft + container.offsetWidth / 2
+  visibleSection.value = viewportCenter >= othersDiv.offsetLeft ? 'others' : 'recommended'
+}
 
 const isForYou = computed(() => route.params.id === 'for-you')
 
@@ -122,9 +134,18 @@ onMounted(async () => {
   await loadCategory(id)
 })
 
-watch(() => route.params.id, (newId) => {
+function scrollPillToCenter(el) {
+  const container = pillsScrollRef.value
+  if (!container || !el) return
+  const scrollLeft = el.offsetLeft - (container.offsetWidth - el.offsetWidth) / 2
+  container.scrollTo({ left: scrollLeft, behavior: 'smooth' })
+}
+
+watch(() => route.params.id, async (newId) => {
   if (newId && newId !== 'for-you') loadCategory(newId)
   else if (newId === 'for-you') { loading.value = false; category.value = null }
+  await nextTick()
+  scrollPillToCenter(activePillEl.value?.$el ?? activePillEl.value)
 })
 </script>
 
@@ -133,26 +154,64 @@ watch(() => route.params.id, (newId) => {
 
     <!-- Mobile sticky header -->
     <div class="sticky top-0 z-10 bg-surface-800 border-b border-surface-700 lg:hidden">
-      <div v-if="categories.length" class="flex items-center gap-2 px-4 py-3 overflow-x-auto pills-scroll">
-        <CategoryMobilePill
-          v-if="topResources.length"
-          :label="t('categories.forYou')"
-          :icon="SparklesIcon"
-          :active="isForYou"
-          @click="router.push('/categories/for-you')"
-        />
-        <template v-for="section in categorySections" :key="section.key">
-          <div class="w-px h-6 bg-surface-600 shrink-0" />
-          <CategoryMobilePill
-            v-for="cat in section.items"
-            :key="cat.id"
-            :label="cat.name"
-            :icon="getCategoryIcon(cat)"
-            :active="isActive(cat)"
-            :recommended="section.key === 'recommended'"
-            @click="router.push(`/categories/${cat.id}`)"
-          />
-        </template>
+      <div v-if="categories.length">
+
+        <!-- Dynamic section label (outside scroll, always visible) -->
+        <div class="px-4 pt-3 pb-1">
+          <p
+            v-if="visibleSection === 'others'"
+            class="text-xs font-semibold uppercase tracking-wider text-surface-500"
+          >{{ t('categories.others') }}</p>
+          <p
+            v-else
+            class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1"
+          ><SparklesIcon class="w-3 h-3" />{{ t('categories.recommended') }}</p>
+        </div>
+
+        <!-- Scrollable pills -->
+        <div
+          ref="pillsScrollRef"
+          class="flex items-center gap-2 px-4 pb-4 overflow-x-auto pills-scroll"
+          @scroll="onPillsScroll"
+        >
+          <!-- Recommended pills -->
+          <div class="flex gap-2 shrink-0">
+            <CategoryMobilePill
+              v-if="topResources.length"
+              :ref="isForYou ? el => { activePillEl = el } : undefined"
+              :label="t('categories.forYou')"
+              :icon="SparklesIcon"
+              :active="isForYou"
+              @click="router.push('/categories/for-you')"
+            />
+            <CategoryMobilePill
+              v-for="cat in (categorySections.find(s => s.key === 'recommended')?.items ?? [])"
+              :key="cat.id"
+              :ref="isActive(cat) ? el => { activePillEl = el } : undefined"
+              :label="cat.name"
+              :icon="getCategoryIcon(cat)"
+              :active="isActive(cat)"
+              @click="router.push(`/categories/${cat.id}`)"
+            />
+          </div>
+
+          <!-- Divider + Others pills -->
+          <template v-if="categorySections.some(s => s.key === 'others')">
+            <div class="w-px h-7 bg-surface-600 shrink-0" />
+            <div ref="otherPillsRef" class="flex gap-2 shrink-0">
+              <CategoryMobilePill
+                v-for="cat in (categorySections.find(s => s.key === 'others')?.items ?? [])"
+                :key="cat.id"
+                :ref="isActive(cat) ? el => { activePillEl = el } : undefined"
+                :label="cat.name"
+                :icon="getCategoryIcon(cat)"
+                :active="isActive(cat)"
+                @click="router.push(`/categories/${cat.id}`)"
+              />
+            </div>
+          </template>
+        </div>
+
       </div>
     </div>
 

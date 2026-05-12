@@ -10,7 +10,7 @@ defineEmits(['click'])
 
 <template>
   <button
-    class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-150 cursor-pointer border-2 whitespace-nowrap shrink-0"
+    class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 cursor-pointer border-2 whitespace-nowrap shrink-0"
     :class="active
       ? 'bg-surface-500 text-white border-white/30'
       : recommended
