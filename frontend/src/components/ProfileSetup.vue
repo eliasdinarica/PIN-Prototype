@@ -7,7 +7,7 @@ const props = defineProps({
   initialAnswers: { type: Object, default: () => ({}) },
   isEditing: { type: Boolean, default: false },
 })
-const emit = defineEmits(['complete', 'languageChange', 'finish'])
+const emit = defineEmits(['complete', 'finish'])
 
 const { t, locale } = useI18n()
 
@@ -145,7 +145,6 @@ function select(value) {
   if (question.value.id === 'language') {
     locale.value = value
     localStorage.setItem('profileLanguage', value)
-    emit('languageChange', value)
   }
 }
 
@@ -164,6 +163,11 @@ function goNext() {
 function skip() {
   answers.value[question.value.id] = question.value.type === 'boolean' ? null : ''
   advance()
+}
+
+function isSelected(value) {
+  const a = answers.value[question.value.id]
+  return question.value.type === 'multi-select' ? (a || []).includes(value) : a === value
 }
 
 function back() {
@@ -286,31 +290,16 @@ watch(currentStep, async () => {
               <p v-if="question.sublabel" class="text-sm text-surface-300 leading-relaxed mb-6">{{ question.sublabel }}</p>
               <div v-else class="mb-6" />
 
-              <!-- Single choice -->
-              <div v-if="question.type === 'choice'" class="grid grid-cols-2 gap-3">
+              <!-- Choice / Multi-select -->
+              <div v-if="question.type === 'choice' || question.type === 'multi-select'" class="grid grid-cols-2 gap-3">
                 <button
                   v-for="opt in question.options"
                   :key="opt.value"
                   class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
-                  :class="answers[question.id] === opt.value
-                    ? 'border-white bg-surface-600 text-white'
-                    : 'border-surface-400 bg-surface-400  text-surface-600 hover:border-surface-200 hover:text-white'"
-                  @click="select(opt.value)"
-                >
-                  {{ opt.label }}
-                </button>
-              </div>
-
-              <!-- Multi-select -->
-              <div v-else-if="question.type === 'multi-select'" class="grid grid-cols-2 gap-3">
-                <button
-                  v-for="opt in question.options"
-                  :key="opt.value"
-                  class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
-                  :class="(answers[question.id] || []).includes(opt.value)
+                  :class="isSelected(opt.value)
                     ? 'border-white bg-surface-600 text-white'
                     : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
-                  @click="toggle(opt.value)"
+                  @click="question.type === 'choice' ? select(opt.value) : toggle(opt.value)"
                 >
                   {{ opt.label }}
                 </button>

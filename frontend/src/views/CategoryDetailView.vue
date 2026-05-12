@@ -22,22 +22,22 @@ const pdfLoading = ref(false)
 
 const isForYou = computed(() => route.params.id === 'for-you')
 
-const recommendedCats = computed(() => categories.value.filter(c => c.is_recommended))
-const otherCats = computed(() => categories.value.filter(c => !c.is_recommended))
-const recommendedResources = computed(() => (category.value?.resources || []).filter(r => r.is_recommended))
-const otherResources = computed(() => (category.value?.resources || []).filter(r => !r.is_recommended))
-
 const categorySections = computed(() => {
+  const rec = categories.value.filter(c => c.is_recommended)
+  const oth = categories.value.filter(c => !c.is_recommended)
   const s = []
-  if (recommendedCats.value.length) s.push({ key: 'recommended', items: recommendedCats.value })
-  if (otherCats.value.length) s.push({ key: 'others', items: otherCats.value })
+  if (rec.length) s.push({ key: 'recommended', items: rec })
+  if (oth.length) s.push({ key: 'others', items: oth })
   return s
 })
 
 const resourceSections = computed(() => {
+  const resources = category.value?.resources || []
+  const rec = resources.filter(r => r.is_recommended)
+  const oth = resources.filter(r => !r.is_recommended)
   const s = []
-  if (recommendedResources.value.length) s.push({ key: 'recommended', items: recommendedResources.value })
-  if (otherResources.value.length) s.push({ key: 'others', items: otherResources.value })
+  if (rec.length) s.push({ key: 'recommended', items: rec })
+  if (oth.length) s.push({ key: 'others', items: oth })
   return s
 })
 

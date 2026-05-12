@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   label: { type: String, required: true },
-  icon: { type: Object, required: true },
+  icon: { type: [Object, Function], required: true },
   active: { type: Boolean, default: false },
   recommended: { type: Boolean, default: false },
 })
