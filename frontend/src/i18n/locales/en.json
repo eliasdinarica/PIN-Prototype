@@ -7,8 +7,10 @@
     },
     "otherLanguages": {
       "label": "What other languages do you speak?",
-      "sublabel": "Choose all that apply."
+      "sublabel": "Choose all that apply. You can add your level for each language.",
+      "levelHint": "Level (optional)"
     },
+    "cefrUnknown": "?",
     "status": {
       "label": "What is your permit type?",
       "sublabel": "This is your Swiss residence permit. It is the card you got when you arrived.",

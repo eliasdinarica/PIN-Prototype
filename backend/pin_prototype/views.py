@@ -45,17 +45,13 @@ def _audience_matches(audience, profile, age):
     return True
 
 
-def _matched_audiences_data(profile):
+def _matched_tag_ids(profile):
     age = _compute_age(profile.birth_date)
-    result = []
+    tag_ids = set()
     for audience in Audience.objects.prefetch_related('relevant_tags').all():
         if _audience_matches(audience, profile, age):
-            result.append(frozenset(t.id for t in audience.relevant_tags.all()))
-    return result
-
-
-def _matched_tag_ids(profile):
-    return {tid for tids in _matched_audiences_data(profile) for tid in tids}
+            tag_ids.update(t.id for t in audience.relevant_tags.all())
+    return tag_ids
 
 
 class ProfileViewSet(ModelViewSet):
@@ -122,7 +118,7 @@ class CategoryViewSet(ModelViewSet):
         if profile_id:
             try:
                 profile = Profile.objects.get(pk=profile_id)
-                tag_ids = {tid for tids in _matched_audiences_data(profile) for tid in tids}
+                tag_ids = _matched_tag_ids(profile)
 
                 def score(r):
                     return len({t['id'] for t in r.get('tags', [])} & tag_ids)

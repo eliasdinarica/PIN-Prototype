@@ -39,7 +39,7 @@ class Profile(models.Model):
     ]
 
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES)
-    other_languages = models.CharField(max_length=50, blank=True)
+    other_languages = models.JSONField(default=list, blank=True)
     status = models.CharField(max_length=5, choices=STATUS_CHOICES, default='other')
     has_children = models.BooleanField()
     origin_sector = models.CharField(max_length=20, choices=ORIGIN_SECTOR_CHOICES, blank=True)

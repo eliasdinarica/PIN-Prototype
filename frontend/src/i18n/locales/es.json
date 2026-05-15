@@ -7,8 +7,10 @@
     },
     "otherLanguages": {
       "label": "¿Qué otros idiomas hablas?",
-      "sublabel": "Elige todos los que correspondan."
+      "sublabel": "Elige todos los que correspondan. También puedes indicar tu nivel.",
+      "levelHint": "Nivel (opcional)"
     },
+    "cefrUnknown": "?",
     "status": {
       "label": "¿Cuál es tu tipo de permiso?",
       "sublabel": "Es tu permiso de residencia suizo. La tarjeta que recibiste al llegar.",

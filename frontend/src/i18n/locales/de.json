@@ -7,8 +7,10 @@
     },
     "otherLanguages": {
       "label": "Welche anderen Sprachen sprechen Sie?",
-      "sublabel": "Wählen Sie alle zutreffenden aus."
+      "sublabel": "Wählen Sie alle zutreffenden aus. Sie können auch Ihr Niveau angeben.",
+      "levelHint": "Niveau (optional)"
     },
+    "cefrUnknown": "?",
     "status": {
       "label": "Was ist Ihr Aufenthaltstyp?",
       "sublabel": "Das ist Ihre Schweizer Aufenthaltsbewilligung. Die Karte, die Sie bei Ihrer Ankunft erhalten haben.",

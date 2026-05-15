@@ -7,8 +7,10 @@
     },
     "otherLanguages": {
       "label": "Quelles autres langues parlez-vous ?",
-      "sublabel": "Choisissez toutes celles qui s'appliquent."
+      "sublabel": "Choisissez toutes celles qui s'appliquent. Vous pouvez indiquer votre niveau.",
+      "levelHint": "Niveau (facultatif)"
     },
+    "cefrUnknown": "?",
     "status": {
       "label": "Quel est votre type de permis ?",
       "sublabel": "C'est votre permis de séjour suisse. C'est la carte reçue à votre arrivée.",

@@ -7,8 +7,10 @@
     },
     "otherLanguages": {
       "label": "Quali altre lingue parli?",
-      "sublabel": "Scegli tutte quelle che si applicano."
+      "sublabel": "Scegli tutte quelle che si applicano. Puoi anche indicare il tuo livello.",
+      "levelHint": "Livello (facoltativo)"
     },
+    "cefrUnknown": "?",
     "status": {
       "label": "Qual è il tuo tipo di permesso?",
       "sublabel": "È il tuo permesso di soggiorno svizzero. È la carta che hai ricevuto al tuo arrivo.",

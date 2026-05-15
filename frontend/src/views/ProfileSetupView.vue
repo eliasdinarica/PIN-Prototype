@@ -18,7 +18,7 @@ onMounted(async () => {
         const profile = await res.json()
         initialAnswers.value = {
           language: profile.language,
-          otherLanguages: profile.other_languages ? profile.other_languages.split(',').filter(Boolean) : [],
+          otherLanguages: Array.isArray(profile.other_languages) ? profile.other_languages : [],
           status: profile.status,
           hasChildren: profile.has_children,
           originSector: profile.origin_sector || '',
@@ -46,7 +46,7 @@ async function handleComplete(answers) {
     const isUpdate = !!profileId.value
     const body = {
       language: answers.language,
-      other_languages: (answers.otherLanguages || []).join(','),
+      other_languages: answers.otherLanguages || [],
       status: answers.status,
       has_children: answers.hasChildren,
       origin_sector: answers.originSector || '',

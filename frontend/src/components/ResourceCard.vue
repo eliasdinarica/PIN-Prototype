@@ -27,11 +27,11 @@ defineEmits(['open'])
       <p class="text-xs text-surface-200 line-clamp-2 leading-relaxed relative">{{ resource.description }}</p>
 
       <!-- Tags -->
-      <div v-if="resource.tags && resource.tags.length" class="flex flex-wrap gap-1 relative">
+      <div v-if="resource.tags && resource.tags.length" class="flex gap-1 overflow-hidden relative">
         <span
           v-for="tag in resource.tags"
           :key="tag.id"
-          class="inline-block px-1.5 py-0.5 rounded-full text-xs font-medium bg-surface-400 text-surface-200"
+          class="inline-block px-1.5 py-0.5 rounded-full text-xs font-medium bg-surface-400 text-surface-200 shrink-0"
         >{{ tag.label }}</span>
       </div>
     </button>

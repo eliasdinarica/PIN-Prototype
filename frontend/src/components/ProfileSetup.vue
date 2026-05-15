@@ -21,9 +21,18 @@ const LANGUAGE_OPTIONS = [
   { value: 'ru', label: 'Русский' },
 ]
 
+const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+
+function normalizeOtherLanguages(value) {
+  if (!value || value === '') return []
+  if (typeof value === 'string') return value.split(',').filter(Boolean).map(lang => ({ lang: lang.trim(), level: null }))
+  if (!Array.isArray(value) || value.length === 0) return []
+  return typeof value[0] === 'string' ? value.map(lang => ({ lang, level: null })) : value
+}
+
 const answers = ref({
   ...props.initialAnswers,
-  otherLanguages: props.initialAnswers.otherLanguages || [],
+  otherLanguages: normalizeOtherLanguages(props.initialAnswers.otherLanguages),
 })
 
 const questions = computed(() => [
@@ -38,7 +47,7 @@ const questions = computed(() => [
   },
   {
     id: 'otherLanguages',
-    type: 'multi-select',
+    type: 'language-with-levels',
     required: false,
     shortLabel: t('profile.timeline.otherLanguages'),
     label: t('profile.otherLanguages.label'),
@@ -160,8 +169,35 @@ function goNext() {
   if (canAdvance.value) advance()
 }
 
+function toggleLanguage(langValue) {
+  const current = answers.value[question.value.id] || []
+  const idx = current.findIndex(item => item.lang === langValue)
+  answers.value[question.value.id] = idx === -1
+    ? [...current, { lang: langValue, level: null }]
+    : current.filter((_, i) => i !== idx)
+}
+
+function isLanguageSelected(langValue) {
+  return (answers.value[question.value.id] || []).some(item => item.lang === langValue)
+}
+
+function getLanguageLevel(langValue) {
+  return (answers.value[question.value.id] || []).find(item => item.lang === langValue)?.level ?? null
+}
+
+function setLanguageLevel(langValue, level) {
+  answers.value[question.value.id] = (answers.value[question.value.id] || []).map(item =>
+    item.lang === langValue ? { ...item, level: item.level === level ? null : level } : item
+  )
+}
+
+function languageLabel(langValue) {
+  return LANGUAGE_OPTIONS.find(opt => opt.value === langValue)?.label ?? langValue
+}
+
 function skip() {
-  answers.value[question.value.id] = question.value.type === 'boolean' ? null : ''
+  const t = question.value.type
+  answers.value[question.value.id] = t === 'boolean' ? null : t === 'language-with-levels' ? [] : ''
   advance()
 }
 
@@ -290,8 +326,57 @@ watch(currentStep, async () => {
               <p v-if="question.sublabel" class="text-sm text-surface-300 leading-relaxed mb-6">{{ question.sublabel }}</p>
               <div v-else class="mb-6" />
 
+              <!-- Language with levels -->
+              <div v-if="question.type === 'language-with-levels'" class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    v-for="opt in question.options"
+                    :key="opt.value"
+                    class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
+                    :class="isLanguageSelected(opt.value)
+                      ? 'border-white bg-surface-600 text-white'
+                      : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
+                    @click="toggleLanguage(opt.value)"
+                  >
+                    {{ opt.label }}
+                  </button>
+                </div>
+                <div v-if="(answers[question.id] || []).length" class="flex flex-col gap-2">
+                  <p class="text-xs text-surface-300 uppercase tracking-wider font-semibold">{{ t('profile.otherLanguages.levelHint') }}</p>
+                  <div
+                    v-for="item in (answers[question.id] || [])"
+                    :key="item.lang"
+                    class="flex items-center gap-2"
+                  >
+                    <span class="text-sm text-surface-200 w-24 shrink-0">{{ languageLabel(item.lang) }}</span>
+                    <div class="flex gap-1 flex-wrap">
+                      <button
+                        v-for="level in CEFR_LEVELS"
+                        :key="level"
+                        class="px-2 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-150"
+                        :class="getLanguageLevel(item.lang) === level
+                          ? 'bg-surface-600 border-white text-white'
+                          : 'bg-surface-400 border-surface-400 text-surface-300 hover:border-surface-200 hover:text-white'"
+                        @click="setLanguageLevel(item.lang, level)"
+                      >
+                        {{ level }}
+                      </button>
+                      <button
+                        class="px-2 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-150"
+                        :class="getLanguageLevel(item.lang) === null
+                          ? 'bg-surface-600 border-white text-white'
+                          : 'bg-surface-400 border-surface-400 text-surface-300 hover:border-surface-200 hover:text-white'"
+                        @click="setLanguageLevel(item.lang, null)"
+                      >
+                        {{ t('profile.cefrUnknown') }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Choice / Multi-select -->
-              <div v-if="question.type === 'choice' || question.type === 'multi-select'" class="grid grid-cols-2 gap-3">
+              <div v-else-if="question.type === 'choice' || question.type === 'multi-select'" class="grid grid-cols-2 gap-3">
                 <button
                   v-for="opt in question.options"
                   :key="opt.value"
