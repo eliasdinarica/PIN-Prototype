@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Audience, Category, Resource, Tag
+from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback
 
 
 @admin.register(Profile)
@@ -31,6 +31,14 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'category', 'created_at']
-    list_filter = ['category', 'tags']
-    filter_horizontal = ['tags']
+    list_filter = ['category', 'tags', 'audiences']
+    filter_horizontal = ['tags', 'audiences']
     readonly_fields = ['created_at']
+
+
+
+@admin.register(ResourceFeedback)
+class ResourceFeedbackAdmin(admin.ModelAdmin):
+    list_display = ['id', 'profile', 'resource', 'is_useful', 'created_at']
+    list_filter = ['is_useful']
+    readonly_fields = ['created_at', 'updated_at']

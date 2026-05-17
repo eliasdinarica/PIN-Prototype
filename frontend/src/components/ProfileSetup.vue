@@ -195,9 +195,11 @@ function languageLabel(langValue) {
   return LANGUAGE_OPTIONS.find(opt => opt.value === langValue)?.label ?? langValue
 }
 
+
 function skip() {
-  const t = question.value.type
-  answers.value[question.value.id] = t === 'boolean' ? null : t === 'language-with-levels' ? [] : ''
+  const type = question.value.type
+  answers.value[question.value.id] = (type === 'boolean') ? null
+    : (type === 'language-with-levels') ? [] : ''
   advance()
 }
 

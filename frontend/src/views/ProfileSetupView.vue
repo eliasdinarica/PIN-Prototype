@@ -11,33 +11,32 @@ const initialAnswers = ref({})
 const profileId = ref(localStorage.getItem('profileId'))
 
 onMounted(async () => {
-  if (profileId.value) {
-    try {
-      const res = await fetch(`http://localhost:8000/api/profiles/${profileId.value}/`)
-      if (res.ok) {
-        const profile = await res.json()
-        initialAnswers.value = {
-          language: profile.language,
-          otherLanguages: Array.isArray(profile.other_languages) ? profile.other_languages : [],
-          status: profile.status,
-          hasChildren: profile.has_children,
-          originSector: profile.origin_sector || '',
-          arrivedOverYear: profile.arrived_over_year_ago,
-          birthDate: profile.birth_date || '',
-        }
-        if (profile.language) {
-          locale.value = profile.language
-          localStorage.setItem('profileLanguage', profile.language)
-        }
-      } else {
-        localStorage.removeItem('profileId')
-        profileId.value = null
+  const profileRes = profileId.value
+    ? await fetch(`http://localhost:8000/api/profiles/${profileId.value}/`)
+    : null
+
+  if (profileRes) {
+    if (profileRes.ok) {
+      const profile = await profileRes.json()
+      initialAnswers.value = {
+        language: profile.language,
+        otherLanguages: Array.isArray(profile.other_languages) ? profile.other_languages : [],
+        status: profile.status,
+        hasChildren: profile.has_children,
+        originSector: profile.origin_sector || '',
+        arrivedOverYear: profile.arrived_over_year_ago,
+        birthDate: profile.birth_date || '',
       }
-    } catch {
+      if (profile.language) {
+        locale.value = profile.language
+        localStorage.setItem('profileLanguage', profile.language)
+      }
+    } else {
       localStorage.removeItem('profileId')
       profileId.value = null
     }
   }
+
   ready.value = true
 })
 
@@ -79,5 +78,11 @@ async function handleComplete(answers) {
 </script>
 
 <template>
-  <ProfileSetup v-if="ready" :initial-answers="initialAnswers" :is-editing="!!profileId" @complete="handleComplete" @finish="handleComplete" />
+  <ProfileSetup
+    v-if="ready"
+    :initial-answers="initialAnswers"
+    :is-editing="!!profileId"
+    @complete="handleComplete"
+    @finish="handleComplete"
+  />
 </template>

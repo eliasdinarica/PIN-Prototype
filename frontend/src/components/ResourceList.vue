@@ -8,8 +8,9 @@ const { t } = useI18n()
 defineProps({
   sections: { type: Array, required: true },
   showCategory: { type: Boolean, default: false },
+  feedbackMap: { type: Object, default: () => ({}) },
 })
-defineEmits(['open'])
+defineEmits(['open', 'feedback-change'])
 </script>
 
 <template>
@@ -30,7 +31,9 @@ defineEmits(['open'])
         :key="resource.id"
         :resource="resource"
         :category="showCategory ? resource.category : null"
+        :feedback="feedbackMap[resource.id] ?? null"
         @open="$emit('open', resource)"
+        @feedback-change="$emit('feedback-change', $event)"
       />
     </div>
   </template>

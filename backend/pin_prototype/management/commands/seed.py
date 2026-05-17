@@ -12,305 +12,332 @@ from pin_prototype.models import Audience, Category, Tag, Resource
 SAMPLE_FILE = 'resources/sample.pdf'
 
 # ---------------------------------------------------------------------------
-# Tags
+# Tags — granular taxonomy (75 tags) for accurate similarity matching
 # ---------------------------------------------------------------------------
 
 TAGS = [
-    # Format / access
-    'Formulaire',
-    'En personne',
-    'En ligne',
-    'Gratuit',
-    'Urgence',
-    'Traduction disponible',
-    'Multilingue',
-    # Life domains
-    'Logement',
-    'Santé',
-    'Travail',
-    'Formation',
-    'Droits',
-    'Budget',
-    'Mobilité',
-    'Intégration',
-    'Langue',
-    # Target groups
-    'Enfants',
-    'Garde',
-    'Famille',
-    'Jeune',
-    'Senior',
-    'Femmes',
-    # Permit types
-    'Permis N/F/S',
-    'Permis B',
-    'Permis C',
-    'Permis G',
-    # Process
-    'Documents officiels',
-    'Assurance maladie',
-    'Aide sociale',
-    'Reconnaissance de diplôme',
+    # --- Format / accès ---
+    'Formulaire', 'En personne', 'En ligne', 'Hotline',
+    'Gratuit', 'Urgence', 'Traduction disponible', 'Interprete', 'Multilingue',
+    # --- Logement ---
+    'Logement', 'Logement urgence', 'Logement social',
+    'Droits du locataire', 'Bail', 'Depot de garantie', 'Assurance menage',
+    # --- Santé ---
+    'Sante', 'Sante mentale', 'Medecin', 'Assurance maladie',
+    'Reduction de prime', 'Maternite', 'Handicap', 'Vaccination',
+    # --- Travail ---
+    'Travail', 'Recherche emploi', 'Droit du travail',
+    'Salaire', 'Independent', 'Chomage', 'CV candidature',
+    # --- Formation ---
+    'Formation', 'Apprentissage', 'Universite',
+    'Langue', 'Cours de langue', 'Reconnaissance diplome', 'E-learning',
+    # --- Droits & documents ---
+    'Droits', 'Documents officiels', 'Permis sejour',
+    'Naturalisation', 'Asile', 'Aide juridique', 'Regroupement familial', 'Discrimination',
+    # --- Budget & aides ---
+    'Budget', 'Aide sociale', 'Allocation', 'Subvention',
+    'Impots', 'Banque', 'Alimentation',
+    # --- Mobilité ---
+    'Mobilite', 'Transports publics', 'Permis de conduire', 'Velo', 'Transport medical',
+    # --- Famille & enfants ---
+    'Famille', 'Enfants', 'Garde enfants', 'Scolarisation',
+    'Allocations familiales', 'Soutien scolaire', 'Droits parentaux',
+    # --- Profils spécifiques ---
+    'Femmes', 'Jeune', 'Senior',
+    'Permis N/F/S', 'Permis B', 'Permis C', 'Permis G',
+    # --- Intégration & vie sociale ---
+    'Integration', 'Vie sociale', 'Benevol', 'Culture',
 ]
 
 # ---------------------------------------------------------------------------
 # Audiences
-# Conditions: statuses (comma-sep permit codes), has_children (bool/None),
-#             origin_sectors (comma-sep), arrived_over_year (bool/None),
-#             min_age / max_age (int/None)
-# relevant_tags: list of tag labels whose resources get boosted for this audience
 # ---------------------------------------------------------------------------
 
 AUDIENCES = [
     {
         'name': "Demandeur d'asile",
-        'description': "Personnes titulaires d'un permis N (requérant d'asile), F (admission provisoire) ou S (protection temporaire).",
-        'statuses': 'N,F,S',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Permis N/F/S', 'Droits', 'Aide sociale', 'Urgence', 'Logement'],
+        'description': "Titulaires d'un permis N, F ou S.",
+        'statuses': 'N,F,S', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Permis N/F/S', 'Asile', 'Droits', 'Aide sociale', 'Urgence', 'Logement urgence', 'Interprete'],
     },
     {
         'name': 'Parents',
         'description': "Personnes ayant des enfants à charge.",
-        'statuses': '',
-        'has_children': True,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Garde', 'Enfants', 'Famille', 'Formation'],
+        'statuses': '', 'has_children': True, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Garde enfants', 'Enfants', 'Famille', 'Scolarisation', 'Allocations familiales', 'Soutien scolaire'],
     },
     {
         'name': 'Nouveaux arrivants',
-        'description': "Personnes arrivées en Suisse depuis moins d'un an.",
-        'statuses': '',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': False,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Logement', 'Intégration', 'Langue', 'Documents officiels', 'Assurance maladie'],
+        'description': "Arrivés en Suisse depuis moins d'un an.",
+        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': False, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Logement', 'Integration', 'Langue', 'Cours de langue', 'Documents officiels', 'Assurance maladie', 'Banque'],
     },
     {
         'name': "Établis depuis plus d'un an",
-        'description': "Personnes résidant en Suisse depuis plus d'un an, en phase d'intégration avancée.",
-        'statuses': '',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': True,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Formation', 'Travail', 'Reconnaissance de diplôme', 'Intégration'],
+        'description': "En phase d'intégration avancée.",
+        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': True, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Formation', 'Travail', 'Reconnaissance diplome', 'Integration', 'Naturalisation'],
     },
     {
         'name': 'Résident long terme',
-        'description': "Titulaires d'un permis B ou C — résidents stables avec droits élargis.",
-        'statuses': 'B,C',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Permis B', 'Permis C', 'Droits', 'Travail'],
+        'description': "Titulaires d'un permis B ou C.",
+        'statuses': 'B,C', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Permis B', 'Permis C', 'Droits', 'Travail', 'Naturalisation', 'Impots'],
     },
     {
         'name': 'Frontalier',
-        'description': "Titulaires d'un permis G — travaillent en Suisse et résident à l'étranger.",
-        'statuses': 'G',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Permis G', 'Mobilité', 'Travail'],
+        'description': "Titulaires d'un permis G.",
+        'statuses': 'G', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Permis G', 'Mobilite', 'Travail', 'Droit du travail', 'Impots'],
     },
     {
         'name': 'Jeune adulte',
-        'description': "Personnes de 18 à 30 ans — accès facilité à certaines formations et aides.",
-        'statuses': '',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': 18,
-        'max_age': 30,
-        'relevant_tags': ['Formation', 'Jeune', 'Langue', 'Travail'],
+        'description': "18 à 30 ans.",
+        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': 18, 'max_age': 30,
+        'relevant_tags': ['Formation', 'Jeune', 'Cours de langue', 'Apprentissage', 'Universite', 'CV candidature', 'Recherche emploi'],
     },
     {
         'name': 'Senior',
-        'description': "Personnes de 60 ans et plus — besoins spécifiques en santé et mobilité.",
-        'statuses': '',
-        'has_children': None,
-        'origin_sectors': '',
-        'arrived_over_year': None,
-        'min_age': 60,
-        'max_age': None,
-        'relevant_tags': ['Senior', 'Santé', 'Mobilité', 'Aide sociale'],
+        'description': "60 ans et plus.",
+        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'arrived_over_year': None, 'min_age': 60, 'max_age': None,
+        'relevant_tags': ['Senior', 'Sante', 'Mobilite', 'Transport medical', 'Aide sociale', 'Handicap'],
     },
     {
         'name': 'Professionnel de santé',
-        'description': "Personnes ayant travaillé dans le secteur de la santé dans leur pays d'origine.",
-        'statuses': '',
-        'has_children': None,
-        'origin_sectors': 'healthcare',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Reconnaissance de diplôme', 'Travail', 'Formation', 'Santé'],
+        'description': "Ayant travaillé dans le secteur de la santé.",
+        'statuses': '', 'has_children': None, 'origin_sectors': 'healthcare',
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Reconnaissance diplome', 'Travail', 'Formation', 'Sante', 'Documents officiels'],
     },
     {
         'name': 'Travailleur qualifié',
-        'description': "Personnes issues de secteurs qualifiés (ingénierie, IT, administration, éducation).",
-        'statuses': '',
-        'has_children': None,
+        'description': "Ingénierie, IT, administration, éducation.",
+        'statuses': '', 'has_children': None,
         'origin_sectors': 'engineering,it,administration,education',
-        'arrived_over_year': None,
-        'min_age': None,
-        'max_age': None,
-        'relevant_tags': ['Reconnaissance de diplôme', 'Travail', 'Formation', 'En ligne'],
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'relevant_tags': ['Reconnaissance diplome', 'Travail', 'Formation', 'CV candidature', 'E-learning', 'Independent'],
     },
 ]
 
 # ---------------------------------------------------------------------------
 # Categories + Resources
-# audiences: list of audience names assigned to the category (empty = universal)
-# resources: list of {name, description, tags: [label, ...]}
+# audiences: audiences ciblées par la ressource (vide = générique, jamais "recommandé")
+# tags: 4-6 tags contenu/profil pour la similarité feedback
 # ---------------------------------------------------------------------------
 
 CATEGORIES = [
     {
         'name': 'Money & budget',
-        'description': 'Financial aid, social assistance, banking, and budget management in Switzerland.',
+        'description': 'Aides financières, assistance sociale, banque et gestion du budget en Suisse.',
         'icon': 'CurrencyDollarIcon',
         'priority': 10,
-        'audiences': [],  # universal
+        'audiences': [],
         'resources': [
             {
                 'name': "Guide des aides financières pour primo-arrivants",
-                'description': "Vue d'ensemble des aides disponibles : aide sociale, avances sur salaire, épiceries sociales.",
-                'tags': ['Aide sociale', 'Budget', 'Gratuit'],
+                'description': "Vue d'ensemble des aides disponibles : aide sociale, subsides, allocations et épiceries sociales.",
+                'tags': ['Aide sociale', 'Budget', 'Allocation', 'Subvention', 'Multilingue', 'Gratuit'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
                 'name': "Demande d'aide sociale d'urgence",
                 'description': "Formulaire de demande d'aide financière d'urgence auprès de votre commune.",
-                'tags': ['Formulaire', 'En personne', 'Urgence', 'Aide sociale'],
+                'tags': ['Formulaire', 'En personne', 'Urgence', 'Aide sociale', 'Traduction disponible'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
-                'name': "Ouvrir un compte bancaire en Suisse — guide pratique",
-                'description': "Quelle banque choisir, quels documents apporter, comment procéder depuis l'étranger.",
-                'tags': ['En personne', 'Documents officiels', 'Budget'],
+                'name': "Ouvrir un compte bancaire en Suisse",
+                'description': "Quelle banque choisir, quels documents apporter, comptes spéciaux pour permis N/F.",
+                'tags': ['Banque', 'Budget', 'Documents officiels', 'En personne', 'Multilingue'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
                 'name': "Demande de subvention au loyer",
                 'description': "Comment demander une aide au logement auprès des services sociaux cantonaux.",
-                'tags': ['Formulaire', 'Logement', 'Aide sociale'],
+                'tags': ['Formulaire', 'Logement', 'Subvention', 'Aide sociale', 'Budget'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
                 'name': "Comprendre sa feuille de salaire suisse",
-                'description': "Explication des cotisations, des déductions et des droits liés à votre salaire.",
-                'tags': ['Travail', 'Budget', 'Multilingue'],
+                'description': "Cotisations AVS, LPP, chômage, déductions et net à payer — explication complète.",
+                'tags': ['Travail', 'Salaire', 'Budget', 'En ligne', 'Multilingue'],
+                'audiences': ["Établis depuis plus d'un an", 'Résident long terme', 'Frontalier'],
             },
             {
                 'name': "Guide de la fiscalité pour résidents étrangers",
                 'description': "Imposition à la source, déclaration fiscale, délais et déductions possibles.",
-                'tags': ['Documents officiels', 'Formulaire', 'En ligne'],
+                'tags': ['Impots', 'Documents officiels', 'Formulaire', 'En ligne', 'Budget'],
+                'audiences': ['Résident long terme', "Établis depuis plus d'un an", 'Frontalier'],
             },
             {
-                'name': "Épiceries sociales et banques alimentaires — liste cantonale",
-                'description': "Adresses et conditions d'accès aux épiceries à prix solidaires et banques alimentaires.",
-                'tags': ['Gratuit', 'En personne', 'Aide sociale'],
+                'name': "Épiceries sociales et banques alimentaires",
+                'description': "Adresses, horaires et conditions d'accès aux épiceries à prix solidaires.",
+                'tags': ['Gratuit', 'En personne', 'Aide sociale', 'Alimentation', 'Urgence'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
+            },
+            {
+                'name': "Comprendre les allocations chômage (LACI)",
+                'description': "Conditions, montant, durée et démarches pour percevoir les indemnités de chômage.",
+                'tags': ['Chomage', 'Allocation', 'Budget', 'Travail', 'Formulaire', 'Droits'],
+                'audiences': ["Établis depuis plus d'un an", 'Résident long terme', 'Frontalier'],
+            },
+            {
+                'name': "Aide d'urgence — solution de dernier recours",
+                'description': "Aide en espèces ou en nature pour personnes déboutées ou sans ressources.",
+                'tags': ['Aide sociale', 'Urgence', 'Budget', 'Gratuit', 'En personne', 'Permis N/F/S'],
+                'audiences': ["Demandeur d'asile"],
+            },
+            {
+                'name': "Comparatif des banques accessibles aux migrants",
+                'description': "Neobanques, banques postales et comptes basiques ouverts sans conditions strictes.",
+                'tags': ['Banque', 'Budget', 'En ligne', 'Multilingue', 'Documents officiels'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
         ],
     },
     {
         'name': 'Children & family',
-        'description': 'Childcare, family allowances, schooling, and parental support resources.',
+        'description': 'Garde, allocations, scolarisation et droits parentaux.',
         'icon': 'UsersIcon',
-        'priority': 5,
+        'priority': 6,
         'audiences': ['Parents'],
         'resources': [
             {
                 'name': "Inscription à la crèche et à la garderie",
-                'description': "Démarches pour inscrire votre enfant dans une structure d'accueil agréée.",
-                'tags': ['Garde', 'Enfants', 'Formulaire', 'En personne'],
+                'description': "Démarches pour inscrire votre enfant dans une structure agréée, listes d'attente et coûts.",
+                'tags': ['Garde enfants', 'Enfants', 'Formulaire', 'En personne', 'Budget'],
+                'audiences': ['Parents'],
             },
             {
                 'name': "Demande d'allocations familiales",
                 'description': "Formulaire et conditions pour obtenir les allocations familiales cantonales.",
-                'tags': ['Formulaire', 'Famille', 'Budget', 'Enfants'],
+                'tags': ['Allocations familiales', 'Enfants', 'Formulaire', 'Budget', 'Aide sociale'],
+                'audiences': ['Parents'],
             },
             {
                 'name': "Aide à la garde — subventionnement cantonal",
                 'description': "Comment bénéficier d'une réduction sur les frais de garde selon vos revenus.",
-                'tags': ['Garde', 'Enfants', 'Budget', 'Gratuit'],
+                'tags': ['Garde enfants', 'Enfants', 'Subvention', 'Budget', 'Formulaire'],
+                'audiences': ['Parents'],
             },
             {
                 'name': "Scolariser son enfant en Suisse",
                 'description': "Fonctionnement de l'école publique, inscription, calendrier et fournitures scolaires.",
-                'tags': ['Enfants', 'Formation', 'Intégration', 'Gratuit'],
+                'tags': ['Enfants', 'Scolarisation', 'Integration', 'Gratuit', 'Formulaire'],
+                'audiences': ['Parents', 'Nouveaux arrivants'],
             },
             {
                 'name': "Soutien scolaire pour enfants allophones",
-                'description': "Cours de rattrapage, classes d'accueil et ressources pour enfants non-francophones.",
-                'tags': ['Enfants', 'Langue', 'Gratuit', 'Intégration'],
+                'description': "Classes d'accueil, cours de rattrapage et ressources pour enfants non-francophones.",
+                'tags': ['Enfants', 'Soutien scolaire', 'Cours de langue', 'Langue', 'Gratuit', 'Integration'],
+                'audiences': ['Parents', 'Nouveaux arrivants'],
             },
             {
                 'name': "Droits parentaux : congé maternité et paternité",
                 'description': "Durée, montants et démarches pour les congés parentaux en Suisse.",
-                'tags': ['Famille', 'Travail', 'Droits', 'Documents officiels'],
+                'tags': ['Droits parentaux', 'Famille', 'Travail', 'Droits', 'Documents officiels'],
+                'audiences': ['Parents', 'Résident long terme'],
+            },
+            {
+                'name': "Médiation scolaire et conflits à l'école",
+                'description': "Rôle du médiateur scolaire, comment signaler un problème et vos droits.",
+                'tags': ['Enfants', 'Scolarisation', 'Droits', 'En personne', 'Gratuit'],
+                'audiences': ['Parents'],
+            },
+            {
+                'name': "Activités et loisirs pour enfants de migrants",
+                'description': "Clubs sportifs, maisons de quartier, activités culturelles à prix réduit ou gratuit.",
+                'tags': ['Enfants', 'Integration', 'Vie sociale', 'Culture', 'Gratuit'],
+                'audiences': ['Parents'],
+            },
+            {
+                'name': "Santé de l'enfant : vaccins et suivi pédiatrique",
+                'description': "Carnet de vaccination, pédiatres acceptant de nouveaux patients, consultations gratuites.",
+                'tags': ['Enfants', 'Sante', 'Vaccination', 'Assurance maladie', 'Medecin'],
+                'audiences': ['Parents'],
             },
         ],
     },
     {
         'name': 'Education',
-        'description': 'Language courses, diploma recognition, vocational training, and adult education.',
+        'description': "Cours de langue, reconnaissance de diplômes, formation professionnelle et e-learning.",
         'icon': 'AcademicCapIcon',
         'priority': 8,
         'audiences': ['Nouveaux arrivants', 'Jeune adulte', "Établis depuis plus d'un an", 'Travailleur qualifié', 'Professionnel de santé'],
         'resources': [
             {
                 'name': "Cours de français / allemand / italien gratuits ou subventionnés",
-                'description': "Liste des centres de langues, conditions d'accès et niveaux disponibles par canton.",
-                'tags': ['Langue', 'Gratuit', 'Intégration', 'En personne'],
+                'description': "Centres de langues, niveaux A1 à C1, conditions d'accès et horaires souples par canton.",
+                'tags': ['Cours de langue', 'Langue', 'Gratuit', 'Integration', 'En personne', 'Formation'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
             },
             {
                 'name': "Reconnaissance de diplômes étrangers — procédure",
                 'description': "Démarches auprès de la CDIP, SEFRI ou des ordres professionnels selon votre domaine.",
-                'tags': ['Reconnaissance de diplôme', 'Documents officiels', 'Formulaire'],
+                'tags': ['Reconnaissance diplome', 'Documents officiels', 'Formulaire', 'Travail', 'Formation'],
+                'audiences': ['Travailleur qualifié', 'Professionnel de santé', "Établis depuis plus d'un an"],
             },
             {
                 'name': "Formation professionnelle pour adultes (AFP / CFC)",
                 'description': "Comment obtenir une attestation ou un certificat fédéral de capacité en tant qu'adulte.",
-                'tags': ['Formation', 'Travail', 'En personne'],
+                'tags': ['Formation', 'Apprentissage', 'Travail', 'En personne', 'Gratuit'],
+                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte'],
             },
             {
-                'name': "Accès à l'université pour réfugiés et personnes admises à titre provisoire",
-                'description': "Programmes universitaires spécifiques, bourses et conditions d'admission.",
-                'tags': ['Formation', 'Permis N/F/S', 'Gratuit', 'Jeune'],
+                'name': "Accès à l'université pour réfugiés et permis F",
+                'description': "Programmes universitaires spécifiques, bourses cantonales et conditions d'admission.",
+                'tags': ['Universite', 'Formation', 'Permis N/F/S', 'Subvention', 'Jeune', 'Gratuit'],
+                'audiences': ["Demandeur d'asile", 'Jeune adulte'],
             },
             {
                 'name': "Validation des acquis de l'expérience (VAE)",
-                'description': "Faire reconnaître vos compétences professionnelles sans passer par une formation complète.",
-                'tags': ['Reconnaissance de diplôme', 'Travail', 'Formation'],
+                'description': "Faire reconnaître vos compétences sans formation complète. Bilan de compétences inclus.",
+                'tags': ['Reconnaissance diplome', 'Travail', 'Formation', 'Documents officiels'],
+                'audiences': ['Travailleur qualifié', 'Professionnel de santé'],
             },
             {
-                'name': "Cours de préparation au marché du travail suisse",
+                'name': "Se préparer au marché du travail suisse",
                 'description': "CV suisse, lettre de motivation, codes culturels et simulation d'entretien.",
-                'tags': ['Travail', 'Formation', 'Intégration', 'Gratuit'],
+                'tags': ['CV candidature', 'Recherche emploi', 'Travail', 'Formation', 'Integration', 'Gratuit'],
+                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
             },
             {
                 'name': "Plateformes d'e-learning gratuites pour migrants",
-                'description': "Sélection de ressources en ligne pour apprendre les langues nationales et les bases professionnelles.",
-                'tags': ['En ligne', 'Gratuit', 'Langue', 'Formation'],
+                'description': "Ressources en ligne pour langues nationales, informatique et bases professionnelles.",
+                'tags': ['E-learning', 'Gratuit', 'Cours de langue', 'Langue', 'Formation', 'En ligne'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
+            },
+            {
+                'name': "Formation continue pour adultes en emploi",
+                'description': "Cours du soir, formations certifiantes, financement par l'employeur ou le Canton.",
+                'tags': ['Formation', 'Travail', 'En ligne', 'Budget', 'Subvention'],
+                'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
+            },
+            {
+                'name': "Bilan de compétences pour migrants qualifiés",
+                'description': "Évaluation des compétences acquises à l'étranger, orientations et débouchés en Suisse.",
+                'tags': ['Reconnaissance diplome', 'Travail', 'CV candidature', 'Formation', 'Gratuit', 'En personne'],
+                'audiences': ['Travailleur qualifié', 'Professionnel de santé'],
+            },
+            {
+                'name': "Réseau de mentors professionnels pour migrants",
+                'description': "Mise en relation avec un professionnel de votre domaine pour un accompagnement personnalisé.",
+                'tags': ['Recherche emploi', 'Travail', 'Integration', 'Gratuit', 'En personne'],
+                'audiences': ["Établis depuis plus d'un an", 'Travailleur qualifié'],
             },
         ],
     },
     {
         'name': 'Housing',
-        'description': 'Emergency housing, tenant rights, social housing applications, and moving tips.',
+        'description': 'Logement urgence, droits du locataire, logement social et astuces de recherche.',
         'icon': 'HomeIcon',
         'priority': 9,
         'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
@@ -318,169 +345,251 @@ CATEGORIES = [
             {
                 'name': "Trouver un logement d'urgence",
                 'description': "Hébergements d'urgence, foyers et hôtels sociaux disponibles dans votre canton.",
-                'tags': ['Urgence', 'Logement', 'En personne'],
+                'tags': ['Logement urgence', 'Urgence', 'En personne', 'Gratuit', 'Aide sociale'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
                 'name': "Droits du locataire en Suisse",
-                'description': "Résiliation de bail, dépôt de garantie, charges, état des lieux — tout ce qu'il faut savoir.",
-                'tags': ['Droits', 'Logement', 'Multilingue'],
+                'description': "Bail, résiliation, état des lieux, charges locatives — guide complet de vos droits.",
+                'tags': ['Droits du locataire', 'Bail', 'Droits', 'Logement', 'Multilingue'],
+                'audiences': [],
             },
             {
-                'name': "Demande de logement social",
-                'description': "Comment s'inscrire sur les listes d'attente des coopératives et offices HLM cantonaux.",
-                'tags': ['Formulaire', 'Logement', 'Aide sociale'],
+                'name': "Demande de logement social (HLM / coopératives)",
+                'description': "Inscription sur les listes cantonales, conditions de revenus et délais d'attente.",
+                'tags': ['Logement social', 'Formulaire', 'Aide sociale', 'Logement', 'Budget'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
-                'name': "Éviter la discrimination dans la recherche de logement",
-                'description': "Vos droits face au refus de bail, ressources juridiques et organismes de médiation.",
-                'tags': ['Droits', 'Logement', 'En personne'],
+                'name': "Signaler une discrimination dans la recherche de logement",
+                'description': "Recours possibles, organismes de médiation et preuves à conserver.",
+                'tags': ['Discrimination', 'Droits', 'Logement', 'Aide juridique', 'En personne'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
-                'name': "Dépôt de garantie — règles et remboursement",
-                'description': "Montant maximum légal, compte bloqué, procédure de restitution à la fin du bail.",
-                'tags': ['Droits', 'Logement', 'Budget'],
+                'name': "Dépôt de garantie — règles et restitution",
+                'description': "Montant légal maximum, compte bloqué obligatoire et procédure de remboursement.",
+                'tags': ['Depot de garantie', 'Bail', 'Budget', 'Droits du locataire', 'Documents officiels'],
+                'audiences': [],
             },
             {
                 'name': "Assurance ménage — ce qui est obligatoire",
-                'description': "Quelles assurances souscrire, comment les comparer et à quel prix.",
-                'tags': ['Logement', 'Budget', 'Documents officiels'],
+                'description': "Couvertures exigées par les bailleurs, comparatif et souscription en ligne.",
+                'tags': ['Assurance menage', 'Logement', 'Budget', 'En ligne', 'Documents officiels'],
+                'audiences': ['Nouveaux arrivants'],
             },
             {
-                'name': "Annonces de logement — plateformes et astuces",
-                'description': "Les meilleures plateformes de recherche d'appartement et conseils pour maximiser ses chances.",
-                'tags': ['Logement', 'En ligne'],
+                'name': "Trouver un appartement — plateformes et astuces",
+                'description': "Homegate, Immoscout24, groupes locaux et techniques pour se démarquer.",
+                'tags': ['Logement', 'En ligne', 'Budget', 'Integration'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
+            },
+            {
+                'name': "Comprendre le contrat de bail suisse",
+                'description': "Clauses importantes, durée, sous-location, résiliation anticipée et recours.",
+                'tags': ['Bail', 'Droits du locataire', 'Documents officiels', 'Logement', 'Multilingue'],
+                'audiences': [],
+            },
+            {
+                'name': "Recours en cas d'expulsion ou résiliation abusive",
+                'description': "Délais légaux, autorité de conciliation, aide juridique gratuite pour locataires.",
+                'tags': ['Droits du locataire', 'Bail', 'Urgence', 'Aide juridique', 'Droits', 'Gratuit'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
         ],
     },
     {
         'name': 'Rights & duties',
-        'description': 'Residence permits, asylum procedures, legal aid, and civic obligations.',
+        'description': "Permis de séjour, procédure d'asile, aide juridique et obligations civiques.",
         'icon': 'ScaleIcon',
         'priority': 7,
         'audiences': ["Demandeur d'asile", 'Résident long terme', "Établis depuis plus d'un an"],
         'resources': [
             {
-                'name': "Comprendre votre permis de séjour",
-                'description': "Différences entre les permis N, F, S, B, C, L, G — droits et restrictions de chacun.",
-                'tags': ['Droits', 'Documents officiels', 'Permis N/F/S', 'Multilingue'],
+                'name': "Comprendre les permis de séjour (N, F, S, B, C, G)",
+                'description': "Droits et restrictions de chaque permis : travail, voyage, regroupement familial.",
+                'tags': ['Permis sejour', 'Droits', 'Documents officiels', 'Multilingue', 'Permis N/F/S'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
                 'name': "Procédure d'asile en Suisse — guide complet",
-                'description': "Étapes de la demande, auditions, décision du SEM, recours possibles.",
-                'tags': ['Permis N/F/S', 'Droits', 'Formulaire', 'Traduction disponible'],
+                'description': "Étapes de la demande, auditions au SEM, décision et voies de recours disponibles.",
+                'tags': ['Asile', 'Permis N/F/S', 'Droits', 'Formulaire', 'Traduction disponible', 'Interprete'],
+                'audiences': ["Demandeur d'asile"],
             },
             {
                 'name': "Recours contre une décision du SEM",
-                'description': "Comment contester un refus ou une décision négative — délais, formulaires, aide juridique.",
-                'tags': ['Permis N/F/S', 'Droits', 'Formulaire', 'Urgence'],
+                'description': "Contester un refus d'asile — délais impératifs, formulaires et aide juridique.",
+                'tags': ['Asile', 'Permis N/F/S', 'Droits', 'Formulaire', 'Urgence', 'Aide juridique'],
+                'audiences': ["Demandeur d'asile"],
             },
             {
-                'name': "Aide juridique gratuite — où trouver un avocat",
-                'description': "Services d'aide juridique, permanences gratuites et organisations de défense des migrants.",
-                'tags': ['Droits', 'Gratuit', 'En personne', 'Traduction disponible'],
+                'name': "Aide juridique gratuite pour migrants",
+                'description': "Permanences d'avocats, associations de défense et consultations gratuites.",
+                'tags': ['Aide juridique', 'Droits', 'Gratuit', 'En personne', 'Traduction disponible'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
                 'name': "Regroupement familial — conditions et formulaire",
-                'description': "Qui peut faire venir sa famille en Suisse, délais légaux et documents requis.",
-                'tags': ['Famille', 'Formulaire', 'Documents officiels', 'Permis B', 'Permis C'],
+                'description': "Qui peut faire venir sa famille, revenus requis, délais et documents à fournir.",
+                'tags': ['Regroupement familial', 'Famille', 'Formulaire', 'Documents officiels', 'Permis B', 'Permis C'],
+                'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
             },
             {
-                'name': "Naturalisation — conditions et procédure",
-                'description': "Durée de résidence requise, test d'intégration, démarches cantonales et fédérales.",
-                'tags': ['Droits', 'Intégration', 'Documents officiels', 'Formulaire'],
+                'name': "Naturalisation — conditions et procédure cantonale",
+                'description': "Durée de résidence, test de langue et civisme, frais et démarches par canton.",
+                'tags': ['Naturalisation', 'Integration', 'Documents officiels', 'Formulaire', 'Langue'],
+                'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
             },
             {
-                'name': "Obligations civiques : impôts, adresse, déclarations",
-                'description': "Ce que vous devez annoncer à votre commune : changement d'adresse, arrivée, départ.",
-                'tags': ['Documents officiels', 'Formulaire', 'En ligne'],
+                'name': "Obligations civiques : déménagement, registres, impôts",
+                'description': "Ce que vous devez déclarer à votre commune : arrivée, départ, changement d'état civil.",
+                'tags': ['Documents officiels', 'Impots', 'Formulaire', 'En ligne', 'Droits'],
+                'audiences': ['Nouveaux arrivants', 'Résident long terme'],
+            },
+            {
+                'name': "Signaler une discrimination (travail, logement, services)",
+                'description': "Vos droits, comment porter plainte et les organismes de lutte contre la discrimination.",
+                'tags': ['Discrimination', 'Droits', 'Aide juridique', 'En personne', 'Gratuit'],
+                'audiences': [],
+            },
+            {
+                'name': "Droits et obligations du travailleur étranger",
+                'description': "Contrat de travail, protection contre le licenciement, droits syndicaux et recours.",
+                'tags': ['Droit du travail', 'Travail', 'Droits', 'Salaire', 'Multilingue'],
+                'audiences': ['Résident long terme', "Établis depuis plus d'un an", 'Frontalier'],
+            },
+            {
+                'name': "Renouvellement et changement de permis de séjour",
+                'description': "Quand déposer la demande, documents requis et risques en cas de retard.",
+                'tags': ['Permis sejour', 'Documents officiels', 'Formulaire', 'Droits', 'Urgence'],
+                'audiences': ["Établis depuis plus d'un an", 'Résident long terme'],
             },
         ],
     },
     {
         'name': 'Mobility',
-        'description': 'Public transport, driving licence exchange, disability transport, and travel tips.',
+        'description': 'Transports publics, échange de permis de conduire, mobilité douce et transport médical.',
         'icon': 'TruckIcon',
         'priority': 4,
-        'audiences': [],  # universal
+        'audiences': [],
         'resources': [
             {
                 'name': "Abonnement demi-tarif CFF — comment l'obtenir",
-                'description': "Réduction de 50 % sur tous les billets de train, bus et bateau en Suisse.",
-                'tags': ['Mobilité', 'Budget', 'En ligne'],
+                'description': "50 % de réduction sur tous les billets CFF, CarPostal et bateaux en Suisse.",
+                'tags': ['Transports publics', 'Mobilite', 'Budget', 'En ligne'],
+                'audiences': [],
             },
             {
                 'name': "Échange d'un permis de conduire étranger",
-                'description': "Démarches auprès du service des automobiles, documents requis selon votre pays d'origine.",
-                'tags': ['Mobilité', 'Formulaire', 'En personne', 'Documents officiels'],
+                'description': "Procédure auprès du Service des automobiles, documents requis selon pays d'origine.",
+                'tags': ['Permis de conduire', 'Mobilite', 'Formulaire', 'En personne', 'Documents officiels'],
+                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an"],
             },
             {
                 'name': "Guide des transports publics par canton",
-                'description': "Réseaux TPG (Genève), VBZ (Zurich), BVB (Bâle) — tarifs, abonnements et applications.",
-                'tags': ['Mobilité', 'Budget', 'Multilingue'],
+                'description': "Réseaux TPG, VBZ, BVB — tarifs, abonnements, zones et applications officielles.",
+                'tags': ['Transports publics', 'Mobilite', 'Budget', 'Multilingue'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
                 'name': "SwissPass — créer son compte et gérer ses abonnements",
-                'description': "Tutoriel pour configurer le SwissPass et y rattacher vos abonnements de transport.",
-                'tags': ['Mobilité', 'En ligne'],
+                'description': "Tutoriel complet pour rattacher abonnements et acheter des billets en ligne.",
+                'tags': ['Transports publics', 'Mobilite', 'En ligne', 'Multilingue'],
+                'audiences': [],
             },
             {
-                'name': "Transport médical non urgent — comment en bénéficier",
-                'description': "Prise en charge des transports vers les soins médicaux par l'assurance maladie.",
-                'tags': ['Mobilité', 'Santé', 'Assurance maladie'],
+                'name': "Transport médical non urgent — prise en charge LAMal",
+                'description': "Conditions de remboursement des transports vers médecins et soins spécialisés.",
+                'tags': ['Transport medical', 'Sante', 'Assurance maladie', 'Handicap', 'Mobilite'],
+                'audiences': ['Senior', "Demandeur d'asile"],
             },
             {
                 'name': "Location de vélos et mobilité douce",
-                'description': "Systèmes de vélo en libre-service (PubliBike, Velospot) et pistes cyclables.",
-                'tags': ['Mobilité', 'Gratuit', 'En ligne'],
+                'description': "PubliBike, Velospot, pistes cyclables et aides à l'achat d'un vélo électrique.",
+                'tags': ['Velo', 'Mobilite', 'Budget', 'En ligne'],
+                'audiences': [],
+            },
+            {
+                'name': "Aides au transport pour personnes en situation de handicap",
+                'description': "Abonnements spéciaux AI, véhicules adaptés et services de transport à la demande.",
+                'tags': ['Transport medical', 'Handicap', 'Mobilite', 'Aide sociale', 'Formulaire'],
+                'audiences': ['Senior'],
+            },
+            {
+                'name': "Covoiturage et alternatives à la voiture personnelle",
+                'description': "Blablacar, Communauto, Share Now — réduire ses coûts de transport en Suisse.",
+                'tags': ['Mobilite', 'Budget', 'Transports publics', 'En ligne'],
+                'audiences': [],
             },
         ],
     },
     {
         'name': 'Health',
-        'description': 'Health insurance, finding a doctor, mental health, vaccinations, and emergency care.',
+        'description': "Assurance maladie, trouver un médecin, santé mentale, vaccins et urgences.",
         'icon': 'HeartIcon',
         'priority': 9,
-        'audiences': [],  # universal
+        'audiences': [],
         'resources': [
             {
                 'name': "Choisir sa caisse maladie (LAMal) — comparatif",
-                'description': "Comment comparer les primes, franchises et réseaux de soins pour choisir la meilleure option.",
-                'tags': ['Assurance maladie', 'Budget', 'En ligne'],
+                'description': "Comparer primes, franchises et réseaux de soins. Outils officiels de comparaison.",
+                'tags': ['Assurance maladie', 'Budget', 'En ligne', 'Multilingue'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
-                'name': "Demande de réduction de prime d'assurance maladie",
+                'name': "Réduction de prime d'assurance maladie (subsides)",
                 'description': "Conditions d'accès aux subsides cantonaux, formulaire et délais à respecter.",
-                'tags': ['Assurance maladie', 'Budget', 'Formulaire', 'Aide sociale'],
+                'tags': ['Assurance maladie', 'Reduction de prime', 'Budget', 'Subvention', 'Formulaire', 'Aide sociale'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Résident long terme'],
             },
             {
                 'name': "Trouver un médecin qui parle votre langue",
-                'description': "Annuaires en ligne et services de médiation pour trouver un praticien adapté.",
-                'tags': ['Santé', 'Traduction disponible', 'En ligne', 'Multilingue'],
+                'description': "Annuaires multilingues, médiation linguistique et consultation à distance.",
+                'tags': ['Medecin', 'Sante', 'Multilingue', 'Traduction disponible', 'En ligne'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
                 'name': "Urgences médicales — que faire et où aller",
-                'description': "Numéros d'urgence, permanences de nuit, garde médicale et rôle du SMUR.",
-                'tags': ['Santé', 'Urgence', 'Multilingue', 'Gratuit'],
+                'description': "Numéros d'urgence (144), permanences de nuit, gardes médicales cantonales.",
+                'tags': ['Sante', 'Urgence', 'Multilingue', 'Gratuit', 'Hotline'],
+                'audiences': [],
             },
             {
                 'name': "Santé mentale pour migrants — ressources et soutien",
-                'description': "Services de consultation psychologique adaptés aux personnes issues de la migration.",
-                'tags': ['Santé', 'Gratuit', 'Traduction disponible', 'En personne'],
+                'description': "Consultations psychologiques adaptées, soutien par les pairs, groupes de parole.",
+                'tags': ['Sante mentale', 'Sante', 'Gratuit', 'Traduction disponible', 'En personne', 'Interprete'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
             {
                 'name': "Calendrier de vaccination officiel suisse",
-                'description': "Vaccins obligatoires et recommandés pour adultes et enfants en Suisse.",
-                'tags': ['Santé', 'Enfants', 'Gratuit', 'Documents officiels'],
+                'description': "Vaccins recommandés pour adultes et enfants, rattrapages et centres de vaccination.",
+                'tags': ['Vaccination', 'Sante', 'Enfants', 'Gratuit', 'Documents officiels'],
+                'audiences': ['Nouveaux arrivants', 'Parents'],
             },
             {
                 'name': "Guide de la maternité en Suisse",
-                'description': "Suivi de grossesse, accouchement, sage-femme, prise en charge LAMal.",
-                'tags': ['Santé', 'Famille', 'Assurance maladie', 'Femmes'],
+                'description': "Suivi de grossesse, sages-femmes, accouchement et prise en charge LAMal.",
+                'tags': ['Maternite', 'Sante', 'Assurance maladie', 'Femmes', 'Documents officiels'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
             },
             {
-                'name': "Handicap et accès aux soins — droits et aides",
-                'description': "Prestations AI, aides techniques, transport médical et accompagnement.",
-                'tags': ['Santé', 'Droits', 'Aide sociale'],
+                'name': "Handicap et accès aux soins — droits et prestations AI",
+                'description': "Prestations de l'assurance invalidité, aides techniques et transport médical.",
+                'tags': ['Handicap', 'Sante', 'Droits', 'Aide sociale', 'Formulaire', 'Transport medical'],
+                'audiences': ['Senior'],
+            },
+            {
+                'name': "Soins dentaires — coûts, prise en charge et centres low-cost",
+                'description': "Dentistes universitaires, centres subventionnés et assurances complémentaires.",
+                'tags': ['Sante', 'Budget', 'Assurance maladie', 'En ligne', 'Gratuit'],
+                'audiences': [],
+            },
+            {
+                'name': "Addictions — ressources d'aide et de prévention pour migrants",
+                'description': "Services d'accompagnement anonymes, groupes de soutien et consultations gratuites.",
+                'tags': ['Sante mentale', 'Sante', 'Gratuit', 'En personne', 'Traduction disponible'],
+                'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
             },
         ],
     },
@@ -491,11 +600,8 @@ class Command(BaseCommand):
     help = 'Seed the database with realistic PIN prototype data.'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--reset',
-            action='store_true',
-            help='Delete all existing categories, resources, audiences and tags before seeding.',
-        )
+        parser.add_argument('--reset', action='store_true',
+                            help='Delete all existing data before seeding.')
 
     def handle(self, *args, **options):
         if options['reset']:
@@ -520,50 +626,41 @@ class Command(BaseCommand):
         for aud_data in AUDIENCES:
             rel_tags = aud_data.pop('relevant_tags')
             aud, created = Audience.objects.get_or_create(
-                name=aud_data['name'],
-                defaults=aud_data,
+                name=aud_data['name'], defaults=aud_data,
             )
             if not created:
-                # Update fields in case they changed
                 for field, value in aud_data.items():
                     setattr(aud, field, value)
                 aud.save()
-            # Set relevant_tags (replace)
             aud.relevant_tags.set([tag_map[t] for t in rel_tags if t in tag_map])
             audience_map[aud.name] = aud
-            if created:
-                self.stdout.write(f'  + Audience: {aud.name}')
-            else:
-                self.stdout.write(f'  ~ Audience (updated): {aud.name}')
+            self.stdout.write(f'  {"+" if created else "~"} Audience: {aud.name}')
 
         # -- Categories + Resources --
         self.stdout.write('\nCreating categories and resources...')
         for cat_data in CATEGORIES:
-            audience_names = cat_data.pop('audiences')
+            cat_audience_names = cat_data.pop('audiences')
             resources_data = cat_data.pop('resources')
 
             cat, created = Category.objects.get_or_create(
-                name=cat_data['name'],
-                defaults=cat_data,
+                name=cat_data['name'], defaults=cat_data,
             )
             if not created:
                 for field, value in cat_data.items():
                     setattr(cat, field, value)
                 cat.save()
-
-            cat.audiences.set([audience_map[n] for n in audience_names if n in audience_map])
-
-            action = '+' if created else '~'
-            self.stdout.write(f'  {action} Category: {cat.name}')
+            cat.audiences.set([audience_map[n] for n in cat_audience_names if n in audience_map])
+            self.stdout.write(f'  {"+" if created else "~"} Category: {cat.name}')
 
             for res_data in resources_data:
                 tag_labels = res_data.pop('tags')
+                res_audience_names = res_data.pop('audiences')
                 res, res_created = Resource.objects.get_or_create(
-                    name=res_data['name'],
-                    category=cat,
+                    name=res_data['name'], category=cat,
                     defaults={**res_data, 'file': SAMPLE_FILE},
                 )
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
+                res.audiences.set([audience_map[n] for n in res_audience_names if n in audience_map])
                 if res_created:
                     self.stdout.write(f'      + {res.name}')
 

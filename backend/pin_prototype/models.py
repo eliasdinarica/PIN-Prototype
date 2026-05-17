@@ -108,8 +108,10 @@ class Tag(models.Model):
         return self.label
 
 
+
 class Resource(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='resources')
+    audiences = models.ManyToManyField(Audience, blank=True, related_name='resources')
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -118,3 +120,18 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ResourceFeedback(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='feedbacks')
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='feedbacks')
+    is_useful = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['profile', 'resource']]
+
+    def __str__(self):
+        mark = '✓' if self.is_useful else '✗'
+        return f"{mark} profile#{self.profile_id} → {self.resource}"

@@ -15,6 +15,7 @@ const { t } = useI18n()
 const category = ref(null)
 const categories = ref([])
 const topResources = ref([])
+const feedbackMap = ref({}) // { [resource_id]: { id, is_useful } }
 const loading = ref(true)
 const openedResource = ref(null)
 const pdfBlobUrl = ref(null)
@@ -106,6 +107,38 @@ function closeModal() {
   openedResource.value = null
 }
 
+async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
+  const profileId = localStorage.getItem('profileId')
+  if (!profileId) return
+
+  if (isUseful === null) {
+    await fetch(`http://localhost:8000/api/feedback/${feedbackId}/`, { method: 'DELETE' })
+    const map = { ...feedbackMap.value }
+    delete map[resourceId]
+    feedbackMap.value = map
+  } else {
+    const res = await fetch('http://localhost:8000/api/feedback/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile: parseInt(profileId), resource: resourceId, is_useful: isUseful }),
+    })
+    const data = await res.json()
+    feedbackMap.value = { ...feedbackMap.value, [resourceId]: { id: data.id, is_useful: data.is_useful } }
+  }
+
+  // Re-fetch scores so similar resources update their is_recommended status
+  const catId = route.params.id
+  const topUrl = `http://localhost:8000/api/top-resources/?profile=${profileId}`
+  const [catRes, topRes] = await Promise.all([
+    catId && catId !== 'for-you'
+      ? fetch(`http://localhost:8000/api/categories/${catId}/?profile=${profileId}`)
+      : Promise.resolve(null),
+    fetch(topUrl),
+  ])
+  if (catRes) category.value = await catRes.json()
+  if (topRes) topResources.value = await topRes.json()
+}
+
 onMounted(async () => {
   const profileId = localStorage.getItem('profileId')
   const listUrl = profileId
@@ -114,13 +147,23 @@ onMounted(async () => {
   const topUrl = profileId
     ? `http://localhost:8000/api/top-resources/?profile=${profileId}`
     : null
+  const fbUrl = profileId
+    ? `http://localhost:8000/api/feedback/?profile=${profileId}`
+    : null
 
-  const [allRes, topRes] = await Promise.all([
+  const [allRes, topRes, fbRes] = await Promise.all([
     fetch(listUrl),
     topUrl ? fetch(topUrl) : Promise.resolve(null),
+    fbUrl ? fetch(fbUrl) : Promise.resolve(null),
   ])
   categories.value = await allRes.json()
   if (topRes) topResources.value = await topRes.json()
+  if (fbRes) {
+    const fbData = await fbRes.json()
+    feedbackMap.value = Object.fromEntries(
+      fbData.map(fb => [fb.resource, { id: fb.id, is_useful: fb.is_useful }])
+    )
+  }
 
   const defaultId = topResources.value.length ? 'for-you' : categories.value[0]?.id
   const id = route.params.id || defaultId
@@ -262,7 +305,7 @@ watch(() => route.params.id, async (newId) => {
             <h1 class="text-2xl font-bold text-surface-800">{{ t('categories.forYou') }}</h1>
           </div>
           <p class="text-gray-500 text-sm mb-8 leading-relaxed">{{ t('categories.forYouDesc') }}</p>
-          <ResourceList :sections="forYouSections" show-category @open="openResource" />
+          <ResourceList :sections="forYouSections" show-category :feedback-map="feedbackMap" @open="openResource" @feedback-change="handleFeedbackChange" />
         </template>
 
         <template v-else>
@@ -290,7 +333,7 @@ watch(() => route.params.id, async (newId) => {
             </div>
 
             <template v-else>
-              <ResourceList :sections="resourceSections" @open="openResource" />
+              <ResourceList :sections="resourceSections" :feedback-map="feedbackMap" @open="openResource" @feedback-change="handleFeedbackChange" />
             </template>
           </template>
         </template>

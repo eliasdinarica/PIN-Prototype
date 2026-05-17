@@ -1,11 +1,21 @@
 from rest_framework import serializers
-from .models import Profile, Category, Resource, Tag
+from .models import Profile, Category, Resource, Tag, ResourceFeedback
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['id', 'language', 'other_languages', 'status', 'has_children', 'origin_sector', 'arrived_over_year_ago', 'birth_date', 'created_at']
+        fields = [
+            'id', 'language', 'other_languages', 'status', 'has_children',
+            'origin_sector', 'arrived_over_year_ago', 'birth_date', 'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
+
+
+class ResourceFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResourceFeedback
+        fields = ['id', 'profile', 'resource', 'is_useful', 'created_at']
         read_only_fields = ['id', 'created_at']
 
 
@@ -20,11 +30,14 @@ class ResourceSerializer(serializers.ModelSerializer):
     tag_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
     )
+    audience_ids = serializers.PrimaryKeyRelatedField(
+        many=True, source='audiences', read_only=True
+    )
 
     class Meta:
         model = Resource
-        fields = ['id', 'category', 'tags', 'tag_ids', 'name', 'description', 'file', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        fields = ['id', 'category', 'audiences', 'audience_ids', 'tags', 'tag_ids', 'name', 'description', 'file', 'created_at']
+        read_only_fields = ['id', 'created_at', 'audiences', 'audience_ids']
 
 
 class CategorySerializer(serializers.ModelSerializer):
