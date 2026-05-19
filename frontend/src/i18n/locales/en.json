@@ -31,12 +31,20 @@
       "label": "When were you born?",
       "sublabel": "Your date of birth helps us tailor resources for you."
     },
+    "intro": {
+      "eyebrow": "Welcome",
+      "title": "We will ask you a few questions to help create your profile.",
+      "body": "Your answers help us show you the right resources. We do not share your information.",
+      "items": "Your language|Your permit type|Your family situation|Your work background",
+      "start": "Start"
+    },
     "timeline": {
+      "intro": "Introduction",
       "language": "Language",
       "otherLanguages": "Other languages",
       "status": "Permit",
       "hasChildren": "Family",
-      "originSector": "Work sector",
+      "originSector": "Sector in home country",
       "arrivedOverYear": "Time in CH",
       "birthDate": "Birth date"
     },
@@ -44,6 +52,7 @@
     "no": "No",
     "next": "Next",
     "skip": "Skip",
+    "dontKnow": "I don't know",
     "saveExit": "Save & exit",
     "back": "Back",
     "done": {

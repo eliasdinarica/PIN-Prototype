@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import ProfileSetup from '@/components/ProfileSetup.vue'
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const router = useRouter()
 const { locale } = useI18n()
 const ready = ref(false)
@@ -12,7 +14,7 @@ const profileId = ref(localStorage.getItem('profileId'))
 
 onMounted(async () => {
   const profileRes = profileId.value
-    ? await fetch(`http://localhost:8000/api/profiles/${profileId.value}/`)
+    ? await fetch(`${API}/api/profiles/${profileId.value}/`)
     : null
 
   if (profileRes) {
@@ -54,8 +56,8 @@ async function handleComplete(answers) {
     }
     const res = await fetch(
       isUpdate
-        ? `http://localhost:8000/api/profiles/${profileId.value}/`
-        : 'http://localhost:8000/api/profiles/',
+        ? `${API}/api/profiles/${profileId.value}/`
+        : `${API}/api/profiles/`,
       {
         method: isUpdate ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },

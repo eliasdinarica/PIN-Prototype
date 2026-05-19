@@ -31,7 +31,15 @@
       "label": "Quelle est votre date de naissance ?",
       "sublabel": "Votre date de naissance nous aide à personnaliser les ressources pour vous."
     },
+    "intro": {
+      "eyebrow": "Bienvenue",
+      "title": "Nous allons vous poser quelques questions.",
+      "body": "Vos réponses nous aident à vous montrer les bonnes ressources. Nous ne partageons pas vos informations.",
+      "items": "Votre langue|Votre type de permis|Votre situation familiale|Votre domaine de travail",
+      "start": "Commencer"
+    },
     "timeline": {
+      "intro": "Introduction",
       "language": "Langue",
       "otherLanguages": "Autres langues",
       "status": "Permis",
@@ -44,6 +52,7 @@
     "no": "Non",
     "next": "Suivant",
     "skip": "Passer",
+    "dontKnow": "Je ne sais pas",
     "saveExit": "Enregistrer et quitter",
     "back": "Retour",
     "done": {

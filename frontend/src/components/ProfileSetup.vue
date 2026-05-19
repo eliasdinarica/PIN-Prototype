@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ArrowLeftIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ArrowLeftIcon, CheckIcon, XMarkIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   initialAnswers: { type: Object, default: () => ({}) },
@@ -36,6 +36,14 @@ const answers = ref({
 })
 
 const questions = computed(() => [
+  {
+    id: 'intro',
+    type: 'intro',
+    required: false,
+    shortLabel: t('profile.timeline.intro'),
+    label: t('profile.intro.title'),
+    sublabel: t('profile.intro.body'),
+  },
   {
     id: 'language',
     type: 'choice',
@@ -120,6 +128,7 @@ const questions = computed(() => [
 ])
 
 const currentStep = ref(0)
+const highWaterMark = ref(props.isEditing ? questions.value.length : 0)
 const slideDirection = ref('next')
 const completed = ref(false)
 
@@ -135,8 +144,20 @@ const canAdvance = computed(() => {
   return a !== undefined && a !== null && a !== ''
 })
 
-function isPassed(index) {
-  return index < currentStep.value
+function wasReached(index) {
+  return index < highWaterMark.value
+}
+
+function getStepVisualState(index) {
+  if (index === currentStep.value) return 'current'
+  if (index > highWaterMark.value) return 'future'
+  const q = questions.value[index]
+  if (q.type === 'intro') return 'answered'
+  const a = answers.value[q.id]
+  if (q.type === 'boolean' && (a === true || a === false)) return 'answered'
+  if (q.type === 'language-with-levels' && Array.isArray(a) && a.length > 0) return 'answered'
+  if (q.type !== 'boolean' && q.type !== 'language-with-levels' && a !== undefined && a !== null && a !== '') return 'answered'
+  return 'skipped'
 }
 
 function advance() {
@@ -219,11 +240,22 @@ const activeStepEl = ref(null)
 
 function goToStep(index) {
   if (index === currentStep.value) return
+  if (!props.isEditing) {
+    for (let i = 0; i < index; i++) {
+      const q = questions.value[i]
+      if (q.required && q.type !== 'intro') {
+        const a = answers.value[q.id]
+        const has = q.type === 'boolean' ? (a === true || a === false) : (a !== undefined && a !== null && a !== '')
+        if (!has) { index = i; break }
+      }
+    }
+  }
   slideDirection.value = index > currentStep.value ? 'next' : 'prev'
   currentStep.value = index
 }
 
-watch(currentStep, async () => {
+watch(currentStep, async (newVal) => {
+  if (newVal > highWaterMark.value) highWaterMark.value = newVal
   await nextTick()
   activeStepEl.value?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
 })
@@ -250,23 +282,24 @@ watch(currentStep, async () => {
                 class="w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-200 cursor-pointer"
                 :class="i === currentStep
                   ? 'bg-brand-600 border-brand-600'
-                  : isPassed(i) ? 'bg-surface-600 border-surface-600' : 'bg-white border-surface-300'"
+                  : wasReached(i) ? 'bg-surface-600 border-surface-600' : 'bg-white border-surface-300'"
                 @click="goToStep(i)"
               >
-                <CheckIcon v-if="isPassed(i)" class="w-3.5 h-3.5 text-white" />
+                <CheckIcon v-if="getStepVisualState(i) === 'answered'" class="w-3.5 h-3.5 text-white" />
+                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-3.5 h-3.5 text-surface-300" />
                 <span v-else-if="i === currentStep" class="w-2 h-2 bg-white rounded-full block" />
               </button>
               <div
                 v-if="i < questions.length - 1"
                 class="w-0.5 h-7 my-1 transition-colors duration-300"
-                :class="isPassed(i) ? 'bg-surface-400' : 'bg-surface-200'"
+                :class="wasReached(i) ? 'bg-surface-400' : 'bg-surface-200'"
               />
             </div>
             <button
               class="text-sm pt-1 pb-1 text-left bg-transparent border-none cursor-pointer transition-colors duration-150 leading-tight"
               :class="i === currentStep
                 ? 'text-surface-800 font-semibold'
-                : isPassed(i) ? 'text-surface-500 font-medium' : 'text-surface-300'"
+                : wasReached(i) ? 'text-surface-500 font-medium' : 'text-surface-300'"
               @click="goToStep(i)"
             >
               {{ q.shortLabel }}
@@ -299,10 +332,11 @@ watch(currentStep, async () => {
                 class="flex items-center gap-1.5 rounded-full border-2 transition-all duration-200 cursor-pointer shrink-0"
                 :class="i === currentStep
                   ? 'bg-brand-600 border-brand-600 pl-2.5 pr-3 py-1.5'
-                  : isPassed(i) ? 'bg-surface-600 border-surface-600 p-1.5' : 'bg-surface-600 border-surface-400 p-1.5'"
+                  : wasReached(i) ? 'bg-surface-600 border-surface-600 p-1.5' : 'bg-surface-600 border-surface-400 p-1.5'"
                 @click="goToStep(i)"
               >
-                <CheckIcon v-if="isPassed(i)" class="w-3.5 h-3.5 text-white shrink-0" />
+                <CheckIcon v-if="getStepVisualState(i) === 'answered'" class="w-3.5 h-3.5 text-white shrink-0" />
+                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-3.5 h-3.5 text-surface-300 shrink-0" />
                 <span v-else-if="i === currentStep" class="w-2 h-2 bg-white rounded-full block shrink-0" />
                 <span v-else class="w-3.5 h-3.5 flex items-center justify-center text-xs text-surface-300 font-semibold shrink-0">{{ i + 1 }}</span>
                 <span v-if="i === currentStep" class="text-white text-xs font-semibold whitespace-nowrap">{{ q.shortLabel }}</span>
@@ -310,7 +344,7 @@ watch(currentStep, async () => {
               <div
                 v-if="i < questions.length - 1"
                 class="h-0.5 w-3 shrink-0 transition-colors duration-300 mx-0.5"
-                :class="isPassed(i) ? 'bg-surface-400' : 'bg-surface-200'"
+                :class="wasReached(i) ? 'bg-surface-400' : 'bg-surface-200'"
               />
             </template>
           </div>
@@ -327,6 +361,11 @@ watch(currentStep, async () => {
               <h2 class="text-2xl font-bold text-white leading-snug mb-2">{{ question.label }}</h2>
               <p v-if="question.sublabel" class="text-sm text-surface-300 leading-relaxed mb-6">{{ question.sublabel }}</p>
               <div v-else class="mb-6" />
+
+              <!-- Intro -->
+              <ul v-if="question.type === 'intro'" class="flex flex-col gap-2">
+                
+              </ul>
 
               <!-- Language with levels -->
               <div v-if="question.type === 'language-with-levels'" class="flex flex-col gap-4">
@@ -437,11 +476,11 @@ watch(currentStep, async () => {
             </button>
             <div class="flex-1" />
             <button
-              v-if="!question.required"
+              v-if="!question.required && question.type !== 'intro'"
               class="text-sm text-surface-300 hover:text-surface-100 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
               @click="skip"
             >
-              {{ t('profile.skip') }}
+              {{ t('profile.dontKnow') }}
             </button>
             <button
               class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 border-none shrink-0"

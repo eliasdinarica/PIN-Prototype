@@ -31,7 +31,15 @@
       "label": "Wann wurden Sie geboren?",
       "sublabel": "Ihr Geburtsdatum hilft uns, Ressourcen für Sie anzupassen."
     },
+    "intro": {
+      "eyebrow": "Willkommen",
+      "title": "Wir stellen Ihnen einige Fragen.",
+      "body": "Ihre Antworten helfen uns, Ihnen die richtigen Ressourcen zu zeigen. Wir geben Ihre Daten nicht weiter.",
+      "items": "Ihre Sprache|Ihr Aufenthaltstyp|Ihre Familiensituation|Ihr Berufsbereich",
+      "start": "Starten"
+    },
     "timeline": {
+      "intro": "Einführung",
       "language": "Sprache",
       "otherLanguages": "Andere Spr.",
       "status": "Aufenthalt",
@@ -44,6 +52,7 @@
     "no": "Nein",
     "next": "Weiter",
     "skip": "Überspringen",
+    "dontKnow": "Ich weiß es nicht",
     "saveExit": "Speichern & beenden",
     "back": "Zurück",
     "done": {

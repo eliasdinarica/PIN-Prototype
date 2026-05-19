@@ -12,6 +12,8 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const category = ref(null)
 const categories = ref([])
 const topResources = ref([])
@@ -77,8 +79,8 @@ async function loadCategory(id) {
   try {
     const profileId = localStorage.getItem('profileId')
     const url = profileId
-      ? `http://localhost:8000/api/categories/${id}/?profile=${profileId}`
-      : `http://localhost:8000/api/categories/${id}/`
+      ? `${API}/api/categories/${id}/?profile=${profileId}`
+      : `${API}/api/categories/${id}/`
     const res = await fetch(url)
     category.value = await res.json()
   } finally {
@@ -112,12 +114,12 @@ async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
   if (!profileId) return
 
   if (isUseful === null) {
-    await fetch(`http://localhost:8000/api/feedback/${feedbackId}/`, { method: 'DELETE' })
+    await fetch(`${API}/api/feedback/${feedbackId}/`, { method: 'DELETE' })
     const map = { ...feedbackMap.value }
     delete map[resourceId]
     feedbackMap.value = map
   } else {
-    const res = await fetch('http://localhost:8000/api/feedback/', {
+    const res = await fetch(`${API}/api/feedback/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profile: parseInt(profileId), resource: resourceId, is_useful: isUseful }),
@@ -128,10 +130,10 @@ async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
 
   // Re-fetch scores so similar resources update their is_recommended status
   const catId = route.params.id
-  const topUrl = `http://localhost:8000/api/top-resources/?profile=${profileId}`
+  const topUrl = `${API}/api/top-resources/?profile=${profileId}`
   const [catRes, topRes] = await Promise.all([
     catId && catId !== 'for-you'
-      ? fetch(`http://localhost:8000/api/categories/${catId}/?profile=${profileId}`)
+      ? fetch(`${API}/api/categories/${catId}/?profile=${profileId}`)
       : Promise.resolve(null),
     fetch(topUrl),
   ])
@@ -142,13 +144,13 @@ async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
 onMounted(async () => {
   const profileId = localStorage.getItem('profileId')
   const listUrl = profileId
-    ? `http://localhost:8000/api/categories/?profile=${profileId}`
-    : 'http://localhost:8000/api/categories/'
+    ? `${API}/api/categories/?profile=${profileId}`
+    : `${API}/api/categories/`
   const topUrl = profileId
-    ? `http://localhost:8000/api/top-resources/?profile=${profileId}`
+    ? `${API}/api/top-resources/?profile=${profileId}`
     : null
   const fbUrl = profileId
-    ? `http://localhost:8000/api/feedback/?profile=${profileId}`
+    ? `${API}/api/feedback/?profile=${profileId}`
     : null
 
   const [allRes, topRes, fbRes] = await Promise.all([

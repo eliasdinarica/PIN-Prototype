@@ -31,7 +31,15 @@
       "label": "Quando sei nato/a?",
       "sublabel": "La tua data di nascita ci aiuta a personalizzare le risorse per te."
     },
+    "intro": {
+      "eyebrow": "Benvenuto",
+      "title": "Ti faremo alcune domande.",
+      "body": "Le tue risposte ci aiutano a mostrarti le risorse giuste. Non condividiamo le tue informazioni.",
+      "items": "La tua lingua|Il tuo tipo di permesso|La tua situazione familiare|Il tuo settore lavorativo",
+      "start": "Inizia"
+    },
     "timeline": {
+      "intro": "Introduzione",
       "language": "Lingua",
       "otherLanguages": "Altre lingue",
       "status": "Permesso",
@@ -44,6 +52,7 @@
     "no": "No",
     "next": "Avanti",
     "skip": "Salta",
+    "dontKnow": "Non lo so",
     "saveExit": "Salva ed esci",
     "back": "Indietro",
     "done": {
