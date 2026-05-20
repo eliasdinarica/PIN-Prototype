@@ -3,10 +3,11 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import * as HeroIcons from '@heroicons/vue/24/outline'
-import { InboxIcon, DocumentTextIcon, XMarkIcon, SparklesIcon } from '@heroicons/vue/24/outline'
+import { InboxIcon, DocumentTextIcon, XMarkIcon, SparklesIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/outline'
 import ResourceList from '@/components/ResourceList.vue'
 import CategorySidebarItem from '@/components/CategorySidebarItem.vue'
 import CategoryMobilePill from '@/components/CategoryMobilePill.vue'
+import ArticleRenderer from '@/components/ArticleRenderer.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -20,8 +21,6 @@ const topResources = ref([])
 const feedbackMap = ref({}) // { [resource_id]: { id, is_useful } }
 const loading = ref(true)
 const openedResource = ref(null)
-const pdfBlobUrl = ref(null)
-const pdfLoading = ref(false)
 const activePillEl = ref(null)
 const pillsScrollRef = ref(null)
 const otherPillsRef = ref(null)
@@ -88,25 +87,16 @@ async function loadCategory(id) {
   }
 }
 
-async function openResource(resource) {
+function openResource(resource) {
   openedResource.value = resource
-  pdfLoading.value = true
-  pdfBlobUrl.value = null
-  try {
-    const res = await fetch(resource.file)
-    const blob = await res.blob()
-    pdfBlobUrl.value = URL.createObjectURL(blob)
-  } catch (e) {
-    console.error('Failed to load PDF', e)
-  } finally {
-    pdfLoading.value = false
-  }
 }
 
 function closeModal() {
-  if (pdfBlobUrl.value) URL.revokeObjectURL(pdfBlobUrl.value)
-  pdfBlobUrl.value = null
   openedResource.value = null
+}
+
+function filenameFromUrl(url) {
+  try { return decodeURIComponent(url.split('/').pop().split('?')[0]) } catch { return url }
 }
 
 async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
@@ -355,7 +345,7 @@ watch(() => route.params.id, async (newId) => {
         class="fixed inset-0 z-50 flex flex-col bg-black/60 backdrop-blur-sm p-4"
         @click.self="closeModal"
       >
-        <div class="bg-white rounded-2xl flex flex-col overflow-hidden w-full max-w-4xl mx-auto h-full">
+        <div class="bg-white rounded-2xl flex flex-col overflow-hidden w-full max-w-3xl mx-auto h-full">
 
           <!-- Modal header -->
           <div class="flex items-center gap-3 px-5 py-3 bg-surface-500 border-b border-surface-400 shrink-0">
@@ -371,17 +361,34 @@ watch(() => route.params.id, async (newId) => {
             </button>
           </div>
 
-          <!-- Loading -->
-          <div v-if="pdfLoading" class="flex-1 flex items-center justify-center">
-            <div class="w-8 h-8 border-4 border-surface-200 border-t-surface-600 rounded-full animate-spin" />
-          </div>
+          <!-- Article body -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden px-6 py-6">
+            <div class="max-w-2xl mx-auto min-w-0">
+              <ArticleRenderer :body="openedResource.body || { sections: [] }" />
 
-          <!-- iframe -->
-          <iframe
-            v-else-if="pdfBlobUrl"
-            :src="pdfBlobUrl"
-            class="flex-1 w-full border-none"
-          />
+              <!-- Attachments -->
+              <div v-if="openedResource.attachments?.length" class="mt-8 pt-6 border-t border-surface-200">
+                <p class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Files</p>
+                <div class="space-y-2">
+                  <a
+                    v-for="a in openedResource.attachments"
+                    :key="a.id"
+                    :href="a.file"
+                    target="_blank"
+                    download
+                    class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 hover:border-brand-400 hover:bg-brand-50 transition-colors no-underline"
+                  >
+                    <DocumentTextIcon class="w-5 h-5 text-brand-500 shrink-0" />
+                    <div class="flex-1 min-w-0">
+                      <p class="font-medium text-surface-800 text-sm truncate">{{ a.label || filenameFromUrl(a.file) }}</p>
+                      <p v-if="a.label" class="text-xs text-surface-500 truncate">{{ filenameFromUrl(a.file) }}</p>
+                    </div>
+                    <ArrowDownTrayIcon class="w-4 h-4 text-surface-400 shrink-0" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </Transition>

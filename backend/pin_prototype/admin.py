@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback
+from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment
 
 
 @admin.register(Profile)
@@ -28,13 +28,19 @@ class CategoryAdmin(admin.ModelAdmin):
     filter_horizontal = ['audiences']
 
 
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
+    extra = 0
+    fields = ['order', 'file', 'label']
+
+
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'category', 'created_at']
     list_filter = ['category', 'tags', 'audiences']
     filter_horizontal = ['tags', 'audiences']
     readonly_fields = ['created_at']
-
+    inlines = [AttachmentInline]
 
 
 @admin.register(ResourceFeedback)

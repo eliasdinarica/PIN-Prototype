@@ -109,17 +109,34 @@ class Tag(models.Model):
 
 
 
+def _default_body():
+    return {'sections': []}
+
+
 class Resource(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='resources')
     audiences = models.ManyToManyField(Audience, blank=True, related_name='resources')
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    file = models.FileField(upload_to='resources/')
+    body = models.JSONField(default=_default_body, blank=True, help_text="Editor.js article body (JSON)")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+
+class Attachment(models.Model):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='attachments')
+    order = models.IntegerField(default=0)
+    file = models.FileField(upload_to='resources/')
+    label = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.label or self.file.name
 
 
 class ResourceFeedback(models.Model):

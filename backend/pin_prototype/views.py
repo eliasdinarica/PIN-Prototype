@@ -1,11 +1,15 @@
 from datetime import date as date_cls
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback
+from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment
 from .serializers import (
     ProfileSerializer, CategorySerializer, ResourceSerializer,
-    TagSerializer, ResourceFeedbackSerializer,
+    TagSerializer, ResourceFeedbackSerializer, AudienceSerializer,
+    CategoryBriefSerializer,
 )
 
 
@@ -124,6 +128,7 @@ class CategoryViewSet(ModelViewSet):
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
             'resources', 'resources__tags', 'resources__audiences',
+            'resources__attachments',
         )
 
     def list(self, request, *args, **kwargs):
@@ -207,8 +212,10 @@ class CategoryViewSet(ModelViewSet):
                     )
                     if audience_matches == 0:
                         return 0
-                    tag_bonus = len(r_tag_ids & tag_ids) * 0.5
-                    raw = audience_matches + tag_bonus
+                    tag_overlap = len(r_tag_ids & tag_ids)
+                    if tag_overlap == 0:
+                        return 0  # audience match alone isn't enough — needs at least 1 relevant tag
+                    raw = audience_matches + tag_overlap * 0.5
                     return _apply_feedback(raw, r['id'], r_tag_ids, feedback)
 
                 scored = sorted([(r, score(r)) for r in data['resources']], key=lambda x: -x[1])
@@ -240,7 +247,9 @@ def top_resources(request):
     feedback = _load_feedback(profile)
     age = _compute_age(profile.birth_date)
     results = []
-    for cat in Category.objects.prefetch_related('resources__tags', 'resources__audiences').all():
+    for cat in Category.objects.prefetch_related(
+        'resources__tags', 'resources__audiences', 'resources__attachments',
+    ).all():
         for resource in cat.resources.all():
             resource_tag_ids = frozenset(t.id for t in resource.tags.all())
             direct = feedback.get(resource.id)
@@ -273,10 +282,115 @@ def top_resources(request):
 
 
 class ResourceViewSet(ModelViewSet):
-    queryset = Resource.objects.all().order_by('name')
     serializer_class = ResourceSerializer
+
+    def get_queryset(self):
+        qs = Resource.objects.prefetch_related(
+            'tags', 'audiences', 'attachments',
+        ).select_related('category').order_by('name')
+        category_id = self.request.query_params.get('category')
+        search = self.request.query_params.get('search')
+        if category_id:
+            qs = qs.filter(category_id=category_id)
+        if search:
+            qs = qs.filter(name__icontains=search)
+        return qs
+
+    @staticmethod
+    def _parse_json(data, key, default):
+        import json
+        raw = data.get(key, None)
+        if raw is None:
+            return default
+        return json.loads(raw) if isinstance(raw, str) else raw
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        body = self._parse_json(data, 'body', {'blocks': []})
+        attachment_meta = self._parse_json(data, 'attachments_meta', [])
+        tag_ids = data.getlist('tag_ids') if hasattr(data, 'getlist') else data.get('tag_ids', [])
+
+        resource = Resource.objects.create(
+            category_id=data.get('category'),
+            name=data.get('name', ''),
+            description=data.get('description', ''),
+            body=body,
+        )
+        resource.tags.set([int(t) for t in tag_ids if t])
+
+        files = request.FILES.getlist('attachment_files') if hasattr(request.FILES, 'getlist') else []
+        for idx, f in enumerate(files):
+            label = attachment_meta[idx].get('label', '') if idx < len(attachment_meta) else ''
+            order = attachment_meta[idx].get('order', idx) if idx < len(attachment_meta) else idx
+            Attachment.objects.create(resource=resource, file=f, label=label, order=order)
+
+        return Response(ResourceSerializer(resource, context={'request': request}).data, status=201)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+
+        if 'category' in data:
+            instance.category_id = data.get('category')
+        if 'name' in data:
+            instance.name = data.get('name', '')
+        if 'description' in data:
+            instance.description = data.get('description', '')
+        if 'body' in data:
+            instance.body = self._parse_json(data, 'body', {'blocks': []})
+        instance.save()
+
+        if 'tag_ids' in data:
+            tag_ids = data.getlist('tag_ids') if hasattr(data, 'getlist') else data.get('tag_ids', [])
+            instance.tags.set([int(t) for t in tag_ids if t])
+
+        # Attachments: keep only those listed in kept_attachments, add new files
+        if 'kept_attachments' in data:
+            kept = self._parse_json(data, 'kept_attachments', [])
+            kept_ids = {int(k['id']) for k in kept if k.get('id')}
+            instance.attachments.exclude(id__in=kept_ids).delete()
+            for k in kept:
+                if k.get('id'):
+                    Attachment.objects.filter(id=int(k['id'])).update(
+                        label=k.get('label', ''), order=k.get('order', 0),
+                    )
+
+        new_meta = self._parse_json(data, 'new_attachments_meta', [])
+        files = request.FILES.getlist('new_attachment_files') if hasattr(request.FILES, 'getlist') else []
+        existing_count = instance.attachments.count()
+        for idx, f in enumerate(files):
+            label = new_meta[idx].get('label', '') if idx < len(new_meta) else ''
+            order = new_meta[idx].get('order', existing_count + idx) if idx < len(new_meta) else existing_count + idx
+            Attachment.objects.create(resource=instance, file=f, label=label, order=order)
+
+        return Response(ResourceSerializer(instance, context={'request': request}).data)
 
 
 class TagViewSet(ModelViewSet):
     queryset = Tag.objects.all().order_by('label')
     serializer_class = TagSerializer
+
+
+class AudienceViewSet(ReadOnlyModelViewSet):
+    queryset = Audience.objects.all().order_by('name')
+    serializer_class = AudienceSerializer
+
+
+class CategoryBriefViewSet(ReadOnlyModelViewSet):
+    """Lightweight category list for the admin form (no resources/recommendations)."""
+    queryset = Category.objects.all().order_by('name')
+    serializer_class = CategoryBriefSerializer
+
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser])
+def editor_image_upload(request):
+    """Endpoint for Editor.js image plugin. Expects field name 'image'."""
+    image = request.FILES.get('image')
+    if not image:
+        return Response({'success': 0, 'message': 'No image provided'}, status=400)
+    path = default_storage.save(f'articles/{image.name}', ContentFile(image.read()))
+    url = default_storage.url(path)
+    if request and not url.startswith('http'):
+        url = request.build_absolute_uri(url)
+    return Response({'success': 1, 'file': {'url': url}})
