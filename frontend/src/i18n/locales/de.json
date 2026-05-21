@@ -92,5 +92,16 @@
     "openTab": "In neuem Tab öffnen",
     "recommended": "Empfohlen",
     "others": "Weitere Dokumente"
+  },
+  "tutorial": {
+    "step1Title": "Kategorien erkunden",
+    "step1Body": "Ressourcen sind nach Thema gruppiert. Wählen Sie eine Kategorie, um zu sehen, was für Sie gilt.",
+    "step2Title": "Ressourcen für Sie",
+    "step2Body": "Ressourcen mit einem Stern entsprechen Ihrem Profil. Sie sind für Ihre Situation am nützlichsten.",
+    "step3Title": "Alle anderen Ressourcen",
+    "step3Body": "Andere Ressourcen können auch nützlich sein. Durchsuchen Sie sie, wann immer Sie wollen.",
+    "next": "Weiter",
+    "finish": "Los geht's!",
+    "skip": "Überspringen"
   }
 }

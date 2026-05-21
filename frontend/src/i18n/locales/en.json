@@ -91,5 +91,16 @@
     "empty": "No documents in this category yet.",
     "recommended": "Recommended resources",
     "others": "Other documents"
+  },
+  "tutorial": {
+    "step1Title": "Explore categories",
+    "step1Body": "Resources are grouped by topic. Choose a category to see what applies to you.",
+    "step2Title": "Resources just for you",
+    "step2Body": "Resources marked with a star match your profile. They are the most useful for your situation.",
+    "step3Title": "All other resources",
+    "step3Body": "Other resources may also be useful. Browse them whenever you want.",
+    "next": "Next",
+    "finish": "Let's go!",
+    "skip": "Skip"
   }
 }

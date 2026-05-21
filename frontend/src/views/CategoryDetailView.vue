@@ -8,6 +8,7 @@ import ResourceList from '@/components/ResourceList.vue'
 import CategorySidebarItem from '@/components/CategorySidebarItem.vue'
 import CategoryMobilePill from '@/components/CategoryMobilePill.vue'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
+import OnboardingTutorial from '@/components/OnboardingTutorial.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,16 +24,6 @@ const loading = ref(true)
 const openedResource = ref(null)
 const activePillEl = ref(null)
 const pillsScrollRef = ref(null)
-const otherPillsRef = ref(null)
-const visibleSection = ref('recommended')
-
-function onPillsScroll() {
-  const container = pillsScrollRef.value
-  const othersDiv = otherPillsRef.value
-  if (!container || !othersDiv) return
-  const viewportCenter = container.scrollLeft + container.offsetWidth / 2
-  visibleSection.value = viewportCenter >= othersDiv.offsetLeft ? 'others' : 'recommended'
-}
 
 const isForYou = computed(() => route.params.id === 'for-you')
 
@@ -191,23 +182,10 @@ watch(() => route.params.id, async (newId) => {
     <div class="sticky top-0 z-10 bg-surface-800 border-b border-surface-700 lg:hidden">
       <div v-if="categories.length">
 
-        <!-- Dynamic section label (outside scroll, always visible) -->
-        <div class="px-4 pt-3 pb-1">
-          <p
-            v-if="visibleSection === 'others'"
-            class="text-xs font-semibold uppercase tracking-wider text-surface-500"
-          >{{ t('categories.others') }}</p>
-          <p
-            v-else
-            class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1"
-          ><SparklesIcon class="w-3 h-3" />{{ t('categories.recommended') }}</p>
-        </div>
-
         <!-- Scrollable pills -->
         <div
           ref="pillsScrollRef"
-          class="flex items-center gap-2 px-4 pb-4 overflow-x-auto pills-scroll"
-          @scroll="onPillsScroll"
+          class="flex items-center gap-2 px-4 py-4 overflow-x-auto pills-scroll"
         >
           <!-- Recommended pills -->
           <div class="flex gap-2 shrink-0">
@@ -233,7 +211,7 @@ watch(() => route.params.id, async (newId) => {
           <!-- Divider + Others pills -->
           <template v-if="categorySections.some(s => s.key === 'others')">
             <div class="w-px h-7 bg-surface-600 shrink-0" />
-            <div ref="otherPillsRef" class="flex gap-2 shrink-0">
+            <div class="flex gap-2 shrink-0">
               <CategoryMobilePill
                 v-for="cat in (categorySections.find(s => s.key === 'others')?.items ?? [])"
                 :key="cat.id"
@@ -333,6 +311,8 @@ watch(() => route.params.id, async (newId) => {
       </div>
     </div>
 
+    <OnboardingTutorial />
+
     <!-- PDF Modal -->
     <Transition
       enter-from-class="opacity-0"
@@ -364,7 +344,14 @@ watch(() => route.params.id, async (newId) => {
           <!-- Article body -->
           <div class="flex-1 overflow-y-auto overflow-x-hidden px-6 py-6">
             <div class="max-w-2xl mx-auto min-w-0">
-              <ArticleRenderer :body="openedResource.body || { sections: [] }" />
+              <!-- Description always shown as intro -->
+              <p v-if="openedResource.description" class="text-surface-600 leading-relaxed mb-6">{{ openedResource.description }}</p>
+
+              <!-- Article body only if there is real content -->
+              <ArticleRenderer
+                v-if="openedResource.body?.sections?.length || openedResource.body?.blocks?.length"
+                :body="openedResource.body"
+              />
 
               <!-- Attachments -->
               <div v-if="openedResource.attachments?.length" class="mt-8 pt-6 border-t border-surface-200">

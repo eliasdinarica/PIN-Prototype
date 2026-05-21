@@ -92,5 +92,16 @@
     "openTab": "Ouvrir dans un nouvel onglet",
     "recommended": "Recommandés",
     "others": "Autres documents"
+  },
+  "tutorial": {
+    "step1Title": "Explorez les catégories",
+    "step1Body": "Les ressources sont regroupées par thème. Choisissez une catégorie pour voir ce qui vous concerne.",
+    "step2Title": "Des ressources pour vous",
+    "step2Body": "Les ressources marquées d'une étoile correspondent à votre profil. Elles sont les plus utiles pour votre situation.",
+    "step3Title": "Toutes les autres ressources",
+    "step3Body": "Les autres ressources peuvent aussi être utiles. Consultez-les quand vous voulez.",
+    "next": "Suivant",
+    "finish": "C'est parti !",
+    "skip": "Passer"
   }
 }

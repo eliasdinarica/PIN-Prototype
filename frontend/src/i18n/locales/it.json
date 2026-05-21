@@ -92,5 +92,16 @@
     "openTab": "Apri in nuova scheda",
     "recommended": "Consigliati",
     "others": "Altri documenti"
+  },
+  "tutorial": {
+    "step1Title": "Esplora le categorie",
+    "step1Body": "Le risorse sono raggruppate per tema. Scegli una categoria per vedere cosa ti riguarda.",
+    "step2Title": "Risorse per te",
+    "step2Body": "Le risorse con una stella corrispondono al tuo profilo. Sono le più utili per la tua situazione.",
+    "step3Title": "Tutte le altre risorse",
+    "step3Body": "Anche le altre risorse possono essere utili. Consultale quando vuoi.",
+    "next": "Avanti",
+    "finish": "Andiamo!",
+    "skip": "Salta"
   }
 }
