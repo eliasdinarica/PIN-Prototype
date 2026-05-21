@@ -94,14 +94,8 @@
     "others": "Outros documentos"
   },
   "tutorial": {
-    "step1Title": "Explore as categorias",
-    "step1Body": "Os recursos estão agrupados por tema. Escolha uma categoria para ver o que se aplica a você.",
-    "step2Title": "Recursos para você",
-    "step2Body": "Os recursos marcados com uma estrela correspondem ao seu perfil. São os mais úteis para a sua situação.",
-    "step3Title": "Todos os outros recursos",
-    "step3Body": "Outros recursos também podem ser úteis. Explore-os quando quiser.",
-    "next": "Próximo",
-    "finish": "Vamos lá!",
-    "skip": "Pular"
+    "hintCategories": "As categorias agrupam os recursos por tema. Escolha uma para começar.",
+    "hintResources": "Os recursos são fichas de informação. Os com ★ são para você. Aparecem primeiro.",
+    "tapToDismiss": "Toque em qualquer lugar para fechar"
   }
 }

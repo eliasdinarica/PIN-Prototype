@@ -24,6 +24,16 @@ const loading = ref(true)
 const openedResource = ref(null)
 const activePillEl = ref(null)
 const pillsScrollRef = ref(null)
+const otherPillsRef = ref(null)
+const visibleSection = ref('recommended')
+
+function onPillsScroll() {
+  const container = pillsScrollRef.value
+  const othersDiv = otherPillsRef.value
+  if (!container || !othersDiv) return
+  const viewportCenter = container.scrollLeft + container.offsetWidth / 2
+  visibleSection.value = viewportCenter >= othersDiv.offsetLeft ? 'others' : 'recommended'
+}
 
 const isForYou = computed(() => route.params.id === 'for-you')
 
@@ -179,13 +189,27 @@ watch(() => route.params.id, async (newId) => {
   <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200">
 
     <!-- Mobile sticky header -->
-    <div class="sticky top-0 z-10 bg-surface-800 border-b border-surface-700 lg:hidden">
+    <div class="sticky top-0 z-20 bg-surface-800 border-b border-surface-700 lg:hidden">
       <div v-if="categories.length">
+
+        <!-- Label de section dynamique -->
+        <div class="px-4 pt-3 pb-1">
+          <p
+            v-if="visibleSection === 'others'"
+            class="text-xs font-semibold uppercase tracking-wider text-surface-500"
+          >{{ t('categories.others') }}</p>
+          <p
+            v-else
+            class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1"
+          ><SparklesIcon class="w-3 h-3" />{{ t('categories.recommended') }}</p>
+        </div>
 
         <!-- Scrollable pills -->
         <div
           ref="pillsScrollRef"
-          class="flex items-center gap-2 px-4 py-4 overflow-x-auto pills-scroll"
+          data-tut="cats-mobile"
+          class="flex items-center gap-2 px-4 pb-4 overflow-x-auto pills-scroll"
+          @scroll="onPillsScroll"
         >
           <!-- Recommended pills -->
           <div class="flex gap-2 shrink-0">
@@ -211,7 +235,7 @@ watch(() => route.params.id, async (newId) => {
           <!-- Divider + Others pills -->
           <template v-if="categorySections.some(s => s.key === 'others')">
             <div class="w-px h-7 bg-surface-600 shrink-0" />
-            <div class="flex gap-2 shrink-0">
+            <div ref="otherPillsRef" class="flex gap-2 shrink-0">
               <CategoryMobilePill
                 v-for="cat in (categorySections.find(s => s.key === 'others')?.items ?? [])"
                 :key="cat.id"
@@ -232,7 +256,7 @@ watch(() => route.params.id, async (newId) => {
     <div class="max-w-5xl mx-auto px-5 py-8 lg:flex lg:gap-8 lg:items-start">
 
       <!-- Desktop sidebar -->
-      <aside v-if="categories.length" class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-8">
+      <aside v-if="categories.length" data-tut="cats-desktop" class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-8">
         <CategorySidebarItem
           v-if="topResources.length"
           :label="t('categories.forYou')"

@@ -1,47 +1,82 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { SparklesIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/vue/24/outline'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const show = ref(false)
-const step = ref(0)
 const STORAGE_KEY = 'pin_tutorial_v1'
 
-const steps = computed(() => [
-  {
-    icon: Squares2X2Icon,
-    iconBg: 'bg-surface-100',
-    iconColor: 'text-surface-600',
-    title: t('tutorial.step1Title'),
-    body: t('tutorial.step1Body'),
-  },
-  {
-    icon: SparklesIcon,
-    iconBg: 'bg-brand-50',
-    iconColor: 'text-brand-500',
-    title: t('tutorial.step2Title'),
-    body: t('tutorial.step2Body'),
-  },
-  {
-    icon: ListBulletIcon,
-    iconBg: 'bg-surface-100',
-    iconColor: 'text-surface-500',
-    title: t('tutorial.step3Title'),
-    body: t('tutorial.step3Body'),
-  },
-])
+// Positions calculées dynamiquement depuis le DOM
+const style1 = ref({})
+const style2 = ref({})
+const arrow1 = ref('up')   // 'up' | 'left' | 'down'
+const arrow2 = ref('up')
+
+function place() {
+  const desktop = window.innerWidth >= 1024
+  const HINT_W = 196
+
+  if (desktop) {
+    const cats = document.querySelector('[data-tut="cats-desktop"]')
+    const res  = document.querySelector('[data-tut="res"]')
+
+    if (cats) {
+      const r = cats.getBoundingClientRect()
+      // Bulle à droite de la sidebar, flèche ← vers la sidebar
+      style1.value = {
+        top:  `${r.top + 40}px`,
+        left: `${r.right + 14}px`,
+      }
+      arrow1.value = 'left'
+    }
+
+    if (res) {
+      const r = res.getBoundingClientRect()
+      // Bulle au-dessus du premier card (décalée à droite), flèche ↓ vers les cartes
+      const leftPos = Math.min(r.left + r.width * 0.55, window.innerWidth - HINT_W - 16)
+      style2.value = {
+        top:  `${r.top - 10}px`,
+        left: `${leftPos}px`,
+      }
+      arrow2.value = 'up'
+    }
+
+  } else {
+    const cats = document.querySelector('[data-tut="cats-mobile"]')
+    const res  = document.querySelector('[data-tut="res"]')
+
+    if (cats) {
+      const r = cats.getBoundingClientRect()
+      // Bulle juste sous la barre de pills, flèche ↑ vers les pills
+      style1.value = {
+        top:  `${r.bottom + 8}px`,
+        left: '12px',
+      }
+      arrow1.value = 'up'
+    }
+
+    if (res) {
+      const r = res.getBoundingClientRect()
+      // Bulle à droite dans la zone des cartes, flèche ↑
+      const leftPos = Math.min(r.right - HINT_W - 8, window.innerWidth - HINT_W - 12)
+      style2.value = {
+        top:  `${r.top + 24}px`,
+        left: `${Math.max(leftPos, 12)}px`,
+      }
+      arrow2.value = 'up'
+    }
+  }
+}
 
 onMounted(() => {
   if (!localStorage.getItem(STORAGE_KEY)) {
-    setTimeout(() => { show.value = true }, 400)
+    // Délai pour laisser le DOM se rendre, puis on mesure
+    setTimeout(() => {
+      place()
+      show.value = true
+    }, 800)
   }
 })
-
-function next() {
-  if (step.value < steps.value.length - 1) step.value++
-  else done()
-}
 
 function done() {
   localStorage.setItem(STORAGE_KEY, '1')
@@ -51,104 +86,73 @@ function done() {
 
 <template>
   <Transition name="fade">
-    <div v-if="show" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <!-- backdrop -->
-      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="done" />
+    <div v-if="show" class="fixed inset-0 z-40 pointer-events-none">
 
-      <!-- sheet / modal -->
-      <Transition name="sheet" appear>
-        <div
-          v-if="show"
-          class="relative bg-white w-full sm:max-w-sm sm:mx-4 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden"
-        >
-          <!-- mobile handle -->
-          <div class="w-10 h-1 bg-surface-200 rounded-full mx-auto mt-3 mb-0 sm:hidden" />
+      <!-- Couche de fermeture -->
+      <div class="absolute inset-0 pointer-events-auto" @click="done" />
 
-          <div class="px-6 pb-8 pt-5 sm:p-8">
-            <!-- step dots -->
-            <div class="flex gap-1.5 justify-center mb-7">
-              <div
-                v-for="(_, i) in steps"
-                :key="i"
-                class="h-1.5 rounded-full transition-all duration-300"
-                :class="i === step ? 'w-6 bg-brand-500' : 'w-1.5 bg-surface-200'"
-              />
-            </div>
+      <!-- Bulle 1 : catégories -->
+      <div class="hint pointer-events-auto" :style="style1" @click.stop="done">
+        <div class="tri" :class="`tri-${arrow1}`" />
+        <p>{{ t('tutorial.hintCategories') }}</p>
+      </div>
 
-            <!-- icon -->
-            <div
-              class="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center transition-colors duration-300"
-              :class="steps[step].iconBg"
-            >
-              <component :is="steps[step].icon" class="w-8 h-8 transition-colors duration-300" :class="steps[step].iconColor" />
-            </div>
+      <!-- Bulle 2 : ressources -->
+      <div class="hint pointer-events-auto" :style="style2" @click.stop="done">
+        <div class="tri" :class="`tri-${arrow2}`" />
+        <p>{{ t('tutorial.hintResources') }}</p>
+      </div>
 
-            <!-- visual mockup per step -->
-            <div class="mb-5 px-1">
-              <!-- Step 1: category pills mockup -->
-              <div v-if="step === 0" class="flex flex-wrap gap-2 justify-center">
-                <span class="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-full text-xs font-semibold">Santé</span>
-                <span class="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-full text-xs font-semibold">Logement</span>
-                <span class="px-3 py-1.5 bg-surface-100 text-surface-500 rounded-full text-xs font-semibold">Travail</span>
-                <span class="px-3 py-1.5 bg-surface-100 text-surface-500 rounded-full text-xs font-semibold">Éducation</span>
-              </div>
+      <p class="absolute bottom-8 inset-x-0 text-center text-white/40 text-xs pointer-events-none select-none">
+        {{ t('tutorial.tapToDismiss') }}
+      </p>
 
-              <!-- Step 2: recommended resource mockup -->
-              <div v-else-if="step === 1" class="bg-brand-50 border border-brand-200 rounded-xl p-3.5 text-left">
-                <p class="text-xs font-semibold text-brand-500 flex items-center gap-1 mb-1.5">
-                  <SparklesIcon class="w-3.5 h-3.5" />
-                  Recommandé
-                </p>
-                <p class="text-sm font-semibold text-surface-800 leading-snug">L'assurance maladie</p>
-                <p class="text-xs text-surface-500 mt-0.5">Toute personne en Suisse doit s'inscrire…</p>
-              </div>
-
-              <!-- Step 3: other resource mockup -->
-              <div v-else class="space-y-2">
-                <div class="bg-surface-50 border border-surface-200 rounded-xl p-3.5 text-left">
-                  <p class="text-sm font-semibold text-surface-700 leading-snug">Formation professionnelle</p>
-                  <p class="text-xs text-surface-400 mt-0.5">Obtenir un diplôme suisse en tant qu'adulte…</p>
-                </div>
-                <div class="bg-surface-50 border border-surface-200 rounded-xl p-3.5 text-left">
-                  <p class="text-sm font-semibold text-surface-700 leading-snug">Faire reconnaître ses diplômes</p>
-                  <p class="text-xs text-surface-400 mt-0.5">Valider en Suisse un diplôme étranger…</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- text -->
-            <h2 class="text-lg font-bold text-center text-surface-900 mb-2">{{ steps[step].title }}</h2>
-            <p class="text-surface-500 text-center leading-relaxed text-sm">{{ steps[step].body }}</p>
-
-            <!-- buttons -->
-            <button
-              class="mt-6 w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm transition-colors cursor-pointer border-none"
-              @click="next"
-            >
-              {{ step < steps.length - 1 ? t('tutorial.next') : t('tutorial.finish') }}
-            </button>
-            <button
-              class="mt-2 w-full text-sm text-surface-400 hover:text-surface-600 py-2 bg-transparent border-none cursor-pointer transition-colors"
-              @click="done"
-            >
-              {{ t('tutorial.skip') }}
-            </button>
-          </div>
-        </div>
-      </Transition>
     </div>
   </Transition>
 </template>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-active { transition: opacity 0.35s ease; }
+.fade-leave-active { transition: opacity 0.2s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
-.sheet-enter-active { transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease; }
-.sheet-leave-active { transition: transform 0.25s ease-in, opacity 0.2s ease; }
-.sheet-enter-from, .sheet-leave-to { transform: translateY(100%); opacity: 0; }
+.hint {
+  position: fixed;
+  background: white;
+  border-radius: 12px;
+  padding: 11px 14px;
+  width: 196px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(24 24 27);
+  line-height: 1.45;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.28);
+}
 
-@media (min-width: 640px) {
-  .sheet-enter-from, .sheet-leave-to { transform: scale(0.96) translateY(0); opacity: 0; }
+/* Triangles CSS (flèches) */
+.tri { position: absolute; width: 0; height: 0; }
+
+/* ↑ flèche en haut à gauche */
+.tri-up {
+  top: -9px; left: 18px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid white;
+}
+
+/* ← flèche à gauche */
+.tri-left {
+  left: -9px; top: 16px;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 9px solid white;
+}
+
+/* ↓ flèche en bas */
+.tri-down {
+  bottom: -9px; left: 18px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid white;
 }
 </style>
