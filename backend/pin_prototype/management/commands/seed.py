@@ -160,8 +160,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Chercher du travail",
-                'description': "S'inscrire à l'ORP (ONE) pour recevoir une aide à la recherche d'emploi et, si vous avez cotisé, des indemnités de chômage.",
+                'name': "Je cherche du travail, par où commencer ?",
+                'description': "Le ONE m'aide à chercher un emploi. Si j'ai cotisé en Suisse, je peux aussi recevoir de l'argent chaque mois pendant ma recherche.",
                 'tags': ['Recherche emploi', 'Travail', 'Chomage', 'Formulaire', 'En personne', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
@@ -213,8 +213,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Préparer son CV suisse",
-                'description': "Le CV suisse a des règles précises. Une bonne présentation augmente vos chances d'être contacté.",
+                'name': "Je veux préparer un CV pour trouver du travail en Suisse",
+                'description': "Le CV suisse a des règles différentes. Je dois savoir quoi mettre et comment le présenter pour avoir des chances.",
                 'tags': ['CV candidature', 'Recherche emploi', 'Travail', 'Formation'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
                 'body': body(
@@ -250,8 +250,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Se former et se réorienter (CNIP)",
-                'description': "Le CNIP accompagne les adultes qui veulent se former, changer de métier ou valider leur expérience professionnelle.",
+                'name': "Je veux me former ou changer de métier",
+                'description': "Le CNIP m'accompagne pour évaluer mes compétences, me former ou faire reconnaître mon expérience professionnelle.",
                 'tags': ['Formation', 'Travail', 'Reconnaissance diplome', 'En personne', 'Gratuit'],
                 'audiences': ["Établis depuis plus d'un an", 'Travailleur qualifié', 'Professionnel de santé'],
                 'body': body(
@@ -282,8 +282,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Travailler à son compte",
-                'description': "Démarches pour créer une activité indépendante en Suisse : inscription AVS, statut juridique et obligations.",
+                'name': "Je veux travailler à mon compte en Suisse",
+                'description': "Je veux créer mon activité indépendante. Voici les étapes à suivre et ce que la loi m'impose.",
                 'tags': ['Independent', 'Travail', 'Droits', 'Formulaire', 'Budget', 'Documents officiels'],
                 'audiences': ["Établis depuis plus d'un an", 'Résident long terme', 'Travailleur qualifié'],
                 'body': body(
@@ -314,8 +314,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Vos droits en tant qu'employé",
-                'description': "Contrat de travail, fiches de salaire, congés, protection contre le licenciement — ce que la loi garantit à tout salarié en Suisse.",
+                'name': "Je veux connaître mes droits en tant qu'employé",
+                'description': "Mon contrat, mon salaire, mes congés, ma protection si je suis licencié. Voici ce que la loi me garantit.",
                 'tags': ['Droit du travail', 'Travail', 'Droits', 'Salaire'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
@@ -352,8 +352,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Travailler via une agence de travail temporaire",
-                'description': "Les agences d'intérim permettent de trouver un emploi rapidement, même sans expérience suisse. Voici comment ça fonctionne.",
+                'name': "Je veux trouver du travail rapidement via une agence",
+                'description': "Une agence d'intérim peut me trouver une mission en entreprise rapidement, même sans expérience suisse.",
                 'tags': ['Recherche emploi', 'Travail', 'CV candidature', 'En ligne', 'En personne'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
                 'body': body(
@@ -383,8 +383,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Salaires et conventions collectives (CCT)",
-                'description': "Comprendre votre salaire, trouver la convention collective de votre secteur et vérifier que vous êtes payé correctement.",
+                'name': "Je ne sais pas si je suis payé correctement",
+                'description': "Je veux comprendre ma fiche de salaire et savoir si mon salaire respecte les règles de mon secteur.",
                 'tags': ['Salaire', 'Droit du travail', 'Travail', 'Droits'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
@@ -414,8 +414,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "L'orientation professionnelle",
-                'description': "Vous ne savez pas quel métier choisir ou comment relancer votre carrière en Suisse ? Des conseillers peuvent vous aider gratuitement.",
+                'name': "Je ne sais pas quel métier choisir en Suisse",
+                'description': "Un conseiller peut m'aider gratuitement à trouver ma direction professionnelle et à relancer ma carrière.",
                 'tags': ['Travail', 'Formation', 'Recherche emploi', 'En personne', 'Gratuit'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
                 'body': body(
@@ -443,8 +443,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "LinkedIn et réseautage professionnel",
-                'description': "Comment créer un profil LinkedIn efficace et utiliser son réseau pour trouver un emploi en Suisse.",
+                'name': "Je veux utiliser LinkedIn pour trouver du travail",
+                'description': "En Suisse, beaucoup d'offres ne sont pas publiées. Un bon profil LinkedIn et un réseau solide augmentent vraiment mes chances.",
                 'tags': ['Recherche emploi', 'CV candidature', 'Travail', 'En ligne'],
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
                 'body': body(
@@ -476,8 +476,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Bénévolat comme première expérience suisse",
-                'description': "Faire du bénévolat permet de pratiquer le français, de créer des contacts et d'avoir une référence locale sur son CV.",
+                'name': "Je veux faire du bénévolat pour avoir une première expérience",
+                'description': "Le bénévolat me permet de pratiquer le français, de rencontrer des gens et d'ajouter une référence locale à mon CV.",
                 'tags': ['Recherche emploi', 'Travail', 'Vie sociale', 'Gratuit', 'CV candidature'],
                 'audiences': ['Nouveaux arrivants', 'Jeune adulte', "Demandeur d'asile"],
                 'body': body(
@@ -512,8 +512,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "L'assurance maladie obligatoire (LAMal)",
-                'description': "Toute personne vivant en Suisse doit s'assurer dans les 3 mois. Voici comment choisir et s'inscrire.",
+                'name': "Je dois m'assurer contre la maladie",
+                'description': "En Suisse, tout le monde doit avoir une assurance maladie. Je dois m'inscrire dans les 3 mois après mon arrivée.",
                 'tags': ['Assurance maladie', 'Budget', 'En ligne', 'Multilingue', 'Documents officiels'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -559,8 +559,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Réduire sa prime d'assurance maladie",
-                'description': "Si vos revenus sont modestes, l'État paie une partie de votre prime. Cette aide s'appelle subside.",
+                'name': "Je veux payer moins cher mon assurance maladie",
+                'description': "Si je n'ai pas beaucoup de revenus, l'État peut payer une partie de ma prime d'assurance maladie. Cette aide s'appelle subside.",
                 'tags': ['Assurance maladie', 'Reduction de prime', 'Budget', 'Subvention', 'Formulaire', 'Aide sociale'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Résident long terme'],
                 'body': body(
@@ -592,8 +592,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Trouver un médecin de famille",
-                'description': "Trouver un médecin généraliste qui accepte de nouveaux patients dans le canton de Neuchâtel.",
+                'name': "Je cherche un médecin de famille",
+                'description': "Je veux trouver un médecin généraliste qui accepte de nouveaux patients dans le canton de Neuchâtel.",
                 'tags': ['Medecin', 'Sante', 'Multilingue', 'Traduction disponible', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -625,8 +625,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Urgences médicales",
-                'description': "Numéros d'urgence, hôpitaux et permanences de nuit dans le canton de Neuchâtel.",
+                'name': "J'ai besoin d'aide médicale en urgence",
+                'description': "Les numéros d'urgence, les hôpitaux et les permanences de nuit dans le canton de Neuchâtel.",
                 'tags': ['Sante', 'Urgence', 'Multilingue', 'Gratuit', 'Hotline'],
                 'audiences': [],
                 'body': body(
@@ -655,8 +655,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Soutien en santé mentale",
-                'description': "Consultations psychologiques, groupes de soutien et lignes d'écoute pour les migrants à Neuchâtel.",
+                'name': "Je me sens mal et j'ai besoin d'aide psychologique",
+                'description': "Des professionnels peuvent m'aider, souvent gratuitement et avec un interprète. Je ne suis pas seul.",
                 'tags': ['Sante mentale', 'Sante', 'Gratuit', 'Traduction disponible', 'En personne', 'Interprete'],
                 'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
@@ -679,8 +679,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Maternité en Suisse",
-                'description': "Suivi de grossesse, accouchement et congé maternité — ce qu'il faut savoir à Neuchâtel.",
+                'name': "Je suis enceinte, que dois-je faire ?",
+                'description': "Je veux savoir comment se passe le suivi de grossesse, l'accouchement et le congé maternité en Suisse.",
                 'tags': ['Maternite', 'Sante', 'Assurance maladie', 'Femmes', 'Droits parentaux'],
                 'audiences': ['Parents', 'Femmes', 'Nouveaux arrivants'],
                 'body': body(
@@ -715,8 +715,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Soins dentaires",
-                'description': "Les soins dentaires ne sont pas couverts par la LAMal. Voici comment trouver un dentiste abordable à Neuchâtel.",
+                'name': "J'ai besoin de soins dentaires",
+                'description': "Les soins dentaires ne sont presque pas remboursés par l'assurance maladie. Voici comment trouver un dentiste abordable à Neuchâtel.",
                 'tags': ['Sante', 'Budget', 'En personne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -745,8 +745,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Vaccination",
-                'description': "Calendrier vaccinal suisse, où se faire vacciner à Neuchâtel et ce qui est remboursé.",
+                'name': "Je veux me faire vacciner",
+                'description': "Je veux connaître les vaccins recommandés en Suisse et savoir où me faire vacciner à Neuchâtel.",
                 'tags': ['Vaccination', 'Sante', 'Enfants', 'Gratuit'],
                 'audiences': ['Nouveaux arrivants', 'Parents'],
                 'body': body(
@@ -775,8 +775,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Santé sexuelle et planning familial",
-                'description': "Contraception, dépistage des IST et services de planification familiale à Neuchâtel.",
+                'name': "Je cherche des informations sur la contraception ou les IST",
+                'description': "Des services gratuits ou à tarif réduit existent à Neuchâtel pour la contraception et les dépistages.",
                 'tags': ['Sante', 'Femmes', 'Maternite', 'Gratuit', 'En personne'],
                 'audiences': ['Femmes', 'Jeune adulte', 'Nouveaux arrivants'],
                 'body': body(
@@ -804,8 +804,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Aide aux personnes handicapées (AI)",
-                'description': "L'assurance invalidité (AI) soutient les personnes qui ne peuvent plus travailler à cause d'un problème de santé.",
+                'name': "J'ai un handicap ou une maladie grave, quelles aides existent ?",
+                'description': "L'assurance invalidité (AI) peut m'aider si je ne peux plus travailler à cause d'un problème de santé.",
                 'tags': ['Handicap', 'Aide sociale', 'Allocation', 'Formulaire', 'Budget'],
                 'audiences': ['Senior', 'Nouveaux arrivants'],
                 'body': body(
@@ -833,8 +833,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Addictions — trouver de l'aide",
-                'description': "Aide professionnelle pour les personnes touchées par l'alcool, les drogues ou le jeu à Neuchâtel.",
+                'name': "J'ai des problèmes avec l'alcool, les drogues ou le jeu",
+                'description': "Des professionnels discrets peuvent m'aider, gratuitement et en toute confidentialité.",
                 'tags': ['Sante mentale', 'Sante', 'Urgence', 'Gratuit', 'En personne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -871,8 +871,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "L'aide sociale",
-                'description': "Si vous n'avez pas assez d'argent pour vivre, l'aide sociale peut vous soutenir. À Neuchâtel, c'est le GSR (Guichet Social Régional) qui s'en occupe.",
+                'name': "Je n'ai pas assez d'argent pour vivre",
+                'description': "L'aide sociale peut me soutenir si mes revenus ne couvrent pas mes besoins de base. À Neuchâtel, c'est le GSR qui s'en occupe.",
                 'tags': ['Aide sociale', 'Budget', 'Allocation', 'Formulaire', 'En personne', 'Traduction disponible'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -905,8 +905,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Ouvrir un compte bancaire",
-                'description': "Quelle banque choisir à Neuchâtel, quels documents apporter, et les options pour les permis N ou F.",
+                'name': "Je veux ouvrir un compte bancaire",
+                'description': "Je veux savoir quelle banque choisir, quels documents apporter et quelles options existent selon mon permis de séjour.",
                 'tags': ['Banque', 'Budget', 'Documents officiels', 'En personne', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -934,8 +934,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Les allocations de chômage",
-                'description': "Si vous perdez votre emploi, vous pouvez recevoir de l'argent chaque mois pendant que vous cherchez du travail.",
+                'name': "J'ai perdu mon emploi et je veux toucher le chômage",
+                'description': "Si j'ai travaillé et cotisé en Suisse, je peux recevoir de l'argent chaque mois pendant que je cherche un emploi.",
                 'tags': ['Chomage', 'Allocation', 'Budget', 'Travail', 'Formulaire', 'Droits'],
                 'audiences': ["Établis depuis plus d'un an", 'Résident long terme', 'Frontalier'],
                 'body': body(
@@ -975,8 +975,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Impôts pour résidents étrangers",
-                'description': "Imposition à la source, déclaration fiscale et déductions possibles pour les étrangers à Neuchâtel.",
+                'name': "Je ne comprends pas comment fonctionnent les impôts",
+                'description': "Je veux savoir si mes impôts sont prélevés automatiquement sur mon salaire ou si je dois faire une déclaration.",
                 'tags': ['Impots', 'Documents officiels', 'Budget', 'Travail', 'Formulaire'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an", 'Frontalier'],
                 'body': body(
@@ -1010,8 +1010,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "L'AVS et la prévoyance vieillesse",
-                'description': "Les trois piliers du système de retraite suisse — ce que vous cotisez et ce que vous recevrez.",
+                'name': "Je veux comprendre la retraite en Suisse",
+                'description': "Je veux savoir comment fonctionne le système de retraite suisse et ce que je cotise chaque mois.",
                 'tags': ['Budget', 'Allocation', 'Droits', 'Formulaire', 'Travail'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an", 'Senior'],
                 'body': body(
@@ -1045,8 +1045,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Dettes et surendettement",
-                'description': "Si vos dettes s'accumulent, des professionnels peuvent vous aider gratuitement avant que la situation empire.",
+                'name': "J'ai des dettes et je ne sais plus quoi faire",
+                'description': "Des professionnels peuvent m'aider gratuitement à gérer mes dettes avant que la situation empire.",
                 'tags': ['Budget', 'Aide sociale', 'Aide juridique', 'En personne', 'Gratuit'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
@@ -1076,8 +1076,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Les prestations complémentaires (PC)",
-                'description': "Si votre rente AVS ou AI ne couvre pas vos besoins, les PC complètent automatiquement votre revenu.",
+                'name': "Ma rente ne suffit pas pour vivre",
+                'description': "Si ma rente AVS ou AI est trop petite, j'ai droit à une aide supplémentaire. Ce n'est pas de l'aide sociale, c'est un droit.",
                 'tags': ['Aide sociale', 'Allocation', 'Budget', 'Senior', 'Formulaire', 'Handicap'],
                 'audiences': ['Senior', 'Résident long terme'],
                 'body': body(
@@ -1108,8 +1108,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Gérer son budget",
-                'description': "Conseils pratiques et outils gratuits pour organiser ses dépenses et éviter les difficultés financières.",
+                'name': "Je veux mieux gérer mon argent",
+                'description': "Je veux organiser mes dépenses et éviter les difficultés financières. Des conseils et outils gratuits existent.",
                 'tags': ['Budget', 'Formation', 'Aide sociale', 'Gratuit', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', 'Jeune adulte', "Demandeur d'asile"],
                 'body': body(
@@ -1137,8 +1137,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Épiceries sociales et aide alimentaire",
-                'description': "Adresses d'épiceries à prix réduit et de distributions alimentaires à Neuchâtel.",
+                'name': "Je n'ai pas assez à manger",
+                'description': "Des associations proposent de la nourriture gratuite ou à prix très réduit pour les personnes dans le besoin.",
                 'tags': ['Gratuit', 'En personne', 'Aide sociale', 'Alimentation', 'Urgence', 'Budget'],
                 'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
@@ -1172,8 +1172,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Cours de français gratuits ou à prix réduit",
-                'description': "Organismes proposant des cours de français pour adultes migrants dans le canton de Neuchâtel.",
+                'name': "Je veux apprendre le français",
+                'description': "Des cours de français gratuits ou peu chers existent pour les adultes migrants dans le canton de Neuchâtel.",
                 'tags': ['Cours de langue', 'Langue', 'Gratuit', 'Integration', 'En personne', 'Formation'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
                 'body': body(
@@ -1196,8 +1196,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Faire reconnaître ses diplômes",
-                'description': "Procédure pour faire valider en Suisse un diplôme obtenu à l'étranger, selon votre profession.",
+                'name': "Je veux faire reconnaître mon diplôme étranger en Suisse",
+                'description': "Je veux savoir comment faire valider en Suisse le diplôme que j'ai obtenu dans mon pays d'origine.",
                 'tags': ['Reconnaissance diplome', 'Documents officiels', 'Formulaire', 'Travail', 'Formation'],
                 'audiences': ['Travailleur qualifié', 'Professionnel de santé', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1228,8 +1228,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Formation professionnelle (AFP / CFC)",
-                'description': "Obtenir un diplôme professionnel suisse en tant qu'adulte, même sans avoir fait d'apprentissage.",
+                'name': "Je veux obtenir un diplôme professionnel suisse",
+                'description': "Je peux obtenir un diplôme professionnel suisse en tant qu'adulte, même sans avoir fait d'apprentissage.",
                 'tags': ['Formation', 'Apprentissage', 'Travail', 'En personne'],
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte'],
                 'body': body(
@@ -1257,8 +1257,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Apprendre le français en ligne",
-                'description': "Applications, sites web et ressources gratuites pour progresser en français depuis chez soi.",
+                'name': "Je veux apprendre le français depuis chez moi",
+                'description': "Des applications, sites et ressources gratuites me permettent de progresser en français depuis chez moi.",
                 'tags': ['Cours de langue', 'Langue', 'E-learning', 'Gratuit', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
                 'body': body(
@@ -1285,8 +1285,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Le test FIDE — certifier son niveau de français",
-                'description': "FIDE est le certificat officiel suisse de langue. Il est souvent demandé pour le permis C ou la naturalisation.",
+                'name': "Je veux certifier mon niveau de français",
+                'description': "Le FIDE est le certificat officiel suisse de langue. Il peut être demandé pour mon permis C ou pour la naturalisation.",
                 'tags': ['Cours de langue', 'Langue', 'Naturalisation', 'Permis C', 'Formulaire'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
@@ -1318,8 +1318,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Chèque-langue — subvention cantonale pour les cours",
-                'description': "À Neuchâtel, le canton peut financer jusqu'à 50 % du coût de vos cours de langue via le chèque-langue.",
+                'name': "Je veux savoir si l'État peut payer mes cours de langue",
+                'description': "À Neuchâtel, le canton peut financer jusqu'à la moitié du coût de mes cours de langue via le chèque-langue.",
                 'tags': ['Cours de langue', 'Langue', 'Subvention', 'Budget', 'Formulaire', 'Gratuit'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", "Établis depuis plus d'un an"],
                 'body': body(
@@ -1350,8 +1350,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Alphabétisation pour adultes",
-                'description': "Si vous ne savez pas encore lire ou écrire, des cours spécialisés existent à Neuchâtel — sans jugement et à votre rythme.",
+                'name': "Je ne sais pas encore lire ni écrire",
+                'description': "Des cours d'alphabétisation pour adultes existent à Neuchâtel. C'est possible à tout âge, dans un cadre bienveillant.",
                 'tags': ['Cours de langue', 'Langue', 'Gratuit', 'En personne', 'Integration', 'Formation'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Femmes'],
                 'body': body(
@@ -1374,8 +1374,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Écoles de langues et cours du soir à Neuchâtel",
-                'description': "Écoles privées, Migros Klubschule, Alliance Française — cours payants mais flexibles pour progresser rapidement.",
+                'name': "Je cherche des cours de langue avec des horaires flexibles",
+                'description': "Des cours du soir et du week-end existent à Neuchâtel pour progresser rapidement en français.",
                 'tags': ['Cours de langue', 'Langue', 'Formation', 'En personne', 'En ligne'],
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
                 'body': body(
@@ -1398,8 +1398,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "E-learning et MOOC — se former en ligne",
-                'description': "Cours en ligne gratuits ou peu chers pour apprendre un métier, améliorer ses compétences ou se reconvertir depuis chez soi.",
+                'name': "Je veux me former en ligne pour améliorer mes compétences",
+                'description': "Des cours en ligne gratuits ou peu chers me permettent d'apprendre un métier ou de progresser depuis chez moi.",
                 'tags': ['E-learning', 'Formation', 'En ligne', 'Gratuit', 'Travail'],
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
                 'body': body(
@@ -1428,8 +1428,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Université et Hautes Écoles à Neuchâtel",
-                'description': "Étudier à l'UniNE ou à la HE-Arc — conditions d'admission, coûts et bourses disponibles.",
+                'name': "Je veux étudier à l'université à Neuchâtel",
+                'description': "Je veux savoir comment m'inscrire à l'UniNE ou à la HE-Arc et si des aides financières sont disponibles.",
                 'tags': ['Universite', 'Formation', 'Reconnaissance diplome', 'Budget', 'En ligne'],
                 'audiences': ['Jeune adulte', "Établis depuis plus d'un an", 'Travailleur qualifié'],
                 'body': body(
@@ -1469,7 +1469,7 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Les allocations familiales",
+                'name': "Je veux recevoir les allocations pour mes enfants",
                 'description': "En Suisse, chaque famille avec enfants reçoit des allocations chaque mois. Voici comment les obtenir à Neuchâtel.",
                 'tags': ['Allocations familiales', 'Enfants', 'Formulaire', 'Budget', 'Aide sociale'],
                 'audiences': ['Parents'],
@@ -1505,8 +1505,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Inscrire son enfant à l'école",
-                'description': "L'école publique est gratuite et obligatoire à Neuchâtel. Voici comment inscrire votre enfant.",
+                'name': "Je veux inscrire mon enfant à l'école",
+                'description': "L'école est gratuite et obligatoire pour tous les enfants. Je veux savoir comment faire la démarche et ce qui se passe.",
                 'tags': ['Enfants', 'Scolarisation', 'Integration', 'Gratuit', 'Formulaire'],
                 'audiences': ['Parents', 'Nouveaux arrivants'],
                 'body': body(
@@ -1536,8 +1536,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Inscrire son enfant à la crèche",
-                'description': "Trouver une place en crèche ou garderie à Neuchâtel et bénéficier d'une aide financière.",
+                'name': "Je cherche une place en crèche pour mon enfant",
+                'description': "Je veux trouver une place en crèche ou garderie à Neuchâtel et savoir si je peux bénéficier d'une aide financière.",
                 'tags': ['Garde enfants', 'Enfants', 'Formulaire', 'En personne', 'Budget', 'Subvention'],
                 'audiences': ['Parents'],
                 'body': body(
@@ -1563,8 +1563,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Soutien scolaire pour enfants allophones",
-                'description': "Cours de rattrapage et ressources pour les enfants qui apprennent le français à l'école.",
+                'name': "Mon enfant a besoin d'aide pour apprendre le français à l'école",
+                'description': "Des cours de rattrapage et des ressources existent pour les enfants qui apprennent le français à l'école.",
                 'tags': ['Enfants', 'Soutien scolaire', 'Cours de langue', 'Langue', 'Gratuit', 'Integration'],
                 'audiences': ['Parents', 'Nouveaux arrivants'],
                 'body': body(
@@ -1587,8 +1587,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Violence domestique — aide et protection",
-                'description': "Si vous subissez des violences à la maison, des professionnels peuvent vous aider en toute confidentialité et rapidement.",
+                'name': "Je subis des violences à la maison",
+                'description': "Je peux appeler la police ou un service spécialisé. Des professionnels peuvent m'aider en toute confidentialité.",
                 'tags': ['Femmes', 'Urgence', 'Aide juridique', 'Droits', 'Sante mentale', 'Gratuit'],
                 'audiences': ['Femmes', 'Parents', 'Nouveaux arrivants'],
                 'body': body(
@@ -1615,8 +1615,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Parascolaire et garde après l'école",
-                'description': "Structures d'accueil avant et après l'école (UAPE) à Neuchâtel — inscription et tarifs.",
+                'name': "Je cherche une garde pour mes enfants avant ou après l'école",
+                'description': "Les structures parascolaires gardent les enfants le matin, le midi et après l'école. Voici comment m'inscrire.",
                 'tags': ['Garde enfants', 'Enfants', 'Scolarisation', 'Budget', 'Subvention'],
                 'audiences': ['Parents'],
                 'body': body(
@@ -1641,8 +1641,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Congés parentaux et APG",
-                'description': "Congé maternité, congé paternité et allocations pour perte de gain — vos droits en tant que parent.",
+                'name': "Je veux connaître mes droits lors d'une naissance",
+                'description': "Je veux savoir à quoi j'ai droit pour le congé maternité, le congé paternité et les allocations pour perte de gain.",
                 'tags': ['Droits parentaux', 'Famille', 'Travail', 'Allocation', 'Budget'],
                 'audiences': ['Parents', 'Nouveaux arrivants'],
                 'body': body(
@@ -1683,8 +1683,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Les permis de séjour",
-                'description': "Explication des différents permis suisses : N, F, S, B, C, G — droits et limites de chacun.",
+                'name': "Je ne comprends pas les différents permis de séjour",
+                'description': "Je veux comprendre ce que signifie mon permis et quels droits j'ai selon le type de permis que je possède.",
                 'tags': ['Permis sejour', 'Droits', 'Documents officiels', 'Multilingue', 'Permis N/F/S'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -1722,8 +1722,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Aide juridique gratuite",
-                'description': "Associations offrant une aide juridique gratuite ou à bas prix pour les migrants à Neuchâtel.",
+                'name': "J'ai besoin d'aide juridique gratuite",
+                'description': "Des associations peuvent m'aider gratuitement si j'ai des problèmes avec mon permis ou si je ne connais pas mes droits.",
                 'tags': ['Aide juridique', 'Droits', 'Gratuit', 'En personne', 'Traduction disponible'],
                 'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
@@ -1756,8 +1756,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "La procédure d'asile",
-                'description': "Les étapes de la demande d'asile en Suisse : auditions, décision du SEM et recours possibles.",
+                'name': "Je veux comprendre la procédure d'asile",
+                'description': "Je veux savoir quelles sont les étapes de ma demande d'asile en Suisse et quels sont mes droits pendant la procédure.",
                 'tags': ['Asile', 'Permis N/F/S', 'Droits', 'Formulaire', 'Traduction disponible', 'Interprete'],
                 'audiences': ["Demandeur d'asile"],
                 'body': body(
@@ -1792,8 +1792,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Le regroupement familial",
-                'description': "Faire venir sa famille en Suisse : conditions, revenus nécessaires et documents à fournir.",
+                'name': "Je veux faire venir ma famille en Suisse",
+                'description': "Je veux savoir si je peux faire venir ma famille, quelles conditions je dois remplir et comment faire la demande.",
                 'tags': ['Regroupement familial', 'Famille', 'Formulaire', 'Documents officiels', 'Permis B', 'Permis C'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1829,8 +1829,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "La naturalisation",
-                'description': "Devenir citoyen suisse : conditions, durée de résidence et démarches dans le canton de Neuchâtel.",
+                'name': "Je veux devenir citoyen suisse",
+                'description': "Je veux connaître les conditions pour demander la naturalisation et les démarches à faire dans le canton de Neuchâtel.",
                 'tags': ['Naturalisation', 'Integration', 'Documents officiels', 'Formulaire', 'Langue'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1854,8 +1854,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Passer du permis B au permis C",
-                'description': "Conditions et démarches pour obtenir le permis d'établissement C après plusieurs années en Suisse.",
+                'name': "Je veux passer du permis B au permis C",
+                'description': "Je veux savoir quand et comment demander le permis d'établissement après plusieurs années en Suisse.",
                 'tags': ['Permis C', 'Permis sejour', 'Documents officiels', 'Formulaire', 'Integration'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1884,8 +1884,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Droits civiques des étrangers à Neuchâtel",
-                'description': "À Neuchâtel, les étrangers ont le droit de voter aux élections cantonales et communales après 5 ans de résidence.",
+                'name': "Je veux voter aux élections à Neuchâtel",
+                'description': "À Neuchâtel, les étrangers peuvent voter après 5 ans de résidence. Je veux savoir comment m'inscrire.",
                 'tags': ['Droits', 'Integration', 'Documents officiels', 'Permis C', 'Permis B'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1913,8 +1913,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Divorce et séparation — effets sur le permis",
-                'description': "Une séparation ou un divorce peut affecter votre droit de séjour. Voici ce qu'il faut savoir.",
+                'name': "Je divorce, est-ce que ça change mon droit de séjour ?",
+                'description': "Une séparation peut affecter mon permis de séjour. Je veux savoir ce que ça change selon ma situation.",
                 'tags': ['Droits', 'Aide juridique', 'Famille', 'Permis sejour', 'Permis B'],
                 'audiences': ['Résident long terme', "Établis depuis plus d'un an"],
                 'body': body(
@@ -1939,8 +1939,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Signaler une discrimination",
-                'description': "Vos droits si vous êtes victime de discrimination au travail, au logement ou dans les services.",
+                'name': "J'ai été victime de discrimination",
+                'description': "La discrimination est illégale en Suisse. Je veux savoir quoi faire et où m'adresser pour défendre mes droits.",
                 'tags': ['Discrimination', 'Droits', 'Aide juridique', 'En personne', 'Gratuit'],
                 'audiences': [],
                 'body': body(
@@ -1969,8 +1969,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "S'inscrire en commune à l'arrivée",
-                'description': "Dès votre arrivée à Neuchâtel, vous devez vous annoncer au contrôle des habitants de votre commune dans les 14 jours.",
+                'name': "Je viens d'arriver, je dois m'inscrire à ma commune",
+                'description': "Je dois m'annoncer au bureau communal dans les 14 jours après mon arrivée. Voici comment faire et ce que j'obtiens.",
                 'tags': ['Documents officiels', 'Droits', 'Formulaire', 'En personne', 'Integration'],
                 'audiences': ['Nouveaux arrivants'],
                 'body': body(
@@ -2014,8 +2014,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Trouver un logement d'urgence",
-                'description': "Hébergements d'urgence disponibles dans le canton de Neuchâtel.",
+                'name': "Je n'ai pas de logement, j'ai besoin d'aide",
+                'description': "Je n'ai nulle part où dormir ce soir. Voici les numéros à appeler et les structures disponibles à Neuchâtel.",
                 'tags': ['Logement urgence', 'Urgence', 'En personne', 'Gratuit', 'Aide sociale'],
                 'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
@@ -2047,8 +2047,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Vos droits en tant que locataire",
-                'description': "Bail, état des lieux, charges locatives et recours en cas de litige avec votre propriétaire.",
+                'name': "Je veux connaître mes droits en tant que locataire",
+                'description': "Je veux comprendre mon bail, mes droits face à mon propriétaire et ce que je peux faire si j'ai un problème.",
                 'tags': ['Droits du locataire', 'Bail', 'Droits', 'Logement', 'Multilingue'],
                 'audiences': [],
                 'body': body(
@@ -2080,8 +2080,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Chercher un appartement",
-                'description': "Plateformes de recherche, documents à préparer et conseils pour trouver un logement à Neuchâtel.",
+                'name': "Je cherche un appartement à louer",
+                'description': "Je veux savoir où chercher, quels documents préparer et comment augmenter mes chances de trouver un logement.",
                 'tags': ['Logement', 'En ligne', 'Budget'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -2113,8 +2113,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Le dépôt de garantie",
-                'description': "Comment payer le dépôt de garantie, à quoi il sert et comment le récupérer à la fin du bail.",
+                'name': "Je ne comprends pas le dépôt de garantie",
+                'description': "Je veux savoir à quoi sert le dépôt de garantie, comment le payer et comment le récupérer à la fin du bail.",
                 'tags': ['Depot de garantie', 'Logement', 'Droits du locataire', 'Bail', 'Budget'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an"],
                 'body': body(
@@ -2148,8 +2148,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Logement social à Neuchâtel",
-                'description': "Logements à loyers modérés pour les personnes à faibles revenus — organismes et démarches dans le canton.",
+                'name': "Je cherche un logement à loyer réduit",
+                'description': "Si mes revenus sont faibles, je peux demander un logement social. Voici où m'inscrire dans le canton de Neuchâtel.",
                 'tags': ['Logement social', 'Budget', 'Aide sociale', 'Formulaire', 'En personne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Senior'],
                 'body': body(
@@ -2172,8 +2172,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Assurance ménage — comment s'assurer",
-                'description': "L'assurance ménage couvre vos affaires et votre responsabilité civile. Elle est obligatoire pour les locataires à Neuchâtel.",
+                'name': "Je dois prendre une assurance pour mon appartement",
+                'description': "L'assurance ménage est souvent obligatoire pour les locataires. Je veux savoir ce qu'elle couvre et où en souscrire une.",
                 'tags': ['Assurance menage', 'Logement', 'Formulaire', 'Budget', 'En ligne'],
                 'audiences': ['Nouveaux arrivants'],
                 'body': body(
@@ -2210,8 +2210,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Le COSM — votre premier contact à Neuchâtel",
-                'description': "Le Service de la cohésion multiculturelle (COSM) est le point de contact cantonal pour toute question d'intégration.",
+                'name': "Je viens d'arriver, que peut faire le COSM pour moi ?",
+                'description': "Le COSM est le service cantonal qui aide les personnes migrantes à s'intégrer. C'est souvent le premier endroit à contacter.",
                 'tags': ['Integration', 'Interprete', 'Traduction disponible', 'En personne', 'Multilingue', 'Droits'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -2245,8 +2245,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Soutien pour les femmes migrantes (RECIF)",
-                'description': "Le RECIF propose des cours de français, un soutien administratif et des activités spécifiquement pour les femmes migrantes.",
+                'name': "Je suis une femme migrante, je cherche du soutien",
+                'description': "Le RECIF propose des cours de français, de l'aide administrative et des activités spécifiquement pour les femmes migrantes.",
                 'tags': ['Femmes', 'Cours de langue', 'Integration', 'En personne', 'Gratuit', 'Sante mentale'],
                 'audiences': ['Nouveaux arrivants', 'Femmes'],
                 'body': body(
@@ -2280,8 +2280,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Vie sociale et associations",
-                'description': "Rejoindre une association, faire du bénévolat et créer des liens à Neuchâtel.",
+                'name': "Je veux rencontrer des gens et m'intégrer",
+                'description': "Je veux rejoindre une association, faire du bénévolat et créer des liens dans le canton de Neuchâtel.",
                 'tags': ['Vie sociale', 'Integration', 'Culture', 'Gratuit'],
                 'audiences': ["Établis depuis plus d'un an", 'Nouveaux arrivants'],
                 'body': body(
@@ -2307,8 +2307,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "La culture et les coutumes suisses",
-                'description': "Quelques règles de vie quotidienne à Neuchâtel qui peuvent surprendre à l'arrivée — bruit, voisinage, tri des déchets.",
+                'name': "Je veux comprendre les règles de vie en Suisse",
+                'description': "Je veux connaître les habitudes et les règles du quotidien à Neuchâtel pour bien m'entendre avec mes voisins.",
                 'tags': ['Integration', 'Vie sociale', 'Culture'],
                 'audiences': ['Nouveaux arrivants'],
                 'body': body(
@@ -2338,8 +2338,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Interprètes et traduction communautaire",
-                'description': "Si vous ne parlez pas encore le français, des interprètes communautaires peuvent vous accompagner à vos rendez-vous.",
+                'name': "Je ne parle pas encore le français, j'ai besoin d'un interprète",
+                'description': "Un interprète communautaire peut m'accompagner à mes rendez-vous médicaux, scolaires ou administratifs.",
                 'tags': ['Interprete', 'Traduction disponible', 'Multilingue', 'Integration', 'Gratuit'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -2362,8 +2362,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Cours d'informatique et compétences numériques",
-                'description': "Apprendre à utiliser un ordinateur, internet et les démarches administratives en ligne à Neuchâtel.",
+                'name': "Je veux apprendre à utiliser un ordinateur ou Internet",
+                'description': "Des cours gratuits existent à Neuchâtel pour apprendre les bases de l'informatique et faire des démarches en ligne.",
                 'tags': ['Formation', 'E-learning', 'Integration', 'Gratuit', 'En personne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Senior'],
                 'body': body(
@@ -2397,8 +2397,8 @@ CATEGORIES = [
         'resources': [
 
             {
-                'name': "Utiliser les transports publics",
-                'description': "Trains, bus et abonnements pour se déplacer dans le canton de Neuchâtel et en Suisse.",
+                'name': "Je veux utiliser les transports en commun",
+                'description': "Je veux savoir comment me déplacer en train et en bus dans le canton de Neuchâtel et économiser sur mes trajets.",
                 'tags': ['Transports publics', 'Mobilite', 'Budget', 'Multilingue', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
@@ -2423,8 +2423,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Échanger son permis de conduire",
-                'description': "Procédure pour échanger un permis étranger contre un permis suisse auprès du Service des automobiles de Neuchâtel.",
+                'name': "Je veux échanger mon permis de conduire étranger",
+                'description': "Je dois échanger mon permis contre un permis suisse dans les 12 mois après mon arrivée. Voici comment faire à Neuchâtel.",
                 'tags': ['Permis de conduire', 'Mobilite', 'Formulaire', 'En personne', 'Documents officiels'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an"],
                 'body': body(
@@ -2455,8 +2455,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Le vélo à Neuchâtel",
-                'description': "Pistes cyclables, vélos en libre-service PubliBike et règles de sécurité pour se déplacer à vélo.",
+                'name': "Je veux me déplacer à vélo à Neuchâtel",
+                'description': "Neuchâtel est une ville cyclable. Je veux connaître les pistes, les vélos partagés et les règles à respecter.",
                 'tags': ['Velo', 'Mobilite', 'Gratuit', 'Budget'],
                 'audiences': ['Nouveaux arrivants', 'Jeune adulte'],
                 'body': body(
@@ -2479,8 +2479,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Transport médical",
-                'description': "Comment vous rendre à vos rendez-vous médicaux si vous n'avez pas de voiture — taxi médical et remboursements.",
+                'name': "J'ai du mal à me déplacer pour mes rendez-vous médicaux",
+                'description': "Si je ne peux pas me déplacer seul pour aller chez le médecin, il existe des solutions à Neuchâtel.",
                 'tags': ['Transport medical', 'Sante', 'Mobilite', 'Assurance maladie', 'Senior'],
                 'audiences': ['Senior', "Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
@@ -2507,8 +2507,8 @@ CATEGORIES = [
             },
 
             {
-                'name': "Voiture en Suisse — assurance et contrôle",
-                'description': "Assurance RC obligatoire, contrôle technique et immatriculation dans le canton de Neuchâtel.",
+                'name': "J'ai une voiture, que dois-je faire en Suisse ?",
+                'description': "Je veux savoir comment assurer ma voiture, l'immatriculer et passer le contrôle technique à Neuchâtel.",
                 'tags': ['Permis de conduire', 'Mobilite', 'Documents officiels', 'Formulaire', 'Budget'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an"],
                 'body': body(
