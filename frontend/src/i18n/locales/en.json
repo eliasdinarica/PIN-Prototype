@@ -96,5 +96,11 @@
     "hintCategories": "Categories group resources by topic. Choose one to get started.",
     "hintResources": "Resources are information sheets. Those with ★ are picked for you. They appear first.",
     "tapToDismiss": "Tap anywhere to dismiss"
+  },
+  "community": {
+    "bySystem": "Recommended by the COSM",
+    "byLanguage": "Recommended · {code} community",
+    "byStatus": "Recommended · permit {code}",
+    "bySimilarity": "Similar to resources you liked"
   }
 }

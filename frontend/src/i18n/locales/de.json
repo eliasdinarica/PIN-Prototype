@@ -97,5 +97,11 @@
     "hintCategories": "Kategorien bündeln Ressourcen nach Thema. Wählen Sie eine aus.",
     "hintResources": "Ressourcen sind Informationsblätter. Jene mit ★ sind für Sie ausgewählt. Sie erscheinen zuerst.",
     "tapToDismiss": "Tippen Sie irgendwo zum Schließen"
+  },
+  "community": {
+    "bySystem": "Empfohlen vom COSM",
+    "byLanguage": "Empfohlen · Gemeinschaft {code}",
+    "byStatus": "Empfohlen · Ausweis {code}",
+    "bySimilarity": "Ähnlich wie Ressourcen, die Sie gemocht haben"
   }
 }

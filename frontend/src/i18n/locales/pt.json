@@ -97,5 +97,11 @@
     "hintCategories": "As categorias agrupam os recursos por tema. Escolha uma para começar.",
     "hintResources": "Os recursos são fichas de informação. Os com ★ são para você. Aparecem primeiro.",
     "tapToDismiss": "Toque em qualquer lugar para fechar"
+  },
+  "community": {
+    "bySystem": "Recomendado pelo COSM",
+    "byLanguage": "Recomendado · comunidade {code}",
+    "byStatus": "Recomendado · licença {code}",
+    "bySimilarity": "Semelhante a recursos que você gostou"
   }
 }

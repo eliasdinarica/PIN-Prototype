@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import { DocumentTextIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/vue/24/outline'
+import { useI18n } from 'vue-i18n'
+import { DocumentTextIcon, ArrowUpIcon, ArrowDownIcon, UsersIcon, ShieldCheckIcon, SparklesIcon, HeartIcon } from '@heroicons/vue/24/outline'
+
+const { t } = useI18n()
 
 const props = defineProps({
   resource: { type: Object, required: true },
@@ -54,14 +57,23 @@ function onFeedback(isUseful) {
       <!-- Description -->
       <p class="text-xs text-surface-200 line-clamp-2 leading-relaxed relative">{{ resource.description }}</p>
 
-      <!-- Tags -->
-      <div v-if="resource.tags && resource.tags.length" ref="tagsRef" class="flex gap-1 overflow-hidden relative">
-        <span
-          v-for="(tag, i) in resource.tags"
-          v-show="i < visibleCount"
-          :key="tag.id"
-          class="inline-block px-1.5 py-0.5 rounded-full text-xs font-medium bg-surface-400 text-surface-200 shrink-0"
-        >{{ tag.label }}</span>
+      <!-- Recommendation signals -->
+      <div
+        v-if="resource.recommended_by_system || resource.boosted_by_similarity || resource.community_by_language || resource.community_by_status"
+        class="mt-auto flex flex-col gap-0.5 relative"
+      >
+        <span v-if="resource.recommended_by_system" class="flex items-center gap-1 text-xs text-pink-400">
+          <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
+        </span>
+        <span v-if="resource.community_by_language" class="flex items-center gap-1 text-xs text-cyan-300">
+          <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.byLanguage', { code: resource.community_by_language.toUpperCase() }) }}
+        </span>
+        <span v-if="resource.community_by_status" class="flex items-center gap-1 text-xs text-amber-300">
+          <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byStatus', { code: resource.community_by_status }) }}
+        </span>
+        <span v-if="resource.boosted_by_similarity" class="flex items-center gap-1 text-xs text-rose-300">
+          <HeartIcon class="w-3 h-3 shrink-0" />{{ t('community.bySimilarity') }}
+        </span>
       </div>
     </button>
 
