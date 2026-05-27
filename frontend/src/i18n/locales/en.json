@@ -20,9 +20,24 @@
       "label": "Do you have children?",
       "sublabel": "This helps us recommend the right family resources."
     },
-    "originSector": {
-      "label": "What was your job area in your home country?",
-      "sublabel": "Choose the category that best fits your work or training."
+    "hasDrivingLicense": {
+      "label": "Do you have a driving licence?"
+    },
+    "computerSkills": {
+      "label": "How do you use a computer or phone?",
+      "sublabel": "Choose what best describes you.",
+      "none": "I do not really use them",
+      "basic": "I manage the basics (internet, email)",
+      "advanced": "I am comfortable (office tools, online services)"
+    },
+    "educationLevel": {
+      "label": "What is your education level?",
+      "sublabel": "Your education from your home country.",
+      "primary": "Primary school or less",
+      "secondary": "Secondary school (up to age 15–16)",
+      "vocational": "Vocational training (apprenticeship…)",
+      "bachelor": "University / Bachelor",
+      "master_plus": "Master or Doctorate"
     },
     "arrivedOverYear": {
       "label": "Have you been in Switzerland for more than 1 year?"
@@ -44,7 +59,9 @@
       "otherLanguages": "Other languages",
       "status": "Permit",
       "hasChildren": "Family",
-      "originSector": "Sector in home country",
+      "hasDrivingLicense": "Driving licence",
+      "computerSkills": "Digital skills",
+      "educationLevel": "Education",
       "arrivedOverYear": "Time in CH",
       "birthDate": "Birth date"
     },
@@ -98,7 +115,7 @@
     "tapToDismiss": "Tap anywhere to dismiss"
   },
   "community": {
-    "bySystem": "Recommended by the COSM",
+    "bySystem": "Recommended for you",
     "byLanguage": "Recommended · {code} community",
     "byStatus": "Recommended · permit {code}",
     "bySimilarity": "Similar to resources you liked"

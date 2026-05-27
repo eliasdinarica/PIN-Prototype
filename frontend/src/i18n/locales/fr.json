@@ -20,9 +20,24 @@
       "label": "Avez-vous des enfants ?",
       "sublabel": "Cela nous aide à vous recommander les bonnes ressources pour les familles."
     },
-    "originSector": {
-      "label": "Quel était votre domaine de travail dans votre pays d'origine ?",
-      "sublabel": "Choisissez la catégorie qui correspond le mieux à votre travail ou formation."
+    "hasDrivingLicense": {
+      "label": "Avez-vous le permis de conduire ?"
+    },
+    "computerSkills": {
+      "label": "Comment utilisez-vous un ordinateur ou un téléphone ?",
+      "sublabel": "Choisissez ce qui vous correspond le mieux.",
+      "none": "Je n'utilise pas vraiment",
+      "basic": "Je me débrouille (internet, email)",
+      "advanced": "Je suis à l'aise (bureautique, outils en ligne)"
+    },
+    "educationLevel": {
+      "label": "Quel est votre niveau de formation ?",
+      "sublabel": "Votre formation dans votre pays d'origine.",
+      "primary": "École primaire ou moins",
+      "secondary": "École obligatoire (jusqu'à 15-16 ans)",
+      "vocational": "Formation professionnelle (CFC, CAP…)",
+      "bachelor": "Université / Bachelor",
+      "master_plus": "Master ou Doctorat"
     },
     "arrivedOverYear": {
       "label": "Êtes-vous en Suisse depuis plus d'un an ?"
@@ -44,7 +59,9 @@
       "otherLanguages": "Autres langues",
       "status": "Permis",
       "hasChildren": "Enfants",
-      "originSector": "Secteur",
+      "hasDrivingLicense": "Permis auto",
+      "computerSkills": "Numérique",
+      "educationLevel": "Formation",
       "arrivedOverYear": "Durée en CH",
       "birthDate": "Date de naiss."
     },
@@ -99,7 +116,7 @@
     "tapToDismiss": "Touchez n'importe où pour fermer"
   },
   "community": {
-    "bySystem": "Recommandé par le COSM",
+    "bySystem": "Recommandé pour vous",
     "byLanguage": "Recommandé · communauté {code}",
     "byStatus": "Recommandé · permis {code}",
     "bySimilarity": "Similaire à des ressources que vous avez aimées"

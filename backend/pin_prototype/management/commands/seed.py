@@ -7,7 +7,7 @@ Usage:
 """
 
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Tag, Resource
+from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Editor.js)
@@ -67,80 +67,106 @@ AUDIENCES = [
     {
         'name': "Demandeur d'asile",
         'description': "Titulaires d'un permis N, F ou S.",
-        'statuses': 'N,F,S', 'has_children': None, 'origin_sectors': '',
+        'statuses': 'N,F,S', 'has_children': None,
         'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis N/F/S', 'Asile', 'Droits', 'Aide sociale', 'Urgence', 'Logement urgence', 'Interprete'],
     },
     {
         'name': 'Parents',
         'description': "Personnes ayant des enfants à charge.",
-        'statuses': '', 'has_children': True, 'origin_sectors': '',
+        'statuses': '', 'has_children': True,
         'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Garde enfants', 'Enfants', 'Famille', 'Scolarisation', 'Allocations familiales', 'Soutien scolaire'],
     },
     {
         'name': 'Nouveaux arrivants',
         'description': "Arrivés en Suisse depuis moins d'un an.",
-        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'statuses': '', 'has_children': None,
         'arrived_over_year': False, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Logement', 'Langue', 'Cours de langue', 'Documents officiels', 'Assurance maladie', 'Banque', 'Traduction disponible'],
     },
     {
         'name': "Établis depuis plus d'un an",
         'description': "En phase d'intégration avancée.",
-        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'statuses': '', 'has_children': None,
         'arrived_over_year': True, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Formation', 'Reconnaissance diplome', 'Naturalisation', 'Vie sociale'],
     },
     {
         'name': 'Résident long terme',
         'description': "Titulaires d'un permis B ou C.",
-        'statuses': 'B,C', 'has_children': None, 'origin_sectors': '',
+        'statuses': 'B,C', 'has_children': None,
         'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis B', 'Permis C', 'Droits', 'Naturalisation', 'Impots'],
     },
     {
         'name': 'Frontalier',
         'description': "Titulaires d'un permis G.",
-        'statuses': 'G', 'has_children': None, 'origin_sectors': '',
+        'statuses': 'G', 'has_children': None,
         'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis G', 'Mobilite', 'Travail', 'Droit du travail', 'Impots'],
     },
     {
         'name': 'Jeune adulte',
         'description': "18 à 30 ans.",
-        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'statuses': '', 'has_children': None,
         'arrived_over_year': None, 'min_age': 18, 'max_age': 30,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Formation', 'Jeune', 'Cours de langue', 'Apprentissage', 'Universite', 'CV candidature', 'Recherche emploi'],
     },
     {
         'name': 'Senior',
         'description': "60 ans et plus.",
-        'statuses': '', 'has_children': None, 'origin_sectors': '',
-        'arrived_over_year': None, 'min_age': 60, 'max_age': None,
-        'relevant_tags': ['Senior', 'Sante', 'Mobilite', 'Transport medical', 'Aide sociale', 'Handicap'],
-    },
-    {
-        'name': 'Professionnel de santé',
-        'description': "Ayant travaillé dans le secteur de la santé.",
-        'statuses': '', 'has_children': None, 'origin_sectors': 'healthcare',
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
-        'relevant_tags': ['Reconnaissance diplome', 'Formation', 'Sante', 'Documents officiels'],
-    },
-    {
-        'name': 'Travailleur qualifié',
-        'description': "Ingénierie, IT, administration, éducation.",
         'statuses': '', 'has_children': None,
-        'origin_sectors': 'engineering,it,administration,education',
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
-        'relevant_tags': ['Reconnaissance diplome', 'Formation', 'CV candidature', 'E-learning', 'Independent'],
+        'arrived_over_year': None, 'min_age': 60, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
+        'relevant_tags': ['Senior', 'Sante', 'Mobilite', 'Transport medical', 'Aide sociale', 'Handicap'],
     },
     {
         'name': 'Femmes',
         'description': "Ressources spécifiquement destinées aux femmes migrantes.",
-        'statuses': '', 'has_children': None, 'origin_sectors': '',
+        'statuses': '', 'has_children': None,
         'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Femmes', 'Sante mentale', 'Aide juridique'],
+    },
+    {
+        'name': 'Avec permis de conduire',
+        'description': "Personnes titulaires d'un permis de conduire.",
+        'statuses': '', 'has_children': None,
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': True, 'min_computer_skills': '', 'min_education_level': '',
+        'relevant_tags': ['Permis de conduire', 'Mobilite', 'Transports publics'],
+    },
+    {
+        'name': 'Compétences numériques de base',
+        'description': "Personnes sachant utiliser internet et les services en ligne.",
+        'statuses': '', 'has_children': None,
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': 'basic', 'min_education_level': '',
+        'relevant_tags': ['En ligne', 'E-learning', 'Formulaire'],
+    },
+    {
+        'name': 'Compétences numériques avancées',
+        'description': "Personnes à l'aise avec les outils numériques et bureautiques.",
+        'statuses': '', 'has_children': None,
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': 'advanced', 'min_education_level': '',
+        'relevant_tags': ['En ligne', 'E-learning', 'CV candidature', 'Universite'],
+    },
+    {
+        'name': 'Formation supérieure',
+        'description': "Personnes avec un diplôme universitaire ou équivalent.",
+        'statuses': '', 'has_children': None,
+        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': 'bachelor',
+        'relevant_tags': ['Reconnaissance diplome', 'Universite', 'Formation', 'CV candidature'],
     },
 ]
 
@@ -216,7 +242,7 @@ CATEGORIES = [
                 'name': "Je veux préparer un CV pour trouver du travail en Suisse",
                 'description': "Le CV suisse a des règles différentes. Je dois savoir quoi mettre et comment le présenter pour avoir des chances.",
                 'tags': ['CV candidature', 'Recherche emploi', 'Travail', 'Formation'],
-                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
+                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
                 'body': body(
                     sec("Le CV suisse — ce qui est différent",
                         ul(
@@ -253,7 +279,7 @@ CATEGORIES = [
                 'name': "Je veux me former ou changer de métier",
                 'description': "Le CNIP m'accompagne pour évaluer mes compétences, me former ou faire reconnaître mon expérience professionnelle.",
                 'tags': ['Formation', 'Travail', 'Reconnaissance diplome', 'En personne', 'Gratuit'],
-                'audiences': ["Établis depuis plus d'un an", 'Travailleur qualifié', 'Professionnel de santé'],
+                'audiences': ["Établis depuis plus d'un an", 'Formation supérieure'],
                 'body': body(
                     sec("Qu'est-ce que le CNIP",
                         para("Le Centre Neuchâtelois d'Intégration Professionnelle (CNIP) aide les adultes à trouver leur place dans le monde du travail suisse. Il s'adresse surtout aux personnes qui ont de l'expérience à l'étranger mais qui ont du mal à la faire reconnaître."),
@@ -285,7 +311,7 @@ CATEGORIES = [
                 'name': "Je veux travailler à mon compte en Suisse",
                 'description': "Je veux créer mon activité indépendante. Voici les étapes à suivre et ce que la loi m'impose.",
                 'tags': ['Independent', 'Travail', 'Droits', 'Formulaire', 'Budget', 'Documents officiels'],
-                'audiences': ["Établis depuis plus d'un an", 'Résident long terme', 'Travailleur qualifié'],
+                'audiences': ["Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
                     sec("Avant de commencer",
                         para("En Suisse, travailler à son compte est possible avec un permis B ou C. Avec un permis N ou F, c'est plus compliqué — renseignez-vous d'abord auprès du SMIG (Service des migrations de Neuchâtel)."),
@@ -417,7 +443,7 @@ CATEGORIES = [
                 'name': "Je ne sais pas quel métier choisir en Suisse",
                 'description': "Un conseiller peut m'aider gratuitement à trouver ma direction professionnelle et à relancer ma carrière.",
                 'tags': ['Travail', 'Formation', 'Recherche emploi', 'En personne', 'Gratuit'],
-                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
+                'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
                 'body': body(
                     sec("Le Centre d'orientation (OCOSP)",
                         para("L'Office cantonal de l'orientation scolaire et professionnelle (OCOSP) propose des conseils gratuits pour les adultes qui veulent se réorienter ou progresser dans leur carrière."),
@@ -446,7 +472,7 @@ CATEGORIES = [
                 'name': "Je veux utiliser LinkedIn pour trouver du travail",
                 'description': "En Suisse, beaucoup d'offres ne sont pas publiées. Un bon profil LinkedIn et un réseau solide augmentent vraiment mes chances.",
                 'tags': ['Recherche emploi', 'CV candidature', 'Travail', 'En ligne'],
-                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
+                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Compétences numériques de base'],
                 'body': body(
                     sec("Pourquoi LinkedIn est important en Suisse",
                         para("En Suisse, beaucoup de postes ne sont jamais publiés sur des sites d'emploi — ils sont pourvus par le réseau. LinkedIn est le réseau professionnel le plus utilisé. Un profil complet augmente vraiment vos chances."),
@@ -471,6 +497,37 @@ CATEGORIES = [
                         "<a href='https://www.indeed.ch' target='_blank'>indeed.ch</a>",
                         "<a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a> — portail officiel du SECO",
                         "<a href='https://www.jobup.ch' target='_blank'>jobup.ch</a> — spécialiste Suisse romande",
+                    ), width='half'),
+                ),
+            },
+
+            {
+                'name': "Je cherche un travail saisonnier ou en agriculture",
+                'description': "Des emplois saisonniers existent toute l'année en Suisse dans les vendanges, l'hôtellerie ou le tourisme. Voici comment trouver ces postes.",
+                'tags': ['Recherche emploi', 'Travail', 'CV candidature', 'En ligne', 'En personne'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
+                'body': body(
+                    sec("Pourquoi le travail saisonnier",
+                        para("Le travail saisonnier est une bonne façon de commencer en Suisse. Il ne demande pas toujours de diplôme, et vous permet de construire une expérience locale et un réseau."),
+                    ),
+                    sec("Principales saisons et secteurs", ul(
+                        "<b>Vendanges (septembre–octobre) :</b> Neuchâtel, Valais, Vaud — pas toujours besoin d'expérience",
+                        "<b>Hôtellerie et restauration :</b> toute l'année, surtout été et hiver (stations de ski)",
+                        "<b>Agriculture (été) :</b> récolte de fruits et légumes, travaux maraîchers",
+                        "<b>Bâtiment :</b> printemps–automne, souvent via agences d'intérim",
+                    )),
+                    sec("Comment chercher", ul(
+                        "<b>Agrijob :</b> plateforme dédiée à l'agriculture — <a href='https://www.agrijob.ch' target='_blank'>agrijob.ch</a>",
+                        "<b>Gastrojob :</b> hôtellerie et restauration — <a href='https://www.gastrojob.ch' target='_blank'>gastrojob.ch</a>",
+                        "<b>Saisonnier.ch :</b> offres saisonnières toutes régions — <a href='https://www.saisonnier.ch' target='_blank'>saisonnier.ch</a>",
+                        "<b>ONE Neuchâtel :</b> votre conseiller peut vous signaler des offres locales — 032 889 68 18",
+                        "<b>Agences d'intérim :</b> Adecco, Manpower — souvent des missions courtes dans l'industrie",
+                    ), width='half'),
+                    sec("Conditions importantes", ul(
+                        "Vérifiez que votre permis autorise le travail (permis N : possible après 3 mois sous conditions)",
+                        "Le contrat de travail doit être signé avant de commencer — même pour une semaine",
+                        "Droit au salaire minimum de la CCT du secteur (restauration : env. CHF 3 600/mois)",
+                        "Vous avez les mêmes droits qu'un autre travailleur : assurances, jours de repos, etc.",
                     ), width='half'),
                 ),
             },
@@ -741,6 +798,33 @@ CATEGORIES = [
                         "<b>GSR :</b> peut parfois aider à financer des soins urgents dans le cadre de l'aide sociale",
                         "<b>Caritas NE :</b> 032 886 80 70 — renseignez-vous sur les aides disponibles",
                     ), width='full'),
+                ),
+            },
+
+            {
+                'name': "Je suis malade mais mon médecin n'est pas disponible",
+                'description': "Si je ne peux pas attendre un rendez-vous, une permanence médicale ou un médecin par téléphone peut m'aider rapidement.",
+                'tags': ['Medecin', 'Sante', 'Hotline', 'En ligne', 'En personne'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
+                'body': body(
+                    sec("Options rapides sans rendez-vous",
+                        ul(
+                            "<b>Urgences HNE Neuchâtel :</b> Rue de la Maladière 45 — 032 713 31 31 — pour les cas urgents uniquement",
+                            "<b>Permanence médicale :</b> demandez à votre caisse maladie s'il existe une permanence agréée proche de chez vous",
+                            "<b>Pharmacie :</b> le pharmacien peut traiter de nombreux problèmes courants (rhume, douleurs légères, pansements) sans RDV",
+                        ),
+                    ),
+                    sec("Consultation téléphonique ou vidéo", ul(
+                        "<b>Medi24 :</b> service médical 24h/24 inclus dans certaines caisses maladie — vérifiez votre carte d'assuré",
+                        "<b>Medgate :</b> même principe — inclus dans certains modèles d'assurance (Telmed, HMO)",
+                        "Ces services peuvent vous prescrire des ordonnances et décider si une visite est nécessaire",
+                        "Appelez votre caisse maladie pour savoir quel service vous avez inclus",
+                    ), width='half'),
+                    sec("Quand aller aux urgences", ul(
+                        "<b>Appelez le 144</b> si c'est une urgence vitale (douleur thoracique, accident, perte de connaissance)",
+                        "Les urgences hospitalières ne sont pas faites pour les rhumes ou fièvres légères — préférez la permanence ou le télémédecin",
+                        "<b>145</b> — Toxicocentre en cas d'ingestion d'un produit dangereux",
+                    ), width='half'),
                 ),
             },
 
@@ -1137,6 +1221,41 @@ CATEGORIES = [
             },
 
             {
+                'name': "J'ai reçu un acte de poursuite, que faire ?",
+                'description': "Recevoir un acte de poursuite ne signifie pas qu'on va m'expulser ou m'arrêter. Je veux comprendre ce que c'est et quoi faire.",
+                'tags': ['Budget', 'Aide juridique', 'Documents officiels', 'Droits', 'Formulaire'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", "Établis depuis plus d'un an"],
+                'body': body(
+                    sec("Qu'est-ce qu'une poursuite",
+                        para("Une poursuite est une procédure officielle pour récupérer une dette. Elle ne signifie pas que vous serez arrêté ou expulsé. C'est une procédure civile (financière), pas pénale."),
+                        ul(
+                            "Vous recevez un <b>commandement de payer</b> par lettre recommandée",
+                            "Vous avez <b>10 jours</b> pour faire opposition si vous contestez la dette",
+                            "Si vous ne payez pas et ne faites pas opposition, la poursuite continue",
+                        ),
+                    ),
+                    sec("Que faire dès réception",
+                        ol(
+                            "Lisez attentivement le document — quel créancier, quel montant, quelle date",
+                            "Si vous contestez la dette : faites opposition immédiatement (dans les 10 jours) — par écrit à l'Office des poursuites",
+                            "Si vous ne contestez pas : négociez un plan de paiement avec le créancier",
+                            "Ne jetez jamais ce document — gardez-le",
+                        ),
+                    ),
+                    sec("Office des poursuites NE", ul(
+                        "<b>Neuchâtel :</b> Rue du Seyon 4 — 032 889 67 00",
+                        "<b>La Chaux-de-Fonds :</b> Espacité 4 — 032 889 67 30",
+                        "<b>Extrait des poursuites :</b> gratuit — demandez-le pour vérifier votre situation avant de chercher un logement",
+                    ), width='half'),
+                    sec("Aide gratuite", ul(
+                        "<b>Budget Conseil NE :</b> 032 721 30 30 — <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — aide juridique",
+                        "<b>Info nationale :</b> <a href='https://www.ch.ch/fr/dettes-et-poursuites/' target='_blank'>ch.ch/dettes-et-poursuites</a>",
+                    ), width='half'),
+                ),
+            },
+
+            {
                 'name': "Je n'ai pas assez à manger",
                 'description': "Des associations proposent de la nourriture gratuite ou à prix très réduit pour les personnes dans le besoin.",
                 'tags': ['Gratuit', 'En personne', 'Aide sociale', 'Alimentation', 'Urgence', 'Budget'],
@@ -1168,7 +1287,7 @@ CATEGORIES = [
         'description': "Cours de langue, reconnaissance de diplômes et formation professionnelle.",
         'icon': 'AcademicCapIcon',
         'priority': 8,
-        'audiences': ['Nouveaux arrivants', 'Jeune adulte', "Établis depuis plus d'un an", 'Travailleur qualifié'],
+        'audiences': ['Nouveaux arrivants', 'Jeune adulte', "Établis depuis plus d'un an", 'Formation supérieure'],
         'resources': [
 
             {
@@ -1199,7 +1318,7 @@ CATEGORIES = [
                 'name': "Je veux faire reconnaître mon diplôme étranger en Suisse",
                 'description': "Je veux savoir comment faire valider en Suisse le diplôme que j'ai obtenu dans mon pays d'origine.",
                 'tags': ['Reconnaissance diplome', 'Documents officiels', 'Formulaire', 'Travail', 'Formation'],
-                'audiences': ['Travailleur qualifié', 'Professionnel de santé', "Établis depuis plus d'un an"],
+                'audiences': ['Formation supérieure', "Établis depuis plus d'un an"],
                 'body': body(
                     sec("Première étape",
                         para("Allez d'abord sur <a href='https://www.reconnaissance.swiss' target='_blank'>reconnaissance.swiss</a>. Ce site officiel vous dit quel organisme traite votre dossier selon votre profession et votre pays d'origine."),
@@ -1377,7 +1496,7 @@ CATEGORIES = [
                 'name': "Je cherche des cours de langue avec des horaires flexibles",
                 'description': "Des cours du soir et du week-end existent à Neuchâtel pour progresser rapidement en français.",
                 'tags': ['Cours de langue', 'Langue', 'Formation', 'En personne', 'En ligne'],
-                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
+                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Compétences numériques de base'],
                 'body': body(
                     sec("Pourquoi choisir un cours payant",
                         para("Les cours privés avancent plus vite, proposent des horaires flexibles (soir, week-end) et des formats intensifs. Ils sont adaptés aux personnes qui travaillent et veulent progresser rapidement."),
@@ -1401,7 +1520,7 @@ CATEGORIES = [
                 'name': "Je veux me former en ligne pour améliorer mes compétences",
                 'description': "Des cours en ligne gratuits ou peu chers me permettent d'apprendre un métier ou de progresser depuis chez moi.",
                 'tags': ['E-learning', 'Formation', 'En ligne', 'Gratuit', 'Travail'],
-                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Travailleur qualifié'],
+                'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Compétences numériques de base'],
                 'body': body(
                     sec("Plateformes gratuites ou quasi-gratuites", ul(
                         "<b>Coursera :</b> cours de grandes universités mondiales — audit gratuit — <a href='https://www.coursera.org' target='_blank'>coursera.org</a>",
@@ -1431,7 +1550,7 @@ CATEGORIES = [
                 'name': "Je veux étudier à l'université à Neuchâtel",
                 'description': "Je veux savoir comment m'inscrire à l'UniNE ou à la HE-Arc et si des aides financières sont disponibles.",
                 'tags': ['Universite', 'Formation', 'Reconnaissance diplome', 'Budget', 'En ligne'],
-                'audiences': ['Jeune adulte', "Établis depuis plus d'un an", 'Travailleur qualifié'],
+                'audiences': ['Jeune adulte', "Établis depuis plus d'un an", 'Formation supérieure'],
                 'body': body(
                     sec("Université de Neuchâtel (UniNE)",
                         ul(
@@ -1637,6 +1756,30 @@ CATEGORIES = [
                         "<b>Tarifs :</b> environ CHF 5–20/jour selon revenus",
                         "<b>Aide financière :</b> via GSR selon situation",
                     ), width='full'),
+                ),
+            },
+
+            {
+                'name': "Je cherche des activités pour mes enfants pendant les vacances",
+                'description': "Pendant les vacances scolaires, des colonies, camps et activités à prix réduit existent à Neuchâtel pour les enfants.",
+                'tags': ['Enfants', 'Gratuit', 'Budget', 'Integration', 'Vie sociale'],
+                'audiences': ['Parents', 'Nouveaux arrivants'],
+                'body': body(
+                    sec("Pourquoi c'est utile",
+                        para("Pendant les vacances scolaires, les enfants ont besoin d'activités. Des structures proposent des camps, colonies et animations à tarif réduit ou gratuit pour les familles à revenus modestes."),
+                    ),
+                    sec("Activités à Neuchâtel", ul(
+                        "<b>Maisons de quartier :</b> animations vacances pour enfants — demandez à votre mairie",
+                        "<b>Jeunesse et Sports (J+S) :</b> camps sportifs subventionnés — <a href='https://www.jugendundsport.ch/fr' target='_blank'>jugendundsport.ch</a>",
+                        "<b>Camps de Pro Juventute :</b> colonie de vacances à tarif social — <a href='https://www.projuventute.ch' target='_blank'>projuventute.ch</a>",
+                        "<b>Croix-Rouge NE :</b> activités ponctuelles — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                    ), width='half'),
+                    sec("Aides financières", ul(
+                        "<b>GSR :</b> peut parfois financer des camps ou colonies pour les familles à l'aide sociale",
+                        "<b>Bourses de loisirs :</b> certaines communes accordent une aide — renseignez-vous à la mairie",
+                        "<b>Bibliothèques :</b> gratuites, proposent des animations en période de vacances",
+                        "<b>Bois et parcs :</b> les espaces naturels autour de Neuchâtel sont gratuits et accessibles en transports",
+                    ), width='half'),
                 ),
             },
 
@@ -1964,6 +2107,37 @@ CATEGORIES = [
                         "<b>CFR (Commission fédérale contre le racisme) :</b> <a href='https://www.ekr.admin.ch' target='_blank'>ekr.admin.ch</a>",
                         "<b>Humanrights.ch :</b> <a href='https://www.humanrights.ch' target='_blank'>humanrights.ch</a>",
                         "<b>ACOR SOS-Racisme :</b> <a href='https://sos-racisme.ch' target='_blank'>sos-racisme.ch</a>",
+                    ), width='half'),
+                ),
+            },
+
+            {
+                'name': "Je dois obtenir un document d'état civil (acte de naissance, mariage)",
+                'description': "Pour certaines démarches en Suisse, on me demande un acte de naissance ou de mariage. Je veux savoir comment l'obtenir depuis mon pays.",
+                'tags': ['Documents officiels', 'Permis sejour', 'Formulaire', 'Famille'],
+                'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Parents'],
+                'body': body(
+                    sec("Pourquoi ces documents sont demandés",
+                        para("Les documents d'état civil (acte de naissance, mariage, divorce) sont souvent nécessaires pour le regroupement familial, la naturalisation, l'inscription à l'école ou certaines démarches administratives."),
+                    ),
+                    sec("Documents provenant de votre pays d'origine",
+                        ol(
+                            "Contactez l'ambassade ou le consulat de votre pays en Suisse — ils peuvent parfois obtenir le document pour vous",
+                            "Demandez à un membre de votre famille restée dans votre pays de l'obtenir auprès de la mairie locale",
+                            "Faites traduire le document par un traducteur assermenté si c'est demandé",
+                            "Si votre pays ne délivre plus de documents (guerre, etc.) : signalez-le au SMIG ou à l'avocat qui vous aide",
+                        ),
+                    ),
+                    sec("Documents suisses (si vous êtes né ou marié en Suisse)", ul(
+                        "<b>Office de l'état civil NE :</b> Rue du Seyon 4, 2000 Neuchâtel — 032 889 67 87",
+                        "<b>En ligne :</b> <a href='https://www.ne.ch/etat-civil' target='_blank'>ne.ch/etat-civil</a>",
+                        "Extrait d'acte de naissance ou de mariage disponible sur demande (CHF 30 environ)",
+                    ), width='half'),
+                    sec("Aide pour les documents étrangers", ul(
+                        "<b>COSM :</b> peut vous orienter — 032 889 74 42",
+                        "<b>CSP Neuchâtel :</b> aide juridique pour les dossiers complexes — 032 886 91 00",
+                        "<b>Traducteurs assermentés :</b> demandez la liste au SMIG ou au COSM",
+                        "<b>Info ch.ch :</b> <a href='https://www.ch.ch/fr/etat-civil/' target='_blank'>ch.ch/etat-civil</a>",
                     ), width='half'),
                 ),
             },
@@ -2537,6 +2711,133 @@ CATEGORIES = [
 
 
 # ---------------------------------------------------------------------------
+# Sous-catégories par catégorie
+# ---------------------------------------------------------------------------
+
+SUBCATEGORIES = {
+    'Work': [
+        {'name': 'Chercher un emploi', 'order': 1},
+        {'name': 'Droits et salaire', 'order': 2},
+        {'name': 'Se former', 'order': 3},
+    ],
+    'Health': [
+        {'name': 'Assurance maladie', 'order': 1},
+        {'name': 'Trouver des soins', 'order': 2},
+        {'name': 'Santé et bien-être', 'order': 3},
+    ],
+    'Money & budget': [
+        {'name': 'Aides et allocations', 'order': 1},
+        {'name': 'Gérer mes finances', 'order': 2},
+    ],
+    'Education': [
+        {'name': 'Apprendre le français', 'order': 1},
+        {'name': 'Formation et diplômes', 'order': 2},
+    ],
+    'Children & family': [
+        {'name': 'Scolarité et garde', 'order': 1},
+        {'name': 'Aides et droits', 'order': 2},
+    ],
+    'Rights & duties': [
+        {'name': 'Permis et séjour', 'order': 1},
+        {'name': 'Droits et protection', 'order': 2},
+    ],
+    'Housing': [
+        {'name': 'Trouver un logement', 'order': 1},
+        {'name': 'Droits du locataire', 'order': 2},
+    ],
+    'Mobility': [
+        {'name': 'Transports', 'order': 1},
+        {'name': 'Conduire', 'order': 2},
+    ],
+}
+
+# resource name → subcategory name (None = no subcategory)
+RESOURCE_SUBCATEGORY = {
+    # Work
+    "Je cherche un travail saisonnier ou en agriculture": "Chercher un emploi",
+    "Je cherche du travail, par où commencer ?": "Chercher un emploi",
+    "Je veux préparer un CV pour trouver du travail en Suisse": "Chercher un emploi",
+    "Je veux trouver du travail rapidement via une agence": "Chercher un emploi",
+    "Je ne sais pas quel métier choisir en Suisse": "Chercher un emploi",
+    "Je veux utiliser LinkedIn pour trouver du travail": "Chercher un emploi",
+    "Je veux faire du bénévolat pour avoir une première expérience": "Chercher un emploi",
+    "Je veux connaître mes droits en tant qu'employé": "Droits et salaire",
+    "Je ne sais pas si je suis payé correctement": "Droits et salaire",
+    "Je veux me former ou changer de métier": "Se former",
+    "Je veux travailler à mon compte en Suisse": "Se former",
+    # Health
+    "Je suis malade mais mon médecin n'est pas disponible": "Trouver des soins",
+    "Je dois m'assurer contre la maladie": "Assurance maladie",
+    "Je veux payer moins cher mon assurance maladie": "Assurance maladie",
+    "Je cherche un médecin de famille": "Trouver des soins",
+    "J'ai besoin d'aide médicale en urgence": "Trouver des soins",
+    "J'ai besoin de soins dentaires": "Trouver des soins",
+    "Je veux me faire vacciner": "Trouver des soins",
+    "Je me sens mal et j'ai besoin d'aide psychologique": "Santé et bien-être",
+    "Je suis enceinte, que dois-je faire ?": "Santé et bien-être",
+    "Je cherche des informations sur la contraception ou les IST": "Santé et bien-être",
+    "J'ai un handicap ou une maladie grave, quelles aides existent ?": "Santé et bien-être",
+    "J'ai des problèmes avec l'alcool, les drogues ou le jeu": "Santé et bien-être",
+    # Money & budget
+    "J'ai reçu un acte de poursuite, que faire ?": "Gérer mes finances",
+    "Je n'ai pas assez d'argent pour vivre": "Aides et allocations",
+    "J'ai perdu mon emploi et je veux toucher le chômage": "Aides et allocations",
+    "Ma rente ne suffit pas pour vivre": "Aides et allocations",
+    "Je n'ai pas assez à manger": "Aides et allocations",
+    "Je veux ouvrir un compte bancaire": "Gérer mes finances",
+    "Je ne comprends pas comment fonctionnent les impôts": "Gérer mes finances",
+    "Je veux comprendre la retraite en Suisse": "Gérer mes finances",
+    "J'ai des dettes et je ne sais plus quoi faire": "Gérer mes finances",
+    "Je veux mieux gérer mon argent": "Gérer mes finances",
+    # Education
+    "Je veux apprendre le français": "Apprendre le français",
+    "Je veux apprendre le français depuis chez moi": "Apprendre le français",
+    "Je veux certifier mon niveau de français": "Apprendre le français",
+    "Je veux savoir si l'État peut payer mes cours de langue": "Apprendre le français",
+    "Je ne sais pas encore lire ni écrire": "Apprendre le français",
+    "Je cherche des cours de langue avec des horaires flexibles": "Apprendre le français",
+    "Je veux faire reconnaître mon diplôme étranger en Suisse": "Formation et diplômes",
+    "Je veux obtenir un diplôme professionnel suisse": "Formation et diplômes",
+    "Je veux me former en ligne pour améliorer mes compétences": "Formation et diplômes",
+    "Je veux étudier à l'université à Neuchâtel": "Formation et diplômes",
+    # Children & family
+    "Je cherche des activités pour mes enfants pendant les vacances": "Scolarité et garde",
+    "Je veux inscrire mon enfant à l'école": "Scolarité et garde",
+    "Je cherche une place en crèche pour mon enfant": "Scolarité et garde",
+    "Mon enfant a besoin d'aide pour apprendre le français à l'école": "Scolarité et garde",
+    "Je cherche une garde pour mes enfants avant ou après l'école": "Scolarité et garde",
+    "Je veux recevoir les allocations pour mes enfants": "Aides et droits",
+    "Je veux connaître mes droits lors d'une naissance": "Aides et droits",
+    "Je subis des violences à la maison": "Aides et droits",
+    # Rights & duties
+    "Je dois obtenir un document d'état civil (acte de naissance, mariage)": "Permis et séjour",
+    "Je ne comprends pas les différents permis de séjour": "Permis et séjour",
+    "Je veux comprendre la procédure d'asile": "Permis et séjour",
+    "Je veux faire venir ma famille en Suisse": "Permis et séjour",
+    "Je veux devenir citoyen suisse": "Permis et séjour",
+    "Je veux passer du permis B au permis C": "Permis et séjour",
+    "Je divorce, est-ce que ça change mon droit de séjour ?": "Permis et séjour",
+    "Je viens d'arriver, je dois m'inscrire à ma commune": "Permis et séjour",
+    "J'ai besoin d'aide juridique gratuite": "Droits et protection",
+    "Je veux voter aux élections à Neuchâtel": "Droits et protection",
+    "J'ai été victime de discrimination": "Droits et protection",
+    # Housing
+    "Je n'ai pas de logement, j'ai besoin d'aide": "Trouver un logement",
+    "Je cherche un appartement à louer": "Trouver un logement",
+    "Je cherche un logement à loyer réduit": "Trouver un logement",
+    "Je veux connaître mes droits en tant que locataire": "Droits du locataire",
+    "Je ne comprends pas le dépôt de garantie": "Droits du locataire",
+    "Je dois prendre une assurance pour mon appartement": "Droits du locataire",
+    # Mobility
+    "Je veux utiliser les transports en commun": "Transports",
+    "Je veux me déplacer à vélo à Neuchâtel": "Transports",
+    "J'ai du mal à me déplacer pour mes rendez-vous médicaux": "Transports",
+    "Je veux échanger mon permis de conduire étranger": "Conduire",
+    "J'ai une voiture, que dois-je faire en Suisse ?": "Conduire",
+}
+
+
+# ---------------------------------------------------------------------------
 # Commande Django
 # ---------------------------------------------------------------------------
 
@@ -2550,6 +2851,7 @@ class Command(BaseCommand):
     def handle(self, *_args, **options):
         if options['reset']:
             Resource.objects.all().delete()
+            Subcategory.objects.all().delete()
             Category.objects.all().delete()
             Audience.objects.all().delete()
             Tag.objects.all().delete()
@@ -2580,7 +2882,7 @@ class Command(BaseCommand):
             audience_map[aud.name] = aud
             self.stdout.write(f'  {"+" if created else "~"} Audience: {aud.name}')
 
-        # -- Catégories + Ressources --
+        # -- Catégories + Sous-catégories + Ressources --
         self.stdout.write('\nCréation des catégories et ressources...')
         for cat_data in CATEGORIES:
             cat_audience_names = cat_data.pop('audiences')
@@ -2595,6 +2897,19 @@ class Command(BaseCommand):
                 cat.save()
             cat.audiences.set([audience_map[n] for n in cat_audience_names if n in audience_map])
             self.stdout.write(f'  {"+" if created else "~"} Category: {cat.name}')
+
+            # Sous-catégories
+            subcat_map = {}
+            for sc_data in SUBCATEGORIES.get(cat.name, []):
+                sc, sc_created = Subcategory.objects.get_or_create(
+                    category=cat, name=sc_data['name'],
+                    defaults={'order': sc_data['order']},
+                )
+                if not sc_created:
+                    sc.order = sc_data['order']
+                    sc.save(update_fields=['order'])
+                subcat_map[sc.name] = sc
+                self.stdout.write(f'    {"+" if sc_created else "~"} Subcategory: {sc.name}')
 
             for res_data in resources_data:
                 tag_labels = res_data.pop('tags')
@@ -2611,6 +2926,10 @@ class Command(BaseCommand):
 
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
                 res.audiences.set([audience_map[n] for n in res_audience_names if n in audience_map])
+
+                subcat_name = RESOURCE_SUBCATEGORY.get(res.name)
+                res.subcategory = subcat_map.get(subcat_name)
+                res.save(update_fields=['subcategory'])
 
                 if body_data:
                     res.body = body_data

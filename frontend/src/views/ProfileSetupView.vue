@@ -25,9 +25,11 @@ onMounted(async () => {
         otherLanguages: Array.isArray(profile.other_languages) ? profile.other_languages : [],
         status: profile.status,
         hasChildren: profile.has_children,
-        originSector: profile.origin_sector || '',
         arrivedOverYear: profile.arrived_over_year_ago,
         birthDate: profile.birth_date || '',
+        hasDrivingLicense: profile.has_driving_license ?? null,
+        computerSkills: profile.computer_skills || 'none',
+        educationLevel: profile.education_level || 'primary',
       }
       if (profile.language) {
         locale.value = profile.language
@@ -50,9 +52,11 @@ async function handleComplete(answers) {
       other_languages: answers.otherLanguages || [],
       status: answers.status,
       has_children: answers.hasChildren,
-      origin_sector: answers.originSector || '',
       arrived_over_year_ago: answers.arrivedOverYear ?? null,
       birth_date: answers.birthDate || null,
+      has_driving_license: answers.hasDrivingLicense ?? null,
+      computer_skills: answers.computerSkills || 'none',
+      education_level: answers.educationLevel || 'primary',
     }
     const res = await fetch(
       isUpdate

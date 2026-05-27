@@ -23,6 +23,10 @@ def _compute_age(birth_date):
     )
 
 
+_COMPUTER_SKILLS_ORDER = {'none': 0, 'basic': 1, 'advanced': 2}
+_EDUCATION_LEVEL_ORDER = {'primary': 0, 'secondary': 1, 'vocational': 2, 'bachelor': 3, 'master_plus': 4}
+
+
 def _audience_matches(audience, profile, age):
     if audience.statuses:
         allowed = [s.strip() for s in audience.statuses.split(',')]
@@ -31,11 +35,6 @@ def _audience_matches(audience, profile, age):
 
     if audience.has_children is not None:
         if profile.has_children != audience.has_children:
-            return False
-
-    if audience.origin_sectors:
-        allowed = [s.strip() for s in audience.origin_sectors.split(',')]
-        if profile.origin_sector not in allowed:
             return False
 
     if audience.arrived_over_year is not None:
@@ -50,6 +49,22 @@ def _audience_matches(audience, profile, age):
         if age > audience.max_age:
             return False
 
+    if audience.has_driving_license is not None:
+        if bool(profile.has_driving_license) != audience.has_driving_license:
+            return False
+
+    if audience.min_computer_skills:
+        profile_level = _COMPUTER_SKILLS_ORDER.get(profile.computer_skills or 'none', 0)
+        required_level = _COMPUTER_SKILLS_ORDER.get(audience.min_computer_skills, 0)
+        if profile_level < required_level:
+            return False
+
+    if audience.min_education_level:
+        profile_level = _EDUCATION_LEVEL_ORDER.get(profile.education_level or 'primary', 0)
+        required_level = _EDUCATION_LEVEL_ORDER.get(audience.min_education_level, 0)
+        if profile_level < required_level:
+            return False
+
     return True
 
 
@@ -60,35 +75,6 @@ def _matched_tag_ids(profile):
         if _audience_matches(audience, profile, age):
             tag_ids.update(t.id for t in audience.relevant_tags.all())
     return tag_ids
-
-
-def _load_feedback(profile):
-    """Returns {resource_id: (is_useful, frozenset(tag_ids))} for all feedbacks of this profile."""
-    result = {}
-    for fb in ResourceFeedback.objects.filter(profile=profile).prefetch_related('resource__tags'):
-        result[fb.resource_id] = (fb.is_useful, frozenset(t.id for t in fb.resource.tags.all()))
-    return result
-
-
-def _apply_feedback(base_score, resource_id, resource_tag_ids, feedback):
-    """Adjust base score using direct feedback and tag-similarity to other feedbacks."""
-    if not feedback:
-        return float(base_score)
-
-    direct = feedback.get(resource_id)
-    if direct is not None:
-        is_useful, _ = direct
-        if not is_useful:
-            return -1.0  # always lands in "others", sorted below unrated resources
-        base_score += 2.0
-
-    for fb_id, (is_useful, fb_tags) in feedback.items():
-        if fb_id == resource_id:
-            continue
-        if len(resource_tag_ids & fb_tags) >= 2:
-            base_score += 1 if is_useful else -1
-
-    return max(0.0, float(base_score))
 
 
 COMMUNITY_MIN_LIKES = 2
@@ -155,7 +141,7 @@ class CategoryViewSet(ModelViewSet):
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
             'resources', 'resources__tags', 'resources__audiences',
-            'resources__attachments',
+            'resources__attachments', 'resources__subcategory',
         )
 
     def list(self, request, *args, **kwargs):
@@ -208,47 +194,24 @@ class CategoryViewSet(ModelViewSet):
             try:
                 profile = Profile.objects.get(pk=profile_id)
                 tag_ids = _matched_tag_ids(profile)
-                feedback = _load_feedback(profile)
                 age = _compute_age(profile.birth_date)
                 all_audiences = {a.id: a for a in Audience.objects.all()}
 
                 def score(r):
                     r_tag_ids = frozenset(t['id'] for t in r.get('tags', []))
-                    flags = {'recommended_by_system': False, 'boosted_by_similarity': False}
-
-                    for fb_id, (fb_useful, fb_tags) in feedback.items():
-                        if fb_useful and fb_id != r['id'] and len(r_tag_ids & fb_tags) >= 2:
-                            flags['boosted_by_similarity'] = True
-                            break
-
-                    direct = feedback.get(r['id'])
-                    if direct is not None:
-                        is_useful, _ = direct
-                        if not is_useful:
-                            return -1.0, flags
-                        tag_bonus = len(r_tag_ids & tag_ids) * 0.5
-                        sim_bonus = sum(
-                            0.5 if fb_useful else -0.5
-                            for fb_id, (fb_useful, fb_tags) in feedback.items()
-                            if fb_id != r['id'] and len(r_tag_ids & fb_tags) >= 2
-                        )
-                        return max(0.0, 1000.0 + tag_bonus + sim_bonus), flags
-
                     aid_list = r.get('audience_ids', [])
                     if not aid_list:
-                        return 0, flags
+                        return 0, False
                     audience_matches = sum(
                         1 for aid in aid_list
                         if aid in all_audiences and _audience_matches(all_audiences[aid], profile, age)
                     )
                     if audience_matches == 0:
-                        return 0, flags
+                        return 0, False
                     tag_overlap = len(r_tag_ids & tag_ids)
                     if tag_overlap == 0:
-                        return 0, flags
-                    flags['recommended_by_system'] = True
-                    raw = audience_matches + tag_overlap * 0.5
-                    return _apply_feedback(raw, r['id'], r_tag_ids, feedback), flags
+                        return 0, False
+                    return audience_matches + tag_overlap * 0.5, tag_overlap >= 2
 
                 scored = sorted([(r, score(r)) for r in data['resources']], key=lambda x: -x[1][0])
                 lang_likes = _cohort_likes_by_language(profile)
@@ -257,17 +220,16 @@ class CategoryViewSet(ModelViewSet):
                     {
                         **r,
                         'is_recommended': s > 0,
-                        'recommended_by_system': flags['recommended_by_system'],
-                        'boosted_by_similarity': flags['boosted_by_similarity'],
+                        'recommended_by_system': rec,
                         'community_by_language': profile.language if r['id'] in lang_likes else None,
                         'community_by_status': profile.status if r['id'] in stat_likes else None,
                     }
-                    for r, (s, flags) in scored
+                    for r, (s, rec) in scored
                 ]
             except Profile.DoesNotExist:
-                data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'boosted_by_similarity': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
+                data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
         else:
-            data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'boosted_by_similarity': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
+            data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
 
         return Response(data)
 
@@ -288,53 +250,34 @@ def top_resources(request):
     if not tag_ids:
         return Response([])
 
-    feedback = _load_feedback(profile)
     age = _compute_age(profile.birth_date)
     lang_likes = _cohort_likes_by_language(profile)
     stat_likes = _cohort_likes_by_status(profile)
     results = []
     for cat in Category.objects.prefetch_related(
-        'resources__tags', 'resources__audiences', 'resources__attachments',
+        'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory',
     ).all():
         for resource in cat.resources.all():
             resource_tag_ids = frozenset(t.id for t in resource.tags.all())
-            direct = feedback.get(resource.id)
-
-            is_directly_liked = direct is not None and direct[0]
-            if is_directly_liked:
-                # Directly liked → always in "for you", score computed without _apply_feedback to avoid double-count
-                sim_bonus = sum(
-                    0.5 if fb_useful else -0.5
-                    for fb_id, (fb_useful, fb_tags) in feedback.items()
-                    if fb_id != resource.id and len(resource_tag_ids & fb_tags) >= 2
-                )
-                adjusted = max(0.0, 1000.0 + len(resource_tag_ids & tag_ids) * 0.5 + sim_bonus)
-            else:
-                if direct is not None and not direct[0]:
-                    continue  # disliked → skip entirely
-                r_audiences = list(resource.audiences.all())
-                if not r_audiences:
-                    continue
-                audience_matches = sum(1 for a in r_audiences if _audience_matches(a, profile, age))
-                if audience_matches == 0:
-                    continue
-                raw = audience_matches + len(resource_tag_ids & tag_ids) * 0.5
-                adjusted = _apply_feedback(raw, resource.id, resource_tag_ids, feedback)
-            if adjusted > 0:
-                is_sim = any(
-                    is_useful and fb_id != resource.id and len(resource_tag_ids & fb_tags) >= 2
-                    for fb_id, (is_useful, fb_tags) in feedback.items()
-                )
-                data = ResourceSerializer(resource, context={'request': request}).data
-                results.append({
-                    **data,
-                    'score': adjusted,
-                    'category': {'id': cat.id, 'name': cat.name},
-                    'recommended_by_system': not is_directly_liked,
-                    'boosted_by_similarity': is_sim,
-                    'community_by_language': profile.language if resource.id in lang_likes else None,
-                    'community_by_status': profile.status if resource.id in stat_likes else None,
-                })
+            r_audiences = list(resource.audiences.all())
+            if not r_audiences:
+                continue
+            audience_matches = sum(1 for a in r_audiences if _audience_matches(a, profile, age))
+            if audience_matches == 0:
+                continue
+            tag_overlap = len(resource_tag_ids & tag_ids)
+            if tag_overlap == 0:
+                continue
+            score = audience_matches + tag_overlap * 0.5
+            data = ResourceSerializer(resource, context={'request': request}).data
+            results.append({
+                **data,
+                'score': score,
+                'category': {'id': cat.id, 'name': cat.name},
+                'recommended_by_system': tag_overlap >= 2,
+                'community_by_language': profile.language if resource.id in lang_likes else None,
+                'community_by_status': profile.status if resource.id in stat_likes else None,
+            })
 
     results.sort(key=lambda x: -x['score'])
     return Response(results[:limit])

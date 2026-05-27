@@ -3,11 +3,10 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import * as HeroIcons from '@heroicons/vue/24/outline'
-import { InboxIcon, DocumentTextIcon, XMarkIcon, SparklesIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/outline'
+import { InboxIcon, SparklesIcon } from '@heroicons/vue/24/outline'
 import ResourceList from '@/components/ResourceList.vue'
 import CategorySidebarItem from '@/components/CategorySidebarItem.vue'
 import CategoryMobilePill from '@/components/CategoryMobilePill.vue'
-import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import OnboardingTutorial from '@/components/OnboardingTutorial.vue'
 
 const route = useRoute()
@@ -21,7 +20,6 @@ const categories = ref([])
 const topResources = ref([])
 const feedbackMap = ref({}) // { [resource_id]: { id, is_useful } }
 const loading = ref(true)
-const openedResource = ref(null)
 const activePillEl = ref(null)
 const pillsScrollRef = ref(null)
 const otherPillsRef = ref(null)
@@ -48,12 +46,31 @@ const categorySections = computed(() => {
 
 const resourceSections = computed(() => {
   const resources = category.value?.resources || []
-  const rec = resources.filter(r => r.is_recommended)
-  const oth = resources.filter(r => !r.is_recommended)
-  const s = []
-  if (rec.length) s.push({ key: 'recommended', items: rec })
-  if (oth.length) s.push({ key: 'others', items: oth })
-  return s
+  if (!resources.length) return []
+
+  // Group by subcategory (resources already sorted by score from backend)
+  const grouped = new Map()
+  for (const r of resources) {
+    const key = r.subcategory ? String(r.subcategory.id) : '__none__'
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        key: 'subcategory',
+        label: r.subcategory?.name ?? null,
+        order: r.subcategory?.order ?? 999,
+        items: [],
+      })
+    }
+    grouped.get(key).items.push(r)
+  }
+
+  const groups = [...grouped.values()].sort((a, b) => a.order - b.order)
+
+  // Single group with no label → flat list, no header
+  if (groups.length === 1 && groups[0].label === null) {
+    return [{ key: 'all', items: resources }]
+  }
+
+  return groups
 })
 
 const forYouSections = computed(() =>
@@ -86,18 +103,6 @@ async function loadCategory(id) {
   } finally {
     loading.value = false
   }
-}
-
-function openResource(resource) {
-  openedResource.value = resource
-}
-
-function closeModal() {
-  openedResource.value = null
-}
-
-function filenameFromUrl(url) {
-  try { return decodeURIComponent(url.split('/').pop().split('?')[0]) } catch { return url }
 }
 
 async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
@@ -186,7 +191,44 @@ watch(() => route.params.id, async (newId) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200">
+  <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200 lg:flex">
+
+    <!-- Desktop left grey panel (hidden on mobile) -->
+    <aside v-if="categories.length" data-tut="cats-desktop" class="hidden lg:flex flex-col w-100 shrink-0 bg-surface-500 border-r border-surface-400">
+      <div class="sticky top-0 h-screen overflow-y-auto py-8 px-4 flex flex-col gap-1">
+        <CategorySidebarItem
+          v-if="topResources.length"
+          :label="t('categories.forYou')"
+          :icon="SparklesIcon"
+          :active="isForYou"
+          class="mb-1"
+          @click="router.push('/categories/for-you')"
+        />
+        <div v-if="topResources.length" class="mb-2 border-t border-surface-400" />
+        <template v-for="(section, si) in categorySections" :key="section.key">
+          <div v-if="si > 0" class="my-2 border-t border-surface-400" />
+          <p
+            v-if="section.key === 'recommended' || si > 0"
+            class="text-xs font-semibold uppercase tracking-wider px-4 mb-1 mt-1 flex items-center gap-1.5"
+            :class="section.key === 'recommended' ? 'text-brand-400' : 'text-surface-300'"
+          >
+            <SparklesIcon v-if="section.key === 'recommended'" class="w-3.5 h-3.5" />
+            {{ t(`categories.${section.key}`) }}
+          </p>
+          <CategorySidebarItem
+            v-for="cat in section.items"
+            :key="cat.id"
+            :label="cat.name"
+            :icon="getCategoryIcon(cat)"
+            :active="isActive(cat)"
+            @click="router.push(`/categories/${cat.id}`)"
+          />
+        </template>
+      </div>
+    </aside>
+
+    <!-- Right panel: full width on mobile, flex-1 on desktop -->
+    <div class="flex-1 min-w-0">
 
     <!-- Mobile sticky header -->
     <div class="sticky top-0 z-20 bg-surface-800 border-b border-surface-700 lg:hidden">
@@ -252,43 +294,8 @@ watch(() => route.params.id, async (newId) => {
       </div>
     </div>
 
-    <!-- Main layout -->
-    <div class="max-w-5xl mx-auto px-5 py-8 lg:flex lg:gap-8 lg:items-start">
-
-      <!-- Desktop sidebar -->
-      <aside v-if="categories.length" data-tut="cats-desktop" class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-8">
-        <CategorySidebarItem
-          v-if="topResources.length"
-          :label="t('categories.forYou')"
-          :icon="SparklesIcon"
-          :active="isForYou"
-          class="mb-1"
-          @click="router.push('/categories/for-you')"
-        />
-        <div v-if="topResources.length" class="mb-1 border-t border-surface-700/50" />
-        <template v-for="(section, si) in categorySections" :key="section.key">
-          <div v-if="si > 0" class="my-2 border-t border-surface-700/50" />
-          <p
-            v-if="section.key === 'recommended' || si > 0"
-            class="text-xs font-semibold uppercase tracking-wider px-3 mb-1 flex items-center gap-1.5"
-            :class="section.key === 'recommended' ? 'text-brand-400' : 'text-surface-500'"
-          >
-            <SparklesIcon v-if="section.key === 'recommended'" class="w-3.5 h-3.5" />
-            {{ t(`categories.${section.key}`) }}
-          </p>
-          <CategorySidebarItem
-            v-for="cat in section.items"
-            :key="cat.id"
-            :label="cat.name"
-            :icon="getCategoryIcon(cat)"
-            :active="isActive(cat)"
-            @click="router.push(`/categories/${cat.id}`)"
-          />
-        </template>
-      </aside>
-
-      <!-- Resources content -->
-      <div class="flex-1 min-w-0">
+    <!-- Content -->
+    <div class="max-w-4xl mx-auto px-5 py-8">
 
         <!-- For you view -->
         <template v-if="isForYou">
@@ -299,7 +306,7 @@ watch(() => route.params.id, async (newId) => {
             <h1 class="text-2xl font-bold text-surface-800">{{ t('categories.forYou') }}</h1>
           </div>
           <p class="text-gray-500 text-sm mb-8 leading-relaxed">{{ t('categories.forYouDesc') }}</p>
-          <ResourceList :sections="forYouSections" show-category :feedback-map="feedbackMap" @open="openResource" @feedback-change="handleFeedbackChange" />
+          <ResourceList :sections="forYouSections" show-category :feedback-map="feedbackMap" @feedback-change="handleFeedbackChange" />
         </template>
 
         <template v-else>
@@ -327,82 +334,16 @@ watch(() => route.params.id, async (newId) => {
             </div>
 
             <template v-else>
-              <ResourceList :sections="resourceSections" :feedback-map="feedbackMap" @open="openResource" @feedback-change="handleFeedbackChange" />
+              <ResourceList :sections="resourceSections" :feedback-map="feedbackMap" @feedback-change="handleFeedbackChange" />
             </template>
           </template>
         </template>
 
-      </div>
     </div>
 
     <OnboardingTutorial />
 
-    <!-- PDF Modal -->
-    <Transition
-      enter-from-class="opacity-0"
-      enter-active-class="transition-opacity duration-200"
-      leave-to-class="opacity-0"
-      leave-active-class="transition-opacity duration-200"
-    >
-      <div
-        v-if="openedResource"
-        class="fixed inset-0 z-50 flex flex-col bg-black/60 backdrop-blur-sm p-4"
-        @click.self="closeModal"
-      >
-        <div class="bg-white rounded-2xl flex flex-col overflow-hidden w-full max-w-3xl mx-auto h-full">
-
-          <!-- Modal header -->
-          <div class="flex items-center gap-3 px-5 py-3 bg-surface-500 border-b border-surface-400 shrink-0">
-            <DocumentTextIcon class="w-5 h-5 text-surface-200 shrink-0" />
-            <div class="flex-1 min-w-0">
-              <h2 class="font-semibold text-white truncate text-sm">{{ openedResource.name }}</h2>
-            </div>
-            <button
-              class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-400 text-surface-300 hover:text-white transition-colors cursor-pointer bg-transparent border-none shrink-0"
-              @click="closeModal"
-            >
-              <XMarkIcon class="w-4 h-4" />
-            </button>
-          </div>
-
-          <!-- Article body -->
-          <div class="flex-1 overflow-y-auto overflow-x-hidden px-6 py-6">
-            <div class="max-w-2xl mx-auto min-w-0">
-              <!-- Description always shown as intro -->
-              <p v-if="openedResource.description" class="text-surface-600 leading-relaxed mb-6">{{ openedResource.description }}</p>
-
-              <!-- Article body only if there is real content -->
-              <ArticleRenderer
-                v-if="openedResource.body?.sections?.length || openedResource.body?.blocks?.length"
-                :body="openedResource.body"
-              />
-
-              <!-- Attachments -->
-              <div v-if="openedResource.attachments?.length" class="mt-8 pt-6 border-t border-surface-200">
-                <p class="text-xs font-semibold uppercase tracking-wider text-surface-500 mb-3">Files</p>
-                <div class="space-y-2">
-                  <a
-                    v-for="a in openedResource.attachments"
-                    :key="a.id"
-                    :href="a.file"
-                    target="_blank"
-                    download
-                    class="flex items-center gap-3 p-3 rounded-xl border border-surface-200 hover:border-brand-400 hover:bg-brand-50 transition-colors no-underline"
-                  >
-                    <DocumentTextIcon class="w-5 h-5 text-brand-500 shrink-0" />
-                    <div class="flex-1 min-w-0">
-                      <p class="font-medium text-surface-800 text-sm truncate">{{ a.label || filenameFromUrl(a.file) }}</p>
-                      <p v-if="a.label" class="text-xs text-surface-500 truncate">{{ filenameFromUrl(a.file) }}</p>
-                    </div>
-                    <ArrowDownTrayIcon class="w-4 h-4 text-surface-400 shrink-0" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    </div>
 
   </div>
 </template>

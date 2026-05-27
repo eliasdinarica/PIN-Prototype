@@ -23,28 +23,29 @@ class Profile(models.Model):
         ('other', 'Other'),
     ]
 
-    ORIGIN_SECTOR_CHOICES = [
-        ('healthcare', 'Healthcare'),
-        ('education', 'Education'),
-        ('engineering', 'Engineering & Technical'),
-        ('trade', 'Trade & Commerce'),
-        ('agriculture', 'Agriculture'),
-        ('construction', 'Construction'),
-        ('it', 'IT & Technology'),
-        ('arts', 'Arts & Culture'),
-        ('administration', 'Administration'),
-        ('catering', 'Catering & Food Service'),
-        ('transport', 'Transport & Logistics'),
-        ('other', 'Other'),
+    COMPUTER_SKILLS_CHOICES = [
+        ('none', 'No computer skills'),
+        ('basic', 'Basic (internet, email)'),
+        ('advanced', 'Advanced (office tools, digital)'),
+    ]
+
+    EDUCATION_LEVEL_CHOICES = [
+        ('primary', 'Primary school or less'),
+        ('secondary', 'Secondary school (mandatory)'),
+        ('vocational', 'Vocational training (CFC/AFP)'),
+        ('bachelor', 'University (Bachelor or equivalent)'),
+        ('master_plus', 'Master, Doctorate or higher'),
     ]
 
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES)
     other_languages = models.JSONField(default=list, blank=True)
     status = models.CharField(max_length=5, choices=STATUS_CHOICES, default='other')
     has_children = models.BooleanField()
-    origin_sector = models.CharField(max_length=20, choices=ORIGIN_SECTOR_CHOICES, blank=True)
     arrived_over_year_ago = models.BooleanField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    has_driving_license = models.BooleanField(null=True, blank=True)
+    computer_skills = models.CharField(max_length=10, choices=COMPUTER_SKILLS_CHOICES, blank=True, default='none')
+    education_level = models.CharField(max_length=15, choices=EDUCATION_LEVEL_CHOICES, blank=True, default='primary')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -56,10 +57,12 @@ class Audience(models.Model):
     description = models.TextField(blank=True)
     statuses = models.CharField(max_length=50, blank=True, help_text="Comma-separated permit codes, e.g. N,F,S. Empty = any.")
     has_children = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
-    origin_sectors = models.CharField(max_length=200, blank=True, help_text="Comma-separated sectors, e.g. healthcare,education. Empty = any.")
     arrived_over_year = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
     min_age = models.IntegerField(null=True, blank=True)
     max_age = models.IntegerField(null=True, blank=True)
+    has_driving_license = models.BooleanField(null=True, blank=True, help_text="If set, profile must match.")
+    min_computer_skills = models.CharField(max_length=10, blank=True, choices=[('basic', 'Basic'), ('advanced', 'Advanced')], help_text="Minimum computer skill level. Empty = any.")
+    min_education_level = models.CharField(max_length=15, blank=True, choices=[('primary', 'Primary'), ('secondary', 'Secondary'), ('vocational', 'Vocational'), ('bachelor', 'Bachelor'), ('master_plus', 'Master+')], help_text="Minimum education level. Empty = any.")
     relevant_tags = models.ManyToManyField('Tag', blank=True, related_name='audiences', help_text="Resources with these tags are shown first when this audience matches.")
 
     def __str__(self):
@@ -101,6 +104,19 @@ class Category(models.Model):
         return self.name
 
 
+class Subcategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    name = models.CharField(max_length=100)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name_plural = 'subcategories'
+
+    def __str__(self):
+        return f"{self.category.name} › {self.name}"
+
+
 class Tag(models.Model):
     label = models.CharField(max_length=50, unique=True)
 
@@ -115,6 +131,10 @@ def _default_body():
 
 class Resource(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='resources')
+    subcategory = models.ForeignKey(
+        Subcategory, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='resources',
+    )
     audiences = models.ManyToManyField(Audience, blank=True, related_name='resources')
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
