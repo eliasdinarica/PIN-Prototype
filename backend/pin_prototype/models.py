@@ -130,7 +130,7 @@ def _default_body():
 
 
 class Resource(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='resources')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='resources', null=True, blank=True)
     subcategory = models.ForeignKey(
         Subcategory, on_delete=models.SET_NULL,
         null=True, blank=True, related_name='resources',
@@ -157,6 +157,33 @@ class Attachment(models.Model):
 
     def __str__(self):
         return self.label or self.file.name
+
+
+class Pathway(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class PathwayStep(models.Model):
+    pathway = models.ForeignKey(Pathway, related_name='steps', on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='pathway_steps')
+    order = models.IntegerField(default=0)
+    step_label = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.pathway.title} › étape {self.order}"
 
 
 class ResourceFeedback(models.Model):

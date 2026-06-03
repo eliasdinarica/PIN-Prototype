@@ -79,7 +79,7 @@ async function handleComplete(answers) {
   } catch (error) {
     console.error('Failed to save profile:', error)
   }
-  router.push('/categories')
+  router.push('/hub')
 }
 </script>
 

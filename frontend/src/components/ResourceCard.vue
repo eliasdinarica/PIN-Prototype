@@ -28,7 +28,7 @@ function filenameFromUrl(url) {
 </script>
 
 <template>
-  <div class="border-b border-surface-300/70">
+  <div :data-resource-id="resource.id" class="border-b border-surface-300/70">
 
     <!-- Collapsed row -->
     <button

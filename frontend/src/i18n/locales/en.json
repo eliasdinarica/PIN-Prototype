@@ -71,6 +71,8 @@
     "skip": "Skip",
     "dontKnow": "I don't know",
     "saveExit": "Save & exit",
+    "finish": "I'm done",
+    "finishNote": "You can come back and update your answers anytime.",
     "back": "Back",
     "done": {
       "title": "You're all set!",
@@ -92,7 +94,45 @@
     }
   },
   "nav": {
-    "editProfile": "Edit profile"
+    "editProfile": "Edit profile",
+    "questionnaire": "Survey",
+    "sections": {
+      "resources": "Resources",
+      "pathways": "Pathways",
+      "section2": "Community",
+      "section3": "Events",
+      "comingSoon": "Coming soon"
+    }
+  },
+  "landing": {
+    "headline":    "The right resources. For your situation.",
+    "heroSub":     "All the information you need to settle in Switzerland, in your language.",
+    "needLabel":   "If you need help with any of this —",
+    "topicsMatch": "You're in the right place.",
+    "topics": {
+      "work":    "Finding work",
+      "permit":  "Residence permit",
+      "french":  "French courses",
+      "housing": "Housing",
+      "health":  "Health",
+      "family":  "Family & children",
+      "banking": "Banking & money",
+      "rights":  "Rights & procedures"
+    },
+    "exTitles": "Which permit lets me work?|How does health insurance work?|Can my children go to school?",
+    "exDescs":  "Permit B, C or L lets you work. Permit S gives access to some temporary jobs.|Health insurance is mandatory in Switzerland. You have 3 months after arrival to choose a provider.|School is free and compulsory from age 4. Registration is done at the commune office.",
+    "exCats":   "Employment|Health|Family",
+    "exHint":   "These resources, and hundreds more. The questionnaire identifies the ones that match your situation.",
+    "q": {
+      "tag":        "Where do you want to start?",
+      "cta":        "Answer the questionnaire",
+      "ctaUpdate":  "Redo the questionnaire",
+      "ctaDesc":    "Resources tailored to your situation",
+      "ctaExplore": "Explore freely",
+      "exploreDesc":"Browse all resources",
+      "privacy":    "Your answers stay on your device. Nothing is transmitted."
+    },
+    "skip": "See all information without a profile"
   },
   "categories": {
     "eyebrow": "Your resources",
@@ -102,7 +142,10 @@
     "recommended": "Recommended categories",
     "others": "Other categories",
     "forYou": "All resources",
-    "forYouDesc": "The resources best matched to your profile, across all categories."
+    "forYouDesc": "The resources best matched to your profile, across all categories.",
+    "aiSearch": "AI Search",
+    "aiPlaceholder": "What do you need help with?",
+    "aiSubmit": "Search"
   },
   "detail": {
     "empty": "No documents in this category yet.",
@@ -119,5 +162,21 @@
     "byLanguage": "Recommended · {code} community",
     "byStatus": "Recommended · permit {code}",
     "bySimilarity": "Similar to resources you liked"
+  },
+  "hub": {
+    "title": "What do you need?",
+    "resourcesDesc": "Practical information for living in Switzerland.",
+    "pathwaysDesc": "Step-by-step guides for key procedures in Switzerland.",
+    "communityDesc": "Connect with others in your area.",
+    "eventsDesc": "Local workshops, appointments and events."
+  },
+  "pathways": {
+    "eyebrow": "Pathways",
+    "title": "Step-by-step procedures",
+    "subtitle": "Follow the steps for common situations in Switzerland.",
+    "steps": "{n} steps",
+    "back": "All pathways",
+    "empty": "No pathways yet.",
+    "done": "Pathway complete"
   }
 }

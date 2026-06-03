@@ -71,6 +71,8 @@
     "skip": "Passer",
     "dontKnow": "Je ne sais pas",
     "saveExit": "Enregistrer et quitter",
+    "finish": "J'ai terminé",
+    "finishNote": "Vous pouvez revenir modifier vos réponses à tout moment.",
     "back": "Retour",
     "done": {
       "title": "Vous êtes prêt !",
@@ -92,7 +94,45 @@
     }
   },
   "nav": {
-    "editProfile": "Modifier le profil"
+    "editProfile": "Modifier le profil",
+    "questionnaire": "Bilan",
+    "sections": {
+      "resources": "Ressources",
+      "pathways": "Parcours",
+      "section2": "Communauté",
+      "section3": "Événements",
+      "comingSoon": "Bientôt disponible"
+    }
+  },
+  "landing": {
+    "headline":    "Les bonnes ressources. Pour là où vous en êtes.",
+    "heroSub":     "Tout ce qu'il faut pour s'installer en Suisse, dans votre langue.",
+    "needLabel":   "Si vous avez besoin d'aide pour l'un de ces sujets —",
+    "topicsMatch": "Cette plateforme est faite pour vous.",
+    "topics": {
+      "work":    "Trouver du travail",
+      "permit":  "Permis de séjour",
+      "french":  "Cours de français",
+      "housing": "Logement",
+      "health":  "Santé",
+      "family":  "Famille et enfants",
+      "banking": "Banque et argent",
+      "rights":  "Droits et démarches"
+    },
+    "exTitles": "Quel permis me donne le droit de travailler ?|Comment fonctionne l'assurance maladie ?|Mes enfants peuvent-ils aller à l'école ?",
+    "exDescs":  "Le permis B, C ou L permet de travailler. Le permis S donne accès à certains emplois temporaires.|L'assurance maladie est obligatoire en Suisse. Vous avez 3 mois après l'arrivée pour choisir une caisse.|L'école est gratuite et obligatoire dès 4 ans. L'inscription se fait à la commune de résidence.",
+    "exCats":   "Emploi|Santé|Famille",
+    "exHint":   "Ces ressources, et des centaines d'autres. Le questionnaire identifie celles qui correspondent à votre situation.",
+    "q": {
+      "tag":        "Par où voulez-vous commencer ?",
+      "cta":        "Répondre au questionnaire",
+      "ctaUpdate":  "Refaire le questionnaire",
+      "ctaDesc":    "Ressources adaptées à votre situation",
+      "ctaExplore": "Explorer librement",
+      "exploreDesc":"Parcourir toutes les ressources",
+      "privacy":    "Vos réponses restent sur votre appareil. Aucune donnée n'est transmise."
+    },
+    "skip": "Voir toutes les informations sans profil"
   },
   "categories": {
     "eyebrow": "Vos ressources",
@@ -102,7 +142,10 @@
     "recommended": "Recommandées",
     "others": "Autres catégories",
     "forYou": "Pour vous",
-    "forYouDesc": "Les ressources les plus adaptées à votre profil, toutes catégories confondues."
+    "forYouDesc": "Les ressources les plus adaptées à votre profil, toutes catégories confondues.",
+    "aiSearch": "Recherche IA",
+    "aiPlaceholder": "De quoi avez-vous besoin ?",
+    "aiSubmit": "Chercher"
   },
   "detail": {
     "empty": "Aucun document dans cette catégorie pour l'instant.",
@@ -120,5 +163,21 @@
     "byLanguage": "Recommandé · communauté {code}",
     "byStatus": "Recommandé · permis {code}",
     "bySimilarity": "Similaire à des ressources que vous avez aimées"
+  },
+  "hub": {
+    "title": "Que cherchez-vous ?",
+    "resourcesDesc": "Infos pratiques pour vivre en Suisse.",
+    "pathwaysDesc": "Des étapes claires pour vos démarches en Suisse.",
+    "communityDesc": "Échangez avec d'autres personnes dans votre région.",
+    "eventsDesc": "Ateliers, rendez-vous et événements locaux."
+  },
+  "pathways": {
+    "eyebrow": "Parcours",
+    "title": "Démarches pas à pas",
+    "subtitle": "Suivez les étapes pour les situations courantes en Suisse.",
+    "steps": "{n} étapes",
+    "back": "Tous les parcours",
+    "empty": "Aucun parcours pour l'instant.",
+    "done": "Parcours terminé"
   }
 }

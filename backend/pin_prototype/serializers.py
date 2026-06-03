@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment
+from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment, Pathway, PathwayStep
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -78,3 +78,34 @@ class CategoryBriefSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'icon']
+
+
+class PathwayStepSerializer(serializers.ModelSerializer):
+    resource = ResourceSerializer(read_only=True)
+
+    class Meta:
+        model = PathwayStep
+        fields = ['id', 'order', 'step_label', 'resource']
+
+
+class PathwayBriefSerializer(serializers.ModelSerializer):
+    step_count = serializers.SerializerMethodField()
+
+    def get_step_count(self, obj):
+        return obj.steps.count()
+
+    class Meta:
+        model = Pathway
+        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order']
+
+
+class PathwaySerializer(serializers.ModelSerializer):
+    steps = PathwayStepSerializer(many=True, read_only=True)
+    step_count = serializers.SerializerMethodField()
+
+    def get_step_count(self, obj):
+        return obj.steps.count()
+
+    class Meta:
+        model = Pathway
+        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order', 'steps']

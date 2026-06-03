@@ -7,7 +7,7 @@ Usage:
 """
 
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource
+from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Editor.js)
@@ -2838,6 +2838,584 @@ RESOURCE_SUBCATEGORY = {
 
 
 # ---------------------------------------------------------------------------
+# Parcours
+# ---------------------------------------------------------------------------
+
+PATHWAYS = [
+
+    # -----------------------------------------------------------------------
+    {
+        'title': "Certifier son niveau de français — le test fide",
+        'description': "Faites reconnaître officiellement votre niveau de français. Le test fide est accepté pour le renouvellement de permis et la naturalisation.",
+        'icon': 'LanguageIcon',
+        'order': 0,
+        'steps': [
+            {
+                'order': 1,
+                'step_label': '',
+                'resource': {
+                    'name': "Comprendre le test fide",
+                    'description': "Le test fide mesure votre niveau de français en situations de la vie courante. Niveaux A1 à B1. Reconnu par les autorités suisses.",
+                    'tags': ['Langue', 'Cours de langue'],
+                    'body': body(
+                        sec("À quoi sert le test fide",
+                            para("Le test fide évalue deux compétences séparément : l'oral (parler et comprendre) et l'écrit (lire et écrire)."),
+                            para("Les niveaux vont de A1 (débutant) à B1 (intermédiaire). Les autorités suisses acceptent le passeport fide pour le renouvellement de permis de séjour B ou C et pour la naturalisation."),
+                        ),
+                        sec("Tarifs",
+                            ul(
+                                "Test oral uniquement : CHF 170",
+                                "Test écrit uniquement : CHF 120",
+                                "Test complet (oral + écrit) : CHF 250",
+                            ),
+                        ),
+                        sec("En savoir plus",
+                            para("Site officiel : <a href='https://fide-service.ch' target='_blank'>fide-service.ch</a>"),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 2,
+                'step_label': '',
+                'resource': {
+                    'name': "Faire un bilan linguistique gratuit",
+                    'description': "Avant de passer le test, évaluez votre niveau gratuitement. Vous serez orienté vers le bon cours ou le bon examen.",
+                    'tags': ['Langue', 'Gratuit', 'En personne', 'Traduction disponible'],
+                    'body': body(
+                        sec("COSM — Service de cohésion multiculturelle",
+                            para("Le COSM propose des entretiens d'accueil gratuits et confidentiels en plusieurs langues. L'entretien permet d'évaluer votre niveau de français et de vous orienter vers les bons services."),
+                            ul(
+                                "<b>Adresse :</b> Rue de Tivoli 22, 2000 Neuchâtel",
+                                "<b>Téléphone :</b> 032 889 74 42",
+                                "<b>Email :</b> cosm@ne.ch",
+                                "<b>Sur rendez-vous</b> — gratuit et confidentiel",
+                            ),
+                        ),
+                        sec("ESPACE — Centre de formation intégré",
+                            para("ESPACE intègre l'évaluation de niveau dans son processus d'inscription aux cours de français."),
+                            ul(
+                                "<b>Adresse :</b> Avenue de Clos-Brochet 10, 2000 Neuchâtel",
+                                "<b>Cours :</b> du niveau alphabétisation au niveau A2",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 3,
+                'step_label': '',
+                'resource': {
+                    'name': "Choisir et rejoindre un cours de français",
+                    'description': "Si votre niveau n'est pas encore prêt pour le test, inscrivez-vous à un cours adapté. ESPACE propose des cours gratuits à Neuchâtel.",
+                    'tags': ['Langue', 'Cours de langue', 'Gratuit', 'En personne'],
+                    'body': body(
+                        sec("ESPACE (gratuit)",
+                            para("ESPACE est le principal centre de formation linguistique du canton. Les cours sont gratuits et vont du niveau alphabétisation au niveau A2."),
+                            ul(
+                                "Sessions de 6 mois (deux sessions par an)",
+                                "Inscription avec liste d'attente possible",
+                                "<b>Adresse :</b> Avenue de Clos-Brochet 10, 2000 Neuchâtel",
+                            ),
+                        ),
+                        sec("Université de Neuchâtel — Français pour tous",
+                            para("L'UniNE propose des cours de français pour les titulaires de permis N, F ou B."),
+                            ul(
+                                "Niveaux A2 à C1",
+                                "<b>Site :</b> <a href='https://www.unine.ch' target='_blank'>unine.ch</a>",
+                            ),
+                        ),
+                        sec("Cours privés",
+                            ul(
+                                "inlingua Neuchâtel",
+                                "Migros Club School",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 4,
+                'step_label': '',
+                'resource': {
+                    'name': "S'inscrire au test fide en ligne",
+                    'description': "L'inscription se fait uniquement en ligne. Délai minimum : 15 jours avant la date de l'examen.",
+                    'tags': ['Langue', 'En ligne', 'Formulaire'],
+                    'body': body(
+                        sec("Centre agréé fide à Neuchâtel",
+                            para("Swiss Language Academy est le centre agréé fide à Neuchâtel. L'inscription se fait exclusivement en ligne sur leur site."),
+                            ul(
+                                "<b>Adresse :</b> Rue de la Maladière 84 (CPLN), 2000 Neuchâtel",
+                                "<b>Email :</b> fide@swiss-language-academy.ch",
+                                "<b>Inscription en ligne :</b> <a href='https://swiss-language-academy.ch' target='_blank'>swiss-language-academy.ch</a>",
+                            ),
+                        ),
+                        sec("Délais à respecter",
+                            ul(
+                                "Inscrivez-vous au moins <b>15 jours avant</b> la date de l'examen",
+                                "Vous recevez une confirmation par email au moins 10 jours avant",
+                                "La convocation indique l'heure et la salle exactes",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 5,
+                'step_label': '',
+                'resource': {
+                    'name': "Recevoir votre passeport linguistique fide",
+                    'description': "Après le test, vous recevez un passeport linguistique officiel par courrier. Délai : environ 4 semaines.",
+                    'tags': ['Langue', 'Documents officiels'],
+                    'body': body(
+                        sec("Le passeport linguistique fide",
+                            para("Le passeport fide indique votre niveau séparément pour l'oral et l'écrit (par exemple : oral B1 — écrit A2). Il est valable à vie et reconnu par toutes les autorités suisses."),
+                            ul(
+                                "Reçu par courrier environ <b>4 semaines</b> après le test",
+                                "Valable à vie — pas de date d'expiration",
+                                "Reconnu pour le renouvellement de permis B et C",
+                                "Reconnu pour la demande de naturalisation",
+                                "Utile aussi pour la recherche d'emploi",
+                            ),
+                        ),
+                    ),
+                },
+            },
+        ],
+    },
+
+    # -----------------------------------------------------------------------
+    {
+        'title': "S'inscrire au chômage à Neuchâtel — ONE",
+        'description': "Activez vos droits aux indemnités chômage dès que vous perdez votre emploi. Chaque jour de retard peut vous faire perdre des indemnités.",
+        'icon': 'BriefcaseIcon',
+        'order': 1,
+        'steps': [
+            {
+                'order': 1,
+                'step_label': '',
+                'resource': {
+                    'name': "Vérifier mon droit aux indemnités chômage",
+                    'description': "Pour recevoir de l'argent pendant votre recherche d'emploi, vous devez remplir certaines conditions précises.",
+                    'tags': ['Travail', 'Chomage', 'Droits'],
+                    'body': body(
+                        sec("Conditions à remplir",
+                            ul(
+                                "Avoir cotisé à l'assurance chômage pendant <b>au moins 12 mois</b> dans les 2 dernières années",
+                                "Avoir un permis de séjour valide (B, C ou L selon les cas)",
+                                "Être disponible pour travailler immédiatement",
+                                "Ne pas avoir quitté son emploi volontairement sans raison valable",
+                            ),
+                        ),
+                        sec("Cas particuliers",
+                            para("Les titulaires de permis N (requérants d'asile en cours de procédure) ne peuvent pas recevoir les indemnités ordinaires. Contactez le COSM ou votre assistant social pour connaître les aides disponibles."),
+                        ),
+                        sec("Montant",
+                            para("Les indemnités représentent environ <b>80%</b> de votre dernier salaire assuré, jusqu'à un maximum de CHF 148 par jour."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 2,
+                'step_label': '',
+                'resource': {
+                    'name': "Choisir ma caisse d'assurance chômage",
+                    'description': "Avant de vous inscrire à l'ONE, choisissez votre caisse. C'est elle qui calcule et verse vos indemnités chaque mois.",
+                    'tags': ['Chomage', 'Travail', 'En personne'],
+                    'body': body(
+                        sec("Principales caisses à Neuchâtel",
+                            ul(
+                                "<b>Caisse Cantonale Neuchâteloise (CCNAC) :</b> Espacité 4, 2302 La Chaux-de-Fonds — 032 889 67 90",
+                                "<b>Unia :</b> accessible aux membres du syndicat Unia",
+                                "Autres caisses syndicales selon votre secteur professionnel",
+                            ),
+                        ),
+                        sec("Comment choisir",
+                            para("Vous pouvez choisir n'importe quelle caisse reconnue. Le montant versé est le même quelle que soit la caisse. La CCNAC est la caisse cantonale publique, accessible à tous."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 3,
+                'step_label': '',
+                'resource': {
+                    'name': "M'inscrire à l'ONE avant la fin de mon contrat",
+                    'description': "Inscrivez-vous dès que vous savez que vous allez perdre votre emploi. Idéalement avant la fin du contrat de travail.",
+                    'tags': ['Chomage', 'Travail', 'En ligne', 'En personne', 'Formulaire'],
+                    'body': body(
+                        sec("Comment s'inscrire",
+                            ul(
+                                "En ligne sur <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a> — disponible 24h/24, sans création de compte obligatoire",
+                                "Ou au guichet ONE sur rendez-vous",
+                            ),
+                        ),
+                        sec("ONE Neuchâtel", ul(
+                            "<b>Adresse :</b> Avenue Edouard-Dubois 20, 2000 Neuchâtel",
+                            "<b>Téléphone :</b> 032 889 68 18",
+                            "<b>Email :</b> one@ne.ch",
+                        ), width='half'),
+                        sec("ONE La Chaux-de-Fonds", ul(
+                            "<b>Adresse :</b> Espacité 1, 2302 La Chaux-de-Fonds",
+                            "<b>Téléphone :</b> 032 889 69 00",
+                        ), width='half'),
+                        sec("Documents à préparer",
+                            ul(
+                                "Pièce d'identité + permis de séjour valide",
+                                "Contrat de travail ou lettre de licenciement",
+                                "Numéro AVS (numéro d'assurance sociale suisse)",
+                                "Coordonnées bancaires (IBAN)",
+                                "CV à jour",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 4,
+                'step_label': '',
+                'resource': {
+                    'name': "Participer au premier entretien de conseil",
+                    'description': "L'ONE vous contacte dans les 15 jours pour un premier entretien. Vous définissez ensemble votre plan de recherche d'emploi.",
+                    'tags': ['Chomage', 'Travail', 'En personne'],
+                    'body': body(
+                        sec("Ce qui se passe lors de l'entretien",
+                            ul(
+                                "Le conseiller examine votre dossier et vos compétences professionnelles",
+                                "Il définit avec vous les critères du poste à rechercher",
+                                "Il fixe le nombre minimum de candidatures par mois (généralement 8 à 12)",
+                                "Il peut proposer des mesures actives : ateliers CV, formation courte, stage professionnel",
+                            ),
+                        ),
+                        sec("À apporter",
+                            ul(
+                                "Pièce d'identité et permis de séjour",
+                                "Attestation de l'employeur précédent",
+                                "Certificats de travail",
+                                "CV à jour",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 5,
+                'step_label': '',
+                'resource': {
+                    'name': "Soumettre l'IPA chaque mois avant le 5",
+                    'description': "Chaque mois, avant le 5, vous devez envoyer vos preuves de recherche d'emploi à votre caisse. C'est obligatoire pour recevoir les indemnités.",
+                    'tags': ['Chomage', 'Formulaire', 'Documents officiels'],
+                    'body': body(
+                        sec("L'IPA — formulaire mensuel obligatoire",
+                            para("L'IPA est le formulaire qui prouve que vous recherchez activement un emploi. Il doit être envoyé à votre caisse chômage <b>avant le 5 du mois suivant</b>."),
+                            ul(
+                                "Remplissez-le chaque mois, même si vous n'avez pas trouvé de travail",
+                                "Joignez les preuves de chaque candidature : date, nom de l'entreprise, poste, réponse reçue",
+                                "Un retard ou un oubli peut entraîner une <b>suspension temporaire des indemnités</b>",
+                            ),
+                        ),
+                        sec("Conseil",
+                            para("Tenez un tableau de suivi de vos candidatures dès le premier jour. Cela facilite grandement le remplissage mensuel et prouve votre démarche active en cas de contrôle."),
+                        ),
+                    ),
+                },
+            },
+        ],
+    },
+
+    # -----------------------------------------------------------------------
+    {
+        'title': "Faire reconnaître son diplôme étranger en Suisse",
+        'description': "Votre diplôme obtenu à l'étranger peut être reconnu en Suisse. Une attestation officielle facilite votre recherche d'emploi et est obligatoire pour certaines professions.",
+        'icon': 'AcademicCapIcon',
+        'order': 2,
+        'steps': [
+            {
+                'order': 1,
+                'step_label': '',
+                'resource': {
+                    'name': "Mon diplôme est-il reconnu automatiquement ?",
+                    'description': "En Suisse, certaines professions exigent une reconnaissance officielle obligatoire. Pour les autres, une attestation aide à convaincre les employeurs.",
+                    'tags': ['Reconnaissance diplome', 'Formation', 'Travail'],
+                    'body': body(
+                        sec("Professions réglementées — reconnaissance obligatoire",
+                            para("Dans ces professions, vous devez faire reconnaître votre diplôme avant de pouvoir exercer en Suisse :"),
+                            ul(
+                                "Professions médicales : médecin, dentiste, pharmacien, vétérinaire",
+                                "Soins infirmiers : infirmier/infirmière, sage-femme",
+                                "Enseignant",
+                                "Avocat (pour représenter des clients en justice)",
+                            ),
+                        ),
+                        sec("Professions non réglementées — reconnaissance utile",
+                            para("La grande majorité des professions en Suisse ne sont pas réglementées. Un employeur peut vous recruter sans reconnaissance officielle. Mais une attestation de niveau renforce votre candidature."),
+                            para("Exemples : ingénieur, comptable, informaticien, économiste, architecte."),
+                        ),
+                        sec("Vérifier votre situation",
+                            para("Consultez la liste complète sur <a href='https://www.recognition.swiss' target='_blank'>recognition.swiss</a>."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 2,
+                'step_label': '',
+                'resource': {
+                    'name': "Identifier l'autorité compétente pour ma demande",
+                    'description': "Selon votre diplôme et votre profession, vous devez contacter une autorité différente. Se tromper d'autorité retarde le processus.",
+                    'tags': ['Reconnaissance diplome', 'Formation', 'Documents officiels'],
+                    'body': body(
+                        sec("Quelle autorité contacter",
+                            ul(
+                                "<b>SERI</b> (Secrétariat d'État à la formation) → professions réglementées non médicales + attestations de niveau → <a href='https://www.recognition.swiss' target='_blank'>recognition.swiss</a>",
+                                "<b>Croix-Rouge Suisse (CRS)</b> → infirmiers, sages-femmes → <a href='https://www.redcross.ch' target='_blank'>redcross.ch</a> — CHF 680",
+                                "<b>CDIP</b> → enseignants (tous niveaux) → <a href='https://www.cdip.ch' target='_blank'>cdip.ch</a>",
+                                "<b>Swiss ENIC / swissuniversities</b> → diplômes universitaires (sur demande de l'employeur) → <a href='https://www.anerkennung.swiss' target='_blank'>anerkennung.swiss</a>",
+                            ),
+                        ),
+                        sec("Cas des médecins",
+                            para("Les médecins ressortissants UE/AELE bénéficient d'une reconnaissance facilitée via le SERI. La demande se fait sur recognition.swiss. Délai : 3 à 6 mois. Frais : CHF 550."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 3,
+                'step_label': '',
+                'resource': {
+                    'name': "Préparer les documents requis",
+                    'description': "Rassemblez tous vos documents avant de déposer la demande. Tout doit être en format PDF. Une pièce manquante bloque le traitement.",
+                    'tags': ['Reconnaissance diplome', 'Documents officiels', 'Formulaire'],
+                    'body': body(
+                        sec("Documents obligatoires",
+                            ul(
+                                "Diplôme original — <b>copie certifiée conforme</b> par une autorité officielle (notaire, ambassade)",
+                                "Relevés de notes complets",
+                                "Pièce d'identité ou permis de séjour en cours de validité",
+                            ),
+                        ),
+                        sec("Traduction",
+                            ul(
+                                "Traduction certifiée obligatoire si le document n'est <b>pas</b> en allemand, français, italien ou anglais",
+                                "Les diplômes en anglais ne nécessitent pas de traduction",
+                                "La traduction doit être faite par un traducteur assermenté",
+                            ),
+                        ),
+                        sec("Format",
+                            para("Tous les fichiers doivent être soumis en PDF. La qualité de numérisation doit permettre une lecture claire de tous les éléments (sceaux, signatures)."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 4,
+                'step_label': '',
+                'resource': {
+                    'name': "Déposer la demande en ligne sur recognition.swiss",
+                    'description': "La demande se fait entièrement en ligne. Créez un compte, téléversez vos documents et payez les frais de traitement.",
+                    'tags': ['Reconnaissance diplome', 'En ligne', 'Formulaire'],
+                    'body': body(
+                        sec("Procédure",
+                            ol(
+                                "Rendez-vous sur <a href='https://www.recognition.swiss' target='_blank'>recognition.swiss</a>",
+                                "Créez un compte personnel",
+                                "Remplissez le formulaire de demande en ligne",
+                                "Téléversez vos documents en PDF",
+                                "Payez les frais en ligne",
+                            ),
+                        ),
+                        sec("Frais",
+                            ul(
+                                "<b>Attestation de niveau</b> (profession non réglementée) : <b>CHF 350</b>",
+                                "<b>Profession réglementée</b> (via SERI) : <b>CHF 550</b>",
+                                "Croix-Rouge Suisse (infirmiers) : <b>CHF 680</b>",
+                            ),
+                        ),
+                        sec("Après le dépôt",
+                            para("Le SERI vous contacte par email dans les <b>4 semaines</b> suivant le dépôt pour confirmer la réception ou demander des documents complémentaires."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 5,
+                'step_label': '',
+                'resource': {
+                    'name': "Attendre la décision et les éventuelles mesures complémentaires",
+                    'description': "Le délai varie selon le type de demande. En cas de formation insuffisante, des mesures complémentaires peuvent être exigées avant la reconnaissance définitive.",
+                    'tags': ['Reconnaissance diplome', 'Formation'],
+                    'body': body(
+                        sec("Délais de traitement",
+                            ul(
+                                "<b>Attestation de niveau</b> (profession non réglementée) : quelques semaines",
+                                "<b>Profession réglementée</b> : 3 à 12 mois selon la complexité",
+                                "Les délais peuvent être plus longs en cas de forte demande",
+                            ),
+                        ),
+                        sec("Si des lacunes sont identifiées",
+                            para("Si votre formation est jugée insuffisante par rapport aux standards suisses, le SERI peut exiger :"),
+                            ul(
+                                "Un stage professionnel en Suisse",
+                                "Un examen d'aptitude (épreuve théorique ou pratique)",
+                                "Une formation complémentaire dans un établissement suisse",
+                            ),
+                        ),
+                        sec("Besoin d'aide",
+                            para("Le COSM à Neuchâtel peut vous accompagner pour comprendre la décision et préparer les étapes suivantes. Contact : 032 889 74 42 — cosm@ne.ch"),
+                        ),
+                    ),
+                },
+            },
+        ],
+    },
+
+    # -----------------------------------------------------------------------
+    {
+        'title': "S'assurer avec la LAMal — assurance maladie obligatoire",
+        'description': "Toute personne qui habite en Suisse doit avoir une assurance maladie. Vous avez 3 mois après l'arrivée pour choisir votre caisse.",
+        'icon': 'HeartIcon',
+        'order': 3,
+        'steps': [
+            {
+                'order': 1,
+                'step_label': '',
+                'resource': {
+                    'name': "Comprendre l'obligation d'assurance maladie (LAMal)",
+                    'description': "En Suisse, l'assurance maladie est obligatoire pour tout résident. Même avec un permis N, F ou S. Le délai est de 3 mois après l'arrivée.",
+                    'tags': ['Assurance maladie', 'Sante', 'Droits'],
+                    'body': body(
+                        sec("Ce que vous devez savoir",
+                            ul(
+                                "Toute personne résidant en Suisse <b>plus de 3 mois</b> doit être assurée",
+                                "Délai : <b>3 mois</b> après l'arrivée en Suisse pour souscrire",
+                                "La couverture est <b>rétroactive</b> au premier jour d'arrivée, même si vous souscrivez dans le délai",
+                                "Si vous ne souscrivez pas à temps, le canton vous assigne automatiquement à une caisse — souvent parmi les plus chères",
+                            ),
+                        ),
+                        sec("Permis N, F et S",
+                            para("Les titulaires de permis N, F ou S sont aussi soumis à l'obligation. Dans de nombreux cas, les primes sont prises en charge directement par le canton. Renseignez-vous auprès de votre assistant social ou du COSM (032 889 74 42)."),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 2,
+                'step_label': '',
+                'resource': {
+                    'name': "Vérifier mon droit aux subsides (réduction de prime)",
+                    'description': "Si vos revenus sont modestes, le canton peut rembourser une partie ou la totalité de votre prime mensuelle. Cela s'appelle les subsides.",
+                    'tags': ['Assurance maladie', 'Reduction de prime', 'Aide sociale', 'Formulaire'],
+                    'body': body(
+                        sec("Qui peut demander des subsides",
+                            para("Toute personne avec un revenu bas ou modeste peut demander des subsides, quelle que soit sa nationalité ou son permis de séjour."),
+                        ),
+                        sec("Comment faire la demande à Neuchâtel",
+                            ul(
+                                "En ligne sur <a href='https://www.guichet.ne.ch' target='_blank'>guichet.ne.ch</a>",
+                                "Ou directement à votre commune de résidence",
+                                "Le Service des subsides du canton examine votre dossier",
+                            ),
+                        ),
+                        sec("Points importants",
+                            ul(
+                                "Faites la demande <b>dès votre inscription</b> à l'assurance maladie",
+                                "Les subsides ne sont pas rétroactifs au-delà de l'année en cours",
+                                "<b>Contact :</b> Service des subsides Neuchâtel — 032 889 74 00",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 3,
+                'step_label': '',
+                'resource': {
+                    'name': "Comparer les caisses maladie",
+                    'description': "Il existe plus de 80 caisses en Suisse. Les primes varient selon la caisse, la franchise et le modèle. Comparer peut faire une différence importante sur votre budget.",
+                    'tags': ['Assurance maladie', 'Budget', 'En ligne'],
+                    'body': body(
+                        sec("Où comparer",
+                            ul(
+                                "<a href='https://www.comparis.ch' target='_blank'>comparis.ch</a> — comparateur gratuit en ligne",
+                                "<a href='https://www.bonus.ch' target='_blank'>bonus.ch</a> — autre comparateur gratuit",
+                                "<b>OCAM</b> (Office cantonal d'assurance maladie Neuchâtel) — conseil gratuit et neutre : <b>032 889 74 74</b>",
+                            ),
+                        ),
+                        sec("Franchise — que choisir",
+                            para("La franchise est le montant que vous payez vous-même chaque année avant que la caisse rembourse. Choix possible : CHF 300 à CHF 2 500."),
+                            ul(
+                                "<b>Franchise basse (CHF 300)</b> → prime mensuelle élevée → si vous allez souvent chez le médecin",
+                                "<b>Franchise haute (CHF 2 500)</b> → prime mensuelle basse → si vous êtes rarement malade",
+                            ),
+                        ),
+                        sec("Modèle de couverture",
+                            ul(
+                                "<b>Standard</b> — libre choix du médecin (prime plus élevée)",
+                                "<b>Médecin de famille</b> — vous devez d'abord appeler votre médecin traitant (moins cher)",
+                                "<b>HMO</b> — suivi dans un centre médical agréé (moins cher)",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 4,
+                'step_label': '',
+                'resource': {
+                    'name': "Souscrire à l'assurance maladie",
+                    'description': "Une fois votre caisse choisie, l'inscription peut se faire en ligne, par courrier ou en agence. Vous recevez votre carte d'assuré par courrier.",
+                    'tags': ['Assurance maladie', 'En ligne', 'Formulaire'],
+                    'body': body(
+                        sec("Documents nécessaires",
+                            ul(
+                                "Attestation de domicile : bail signé ou attestation de la commune",
+                                "Pièce d'identité ou permis de séjour valide",
+                                "Pour les enfants : acte de naissance",
+                            ),
+                        ),
+                        sec("Inscription",
+                            ul(
+                                "La plupart des caisses acceptent une inscription <b>en ligne en 15 à 30 minutes</b>",
+                                "Vous recevez votre carte d'assuré par courrier dans les 2 à 3 semaines",
+                                "Conservez cette carte — elle est indispensable à chaque consultation médicale",
+                            ),
+                        ),
+                    ),
+                },
+            },
+            {
+                'order': 5,
+                'step_label': '',
+                'resource': {
+                    'name': "Payer les primes et éviter les arriérés",
+                    'description': "Les primes se paient chaque mois. Un retard peut entraîner une suspension de couverture et des poursuites. En cas de difficulté, contactez votre caisse rapidement.",
+                    'tags': ['Assurance maladie', 'Budget', 'Aide sociale'],
+                    'body': body(
+                        sec("Règles de paiement",
+                            ul(
+                                "Payez votre prime dans les délais fixés par votre caisse (généralement le 1er du mois)",
+                                "Un retard peut entraîner une <b>suspension du remboursement des soins</b> et des <b>poursuites judiciaires</b>",
+                                "En cas de difficulté : contactez votre caisse immédiatement pour un plan de paiement",
+                            ),
+                        ),
+                        sec("Si votre situation change",
+                            para("Si vous perdez votre emploi ou si vos revenus baissent, refaites une demande de subsides. Votre prime peut être réduite."),
+                            ul(
+                                "<b>Service des subsides Neuchâtel :</b> 032 889 74 00",
+                                "<b>OCAM (questions sur l'assurance) :</b> 032 889 74 74",
+                            ),
+                        ),
+                    ),
+                },
+            },
+        ],
+    },
+
+]
+
+
+# ---------------------------------------------------------------------------
 # Commande Django
 # ---------------------------------------------------------------------------
 
@@ -2850,6 +3428,8 @@ class Command(BaseCommand):
 
     def handle(self, *_args, **options):
         if options['reset']:
+            PathwayStep.objects.all().delete()
+            Pathway.objects.all().delete()
             Resource.objects.all().delete()
             Subcategory.objects.all().delete()
             Category.objects.all().delete()
@@ -2943,5 +3523,50 @@ class Command(BaseCommand):
                     res.save(update_fields=['body'])
 
                 self.stdout.write(f'      {"+" if res_created else "~"} {res.name}')
+
+        # -- Parcours --
+        self.stdout.write('\nCréation des parcours...')
+        for pw_data in PATHWAYS:
+            steps_data = pw_data['steps']
+            pw, pw_created = Pathway.objects.get_or_create(
+                title=pw_data['title'],
+                defaults={
+                    'description': pw_data['description'],
+                    'icon': pw_data['icon'],
+                    'order': pw_data['order'],
+                },
+            )
+            if not pw_created:
+                pw.description = pw_data['description']
+                pw.icon = pw_data['icon']
+                pw.order = pw_data['order']
+                pw.save()
+            self.stdout.write(f'  {"+" if pw_created else "~"} Pathway: {pw.title}')
+
+            for step_data in steps_data:
+                res_data = step_data['resource']
+                tag_labels = res_data.get('tags', [])
+                res, res_created = Resource.objects.get_or_create(
+                    name=res_data['name'],
+                    category=None,
+                    defaults={'description': res_data.get('description', '')},
+                )
+                res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
+                if res_data.get('body'):
+                    res.body = res_data['body']
+                    res.save(update_fields=['body', 'description'])
+                self.stdout.write(f'      {"+" if res_created else "~"} Resource: {res.name}')
+
+                ps, _ = PathwayStep.objects.get_or_create(
+                    pathway=pw,
+                    order=step_data['order'],
+                    defaults={'resource': res, 'step_label': step_data.get('step_label', '')},
+                )
+                if not _:
+                    ps.resource = res
+                    ps.step_label = step_data.get('step_label', '')
+                    ps.save()
+
+        self.stdout.write('\nSeed termine.')
 
         self.stdout.write(self.style.SUCCESS('\nSeed terminé.'))

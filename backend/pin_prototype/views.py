@@ -6,11 +6,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment
+from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment, Pathway
 from .serializers import (
     ProfileSerializer, CategorySerializer, ResourceSerializer,
     TagSerializer, ResourceFeedbackSerializer, AudienceSerializer,
-    CategoryBriefSerializer,
+    CategoryBriefSerializer, PathwayBriefSerializer, PathwaySerializer,
 )
 
 
@@ -382,6 +382,132 @@ class CategoryBriefViewSet(ReadOnlyModelViewSet):
     """Lightweight category list for the admin form (no resources/recommendations)."""
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategoryBriefSerializer
+
+
+class PathwayViewSet(ReadOnlyModelViewSet):
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            return Pathway.objects.prefetch_related(
+                'steps__resource__tags',
+                'steps__resource__attachments',
+            ).filter(is_active=True).order_by('order')
+        return Pathway.objects.filter(is_active=True).order_by('order')
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PathwayBriefSerializer
+        return PathwaySerializer
+
+
+@api_view(['POST'])
+def chat_view(request):
+    from django.conf import settings as django_settings
+    import urllib.request
+    import urllib.error
+    import json as json_lib
+
+    api_key = django_settings.INFOMANIAK_API_KEY
+    product_id = django_settings.INFOMANIAK_PRODUCT_ID
+    model = django_settings.INFOMANIAK_MODEL
+
+    if not api_key or not product_id:
+        return Response({'error': 'AI not configured — set INFOMANIAK_API_KEY and INFOMANIAK_PRODUCT_ID in backend/.env'}, status=503)
+
+    user_message = request.data.get('message', '').strip()
+    history = request.data.get('history', [])
+
+    if not user_message:
+        return Response({'error': 'Message required'}, status=400)
+
+    all_resources = Resource.objects.prefetch_related('tags').select_related('category').all()
+
+    catalog_lines = []
+    for r in all_resources:
+        tags = ', '.join(t.label for t in r.tags.all())
+        cat_name = r.category.name if r.category else "Parcours"
+        line = f"[ID={r.id}][{cat_name}] {r.name}"
+        if r.description:
+            line += f" — {r.description}"
+        if tags:
+            line += f" (tags: {tags})"
+        catalog_lines.append(line)
+
+    catalog = '\n'.join(catalog_lines) if catalog_lines else '(no resources yet)'
+
+    system_prompt = f"""You are a helpful assistant for newcomers (migrants) living in Switzerland.
+Your job is to recommend relevant resources from the list below based on what the user needs.
+
+AVAILABLE RESOURCES (each starts with its ID):
+{catalog}
+
+RULES:
+- Respond ONLY with valid JSON, no other text, no markdown code block.
+- Format: {{"message": "Your short explanation here.", "resource_ids": [id1, id2]}}
+- Recommend 1 to 3 resources max. Use the exact integer IDs from the list.
+- The message must be short, simple sentences (FALC style).
+- Reply in the same language the user writes in.
+- If no resource matches, return: {{"message": "I could not find a matching resource.", "resource_ids": []}}"""
+
+    messages = [
+        {'role': 'system', 'content': system_prompt},
+        *history[-6:],
+        {'role': 'user', 'content': user_message},
+    ]
+
+    payload = json_lib.dumps({
+        'model': model,
+        'messages': messages,
+        'max_tokens': 400,
+        'temperature': 0.2,
+    }).encode('utf-8')
+
+    req = urllib.request.Request(
+        f'https://api.infomaniak.com/2/ai/{product_id}/openai/v1/chat/completions',
+        data=payload,
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+        },
+        method='POST',
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = json_lib.loads(resp.read())
+        raw = result['choices'][0]['message']['content'].strip()
+
+        # Extract JSON even if the model wraps it in ```json ... ```
+        import re
+        json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+        parsed = json_lib.loads(json_match.group()) if json_match else {}
+
+        reply_text = parsed.get('message', raw)
+        resource_ids = [int(i) for i in parsed.get('resource_ids', []) if str(i).isdigit()]
+
+        matched = Resource.objects.filter(id__in=resource_ids).select_related('category').prefetch_related('attachments')
+        resource_data = []
+        for r in matched:
+            attachments = []
+            for a in r.attachments.all():
+                file_url = a.file.url
+                if not file_url.startswith('http'):
+                    file_url = request.build_absolute_uri(file_url)
+                attachments.append({'id': a.id, 'file': file_url, 'label': a.label, 'order': a.order})
+            resource_data.append({
+                'id': r.id,
+                'name': r.name,
+                'description': r.description,
+                'body': r.body,
+                'attachments': attachments,
+                'category': {'id': r.category.id, 'name': r.category.name},
+            })
+
+        return Response({'reply': reply_text, 'resources': resource_data})
+    except urllib.error.HTTPError as e:
+        body = e.read().decode()
+        return Response({'error': f'AI API error ({e.code}): {body}'}, status=502)
+    except Exception as e:
+        return Response({'error': str(e)}, status=502)
 
 
 @api_view(['POST'])

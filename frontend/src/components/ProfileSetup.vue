@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ArrowLeftIcon, CheckIcon, XMarkIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   initialAnswers: { type: Object, default: () => ({}) },
@@ -249,6 +249,11 @@ function back() {
   }
 }
 
+function finish() {
+  completed.value = true
+  emit('complete', answers.value)
+}
+
 const activeStepEl = ref(null)
 
 function goToStep(index) {
@@ -278,16 +283,8 @@ watch(currentStep, async (newVal) => {
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-surface-100 to-surface-200 p-6">
     <div class="w-full max-w-md lg:max-w-2xl lg:flex lg:items-start lg:gap-10">
 
-      <!-- Desktop left column: save & exit + timeline -->
+      <!-- Desktop left column: timeline -->
       <div v-if="!completed" class="hidden lg:flex flex-col w-40 shrink-0 pt-6">
-        <button
-          v-if="isEditing"
-          class="flex items-center gap-1.5 text-sm text-surface-400 hover:text-surface-600 transition-colors duration-150 cursor-pointer bg-transparent border-none mb-6 self-start"
-          @click="$emit('finish', answers)"
-        >
-          <XMarkIcon class="w-4 h-4" />
-          {{ t('profile.saveExit') }}
-        </button>
         <nav class="flex flex-col">
           <div v-for="(q, i) in questions" :key="q.id" class="flex items-start gap-3">
             <div class="flex flex-col items-center shrink-0">
@@ -321,17 +318,6 @@ watch(currentStep, async (newVal) => {
         </nav>
       </div>
 
-      <!-- Mobile save & exit: above card, outside it -->
-      <div v-if="isEditing && !completed" class="lg:hidden flex mb-3">
-        <button
-          class="flex items-center gap-1.5 text-sm text-surface-400 hover:text-surface-600 transition-colors duration-150 cursor-pointer bg-transparent border-none"
-          @click="$emit('finish', answers)"
-        >
-          <XMarkIcon class="w-4 h-4" />
-          {{ t('profile.saveExit') }}
-        </button>
-      </div>
-
       <!-- Form card -->
       <div class="bg-surface-500 rounded-2xl p-8 lg:p-10 w-full shadow-lg flex flex-col min-h-96">
 
@@ -360,6 +346,32 @@ watch(currentStep, async (newVal) => {
                 :class="wasReached(i) ? 'bg-surface-400' : 'bg-surface-200'"
               />
             </template>
+          </div>
+
+          <!-- Top navigation: back | skip | next -->
+          <div class="flex items-center gap-3 mb-6">
+            <button
+              v-if="!isFirst"
+              class="flex items-center gap-1 text-sm font-medium text-surface-300 hover:text-white transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
+              @click="back"
+            >
+              <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
+            </button>
+            <div class="flex-1" />
+            <button
+              v-if="!question.required && question.type !== 'intro'"
+              class="text-sm text-surface-300 hover:text-surface-100 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
+              @click="skip"
+            >
+              {{ t('profile.dontKnow') }}
+            </button>
+            <button
+              class="flex items-center gap-1 text-sm font-medium transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
+              :class="canAdvance ? 'text-surface-300 hover:text-white' : 'text-surface-500 cursor-not-allowed'"
+              @click="goNext"
+            >
+              {{ t('profile.next') }}<ArrowRightIcon class="w-4 h-4" />
+            </button>
           </div>
 
           <Transition
@@ -478,32 +490,16 @@ watch(currentStep, async (newVal) => {
             </div>
           </Transition>
 
-          <!-- Bottom nav -->
-          <div class="mt-8 flex items-center gap-3">
+          <!-- Finish button + note -->
+          <div class="mt-8">
             <button
-              v-if="!isFirst"
-              class="flex items-center gap-1 text-sm font-medium text-surface-300 hover:text-white transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
-              @click="back"
+              class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white rounded-xl text-base font-semibold transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
+              @click="finish"
             >
-              <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
+              <CheckIcon class="w-5 h-5" />
+              {{ t('profile.finish') }}
             </button>
-            <div class="flex-1" />
-            <button
-              v-if="!question.required && question.type !== 'intro'"
-              class="text-sm text-surface-300 hover:text-surface-100 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
-              @click="skip"
-            >
-              {{ t('profile.dontKnow') }}
-            </button>
-            <button
-              class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 border-none shrink-0"
-              :class="canAdvance
-                ? 'bg-surface-700 text-white hover:bg-surface-800 cursor-pointer'
-                : 'bg-surface-700 text-surface-500 cursor-not-allowed'"
-              @click="goNext"
-            >
-              {{ t('profile.next') }}
-            </button>
+            <p class="text-xs text-surface-400 text-center mt-3 leading-relaxed">{{ t('profile.finishNote') }}</p>
           </div>
         </template>
 

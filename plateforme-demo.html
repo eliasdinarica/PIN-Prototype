@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENSEMBLE — Démo des fonctionnalités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f0e8;
+    --bg-deep: #ebe4d3;
+    --ink: #1a1a1a;
+    --ink-soft: #3a3a3a;
+    --ink-muted: #6b6760;
+    --paper: #fbf9f3;
+    --accent: #c8451d;
+    --accent-soft: #e89878;
+    --plum: #5a1a3f;
+    --institutional: #1e3a5f;
+    --olive: #5c6b3a;
+    --gold: #c9a961;
+    --rule: rgba(26,26,26,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Inter Tight', sans-serif; line-height: 1.6;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(200,69,29,0.06) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(90,26,63,0.05) 0%, transparent 40%);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  /* Demo banner */
+  .demo-flag {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--ink); color: var(--paper);
+    padding: 10px 40px; display: flex; align-items: center; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em;
+  }
+  .demo-flag .tag { display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+  .demo-flag .tag::before { content:''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .demo-flag a { color: var(--accent-soft); text-decoration: none; }
+  .demo-flag a:hover { color: var(--paper); }
+  @media (max-width: 640px) { .demo-flag { padding: 10px 20px; font-size: 0.62rem; } }
+
+  /* Hero */
+  .demo-hero { padding: 110px 40px 50px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  @media (max-width: 640px) { .demo-hero { padding: 100px 20px 40px; } }
+  .demo-hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .demo-hero .eyebrow::before { content:''; width: 40px; height: 1px; background: var(--accent); }
+  .demo-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(3rem, 8vw, 6rem); line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 24px;
+  }
+  .demo-hero h1 em { font-style: italic; color: var(--accent); }
+  .demo-hero p {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1.4; color: var(--ink-soft); max-width: 720px;
+  }
+  .demo-disclaimer {
+    margin-top: 30px; padding: 16px 22px; background: rgba(200,69,29,0.07);
+    border-left: 3px solid var(--accent); font-size: 0.9rem; color: var(--ink-soft); max-width: 720px;
+  }
+  .demo-disclaimer strong { color: var(--ink); }
+
+  /* Need selector (entry by need) */
+  .needs { padding: 50px 40px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  @media (max-width: 640px) { .needs { padding: 40px 20px; } }
+  .needs-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted); margin-bottom: 20px;
+  }
+  .needs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 800px) { .needs-grid { grid-template-columns: repeat(2, 1fr); } }
+  .need-chip {
+    background: var(--paper); border: 1px solid var(--rule); padding: 22px 20px;
+    cursor: pointer; transition: all 0.25s ease; text-align: left;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .need-chip:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(26,26,26,0.06); }
+  .need-chip svg { width: 28px; height: 28px; stroke: var(--accent); stroke-width: 1.4; fill: none; }
+  .need-chip span { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 500; }
+  .need-chip small { font-size: 0.82rem; color: var(--ink-muted); }
+
+  /* Feature sections */
+  .feature-demo { padding: 60px 40px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+  @media (max-width: 640px) { .feature-demo { padding: 50px 20px; } }
+  .feature-demo + .feature-demo { border-top: 1px solid var(--rule); }
+  .fd-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 10px; flex-wrap: wrap; }
+  .fd-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.1em;
+  }
+  .fd-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-muted); margin-left: auto; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 999px;
+  }
+  .fd-title {
+    font-family: 'Fraunces', serif; font-weight: 400; font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .fd-title em { font-style: italic; color: var(--accent); }
+  .fd-intro { font-size: 1.02rem; line-height: 1.65; color: var(--ink-soft); max-width: 760px; margin-bottom: 36px; }
+
+  .demo-panel { background: var(--paper); border: 1px solid var(--rule); padding: 36px; }
+  @media (max-width: 640px) { .demo-panel { padding: 24px; } }
+
+  /* Forms */
+  label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--ink); margin-bottom: 7px; letter-spacing: 0.02em; }
+  input[type=text], input[type=email], select, textarea {
+    width: 100%; padding: 12px 14px; border: 1px solid var(--rule); background: var(--bg);
+    font-family: 'Inter Tight', sans-serif; font-size: 0.95rem; color: var(--ink); border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-row { margin-bottom: 18px; }
+
+  .btn {
+    background: var(--ink); color: var(--paper); border: none; padding: 13px 26px;
+    font-family: 'Inter Tight', sans-serif; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+    border-radius: 4px; transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn:hover { background: var(--accent); transform: translateY(-2px); }
+  .btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* CV preview */
+  .cv-preview {
+    margin-top: 26px; background: #fff; border: 1px solid var(--rule); padding: 30px; display: none;
+    box-shadow: 0 10px 30px rgba(26,26,26,0.08);
+  }
+  .cv-preview.show { display: block; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .cv-preview .cv-name { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 500; }
+  .cv-preview .cv-contact { font-size: 0.82rem; color: var(--ink-muted); margin: 4px 0 18px; }
+  .cv-preview .cv-sec { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 18px 0 8px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
+  .cv-preview .cv-line { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 4px; }
+
+  /* Matching results */
+  .match-results { margin-top: 26px; display: none; flex-direction: column; gap: 12px; }
+  .match-results.show { display: flex; animation: fadeIn 0.5s ease; }
+  .match-card {
+    background: var(--bg); border: 1px solid var(--rule); border-left: 4px solid var(--accent);
+    padding: 18px 20px; display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center;
+  }
+  .match-card h5 { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 500; margin-bottom: 4px; }
+  .match-card p { font-size: 0.85rem; color: var(--ink-muted); }
+  .match-score {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 600; color: var(--accent);
+    text-align: center; white-space: nowrap;
+  }
+  .match-score small { display: block; font-size: 0.6rem; color: var(--ink-muted); letter-spacing: 0.1em; }
+
+  /* Directory */
+  .dir-search { margin-bottom: 20px; }
+  .dir-list { display: flex; flex-direction: column; gap: 10px; }
+  .dir-item {
+    background: var(--bg); border: 1px solid var(--rule); padding: 16px 18px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+    transition: all 0.2s ease;
+  }
+  .dir-item.hidden { display: none; }
+  .dir-icon {
+    width: 40px; height: 40px; border-radius: 50%; background: rgba(200,69,29,0.1);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .dir-icon svg { width: 20px; height: 20px; stroke: var(--accent); stroke-width: 1.5; fill: none; }
+  .dir-item h5 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 500; }
+  .dir-item p { font-size: 0.8rem; color: var(--ink-muted); }
+  .dir-cat {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); padding: 4px 10px; background: var(--bg-deep); border-radius: 4px; white-space: nowrap;
+  }
+
+  /* Step-by-step */
+  .steps { display: flex; flex-direction: column; gap: 0; counter-reset: step; }
+  .step-item {
+    display: grid; grid-template-columns: 50px 1fr; gap: 20px; padding: 20px 0;
+    border-bottom: 1px solid var(--rule); position: relative;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 500;
+  }
+  .step-item.done .step-num { background: var(--olive); }
+  .step-body h5 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 500; margin-bottom: 4px; }
+  .step-body p { font-size: 0.9rem; color: var(--ink-soft); }
+  .lang-switch { display: flex; gap: 8px; margin-bottom: 24px; }
+  .lang-btn {
+    padding: 7px 14px; border: 1px solid var(--rule); background: transparent; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; border-radius: 4px; color: var(--ink-soft);
+    transition: all 0.2s;
+  }
+  .lang-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* Notifications toggle */
+  .notif-list { display: flex; flex-direction: column; gap: 12px; }
+  .notif-item {
+    background: var(--bg); border: 1px solid var(--rule); padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .notif-item .notif-text h5 { font-size: 0.98rem; font-weight: 600; margin-bottom: 2px; }
+  .notif-item .notif-text p { font-size: 0.8rem; color: var(--ink-muted); }
+  .toggle { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle .slider {
+    position: absolute; inset: 0; background: var(--bg-deep); border: 1px solid var(--rule);
+    border-radius: 999px; cursor: pointer; transition: 0.3s;
+  }
+  .toggle .slider::before {
+    content: ''; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px;
+    background: var(--paper); border-radius: 50%; transition: 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked + .slider { background: var(--accent); border-color: var(--accent); }
+  .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+  /* Map placeholder for vivre ensemble */
+  .map-mock {
+    margin-top: 10px; height: 280px; border: 1px solid var(--rule); border-radius: 6px; position: relative;
+    overflow: hidden; background:
+      linear-gradient(rgba(92,107,58,0.05), rgba(92,107,58,0.05)),
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(26,26,26,0.04) 28px, rgba(26,26,26,0.04) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(26,26,26,0.04) 28px, rgba(26,26,26,0.04) 29px),
+      var(--bg);
+  }
+  .map-pin {
+    position: absolute; width: 16px; height: 16px; background: var(--accent); border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg); cursor: pointer; transition: transform 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .map-pin:hover { transform: rotate(-45deg) scale(1.3); }
+  .map-pin.plum { background: var(--plum); }
+  .map-pin.olive { background: var(--olive); }
+  .map-tooltip {
+    position: absolute; background: var(--ink); color: var(--paper); padding: 8px 12px; border-radius: 4px;
+    font-size: 0.78rem; pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap; z-index: 5;
+    transform: translate(-50%, -130%);
+  }
+  .map-tooltip.show { opacity: 1; }
+  .map-legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; }
+  .map-legend span { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--ink-soft); }
+  .map-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  /* Footer */
+  .demo-footer {
+    padding: 60px 40px; max-width: 1200px; margin: 40px auto 0; position: relative; z-index: 2;
+    border-top: 1px solid var(--rule); text-align: center;
+  }
+  .demo-footer a.back {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; padding: 14px 28px; border: 1px solid var(--ink); border-radius: 4px;
+    transition: all 0.25s ease;
+  }
+  .demo-footer a.back:hover { background: var(--ink); color: var(--paper); }
+  .demo-footer a.back svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+  .demo-footer p { margin-top: 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.08em; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="demo-flag">
+  <span class="tag">Prototype interactif · Maquette non fonctionnelle</span>
+  <a href="ensemble.html">← Retour à la note de cadrage</a>
+</div>
+
+<header class="demo-hero">
+  <div class="eyebrow">ENSEMBLE — Simulation des fonctionnalités</div>
+  <h1>Voici à quoi<br>ça <em>ressemblerait.</em></h1>
+  <p>
+    Une démonstration interactive des six fonctionnalités envisagées pour la plateforme. Manipulez-les librement — saisissez du texte, filtrez, basculez les options.
+  </p>
+  <div class="demo-disclaimer">
+    <strong>Maquette de démonstration.</strong> Les données affichées sont fictives et servent uniquement à illustrer les parcours d'usage. Aucune information n'est enregistrée ni transmise.
+  </div>
+</header>
+
+<!-- Entry by need -->
+<section class="needs reveal">
+  <div class="needs-label">Porte d'entrée par besoin — pas par structure institutionnelle</div>
+  <div class="needs-grid">
+    <button class="need-chip" onclick="document.getElementById('f-cv').scrollIntoView({behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><path d="M3 8h18v12H3z"/><path d="M9 8V5h6v3"/></svg>
+      <span>Je cherche un travail</span>
+      <small>CV, candidatures, employeurs</small>
+    </button>
+    <button class="need-chip" onclick="document.getElementById('f-match').scrollIntoView({behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg>
+      <span>Je veux me former</span>
+      <small>Cours, stages, mesures adaptées</small>
+    </button>
+    <button class="need-chip" onclick="document.getElementById('f-dir').scrollIntoView({behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg>
+      <span>J'ai besoin d'aide</span>
+      <small>Santé, contacts, urgences</small>
+    </button>
+    <button class="need-chip" onclick="document.getElementById('f-vivre').scrollIntoView({behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      <span>Je veux rencontrer</span>
+      <small>Associations, événements, lien</small>
+    </button>
+  </div>
+</section>
+
+<!-- 01 — CV Generator -->
+<section class="feature-demo reveal" id="f-cv">
+  <div class="fd-head">
+    <span class="fd-num">FONCTION 01</span>
+    <span class="fd-tag">Générateur de CV suisse</span>
+  </div>
+  <h2 class="fd-title">Un CV au <em>format suisse</em>, en quelques champs.</h2>
+  <p class="fd-intro">Remplissez le formulaire : la plateforme génère un CV structuré selon les attentes locales. Demande exprimée explicitement lors des entretiens (« je suis un modèle français en croisant les doigts »).</p>
+
+  <div class="demo-panel">
+    <div class="form-grid">
+      <div><label>Prénom &amp; nom</label><input type="text" id="cv-name" placeholder="Olena K." value="Olena K."></div>
+      <div><label>Domaine recherché</label><input type="text" id="cv-field" placeholder="Logistique" value="Logistique / transport"></div>
+    </div>
+    <div class="form-grid">
+      <div><label>Dernier diplôme</label><input type="text" id="cv-edu" placeholder="Master en..." value="Master en organisation des transports"></div>
+      <div><label>Langues</label><input type="text" id="cv-lang" placeholder="..." value="Ukrainien, russe, anglais, français (B1)"></div>
+    </div>
+    <div class="form-row"><label>Expérience principale</label><input type="text" id="cv-exp" placeholder="..." value="Bénévolat : enseignement du français, animation Croix-Rouge"></div>
+    <button class="btn" onclick="genCV()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Générer mon CV
+    </button>
+
+    <div class="cv-preview" id="cv-output">
+      <div class="cv-name" id="o-name">Olena K.</div>
+      <div class="cv-contact">Canton de Neuchâtel · Permis S · Disponible immédiatement</div>
+      <div class="cv-sec">Objectif professionnel</div>
+      <div class="cv-line" id="o-field">Recherche un poste en logistique / transport</div>
+      <div class="cv-sec">Formation</div>
+      <div class="cv-line" id="o-edu">Master en organisation des transports</div>
+      <div class="cv-sec">Compétences linguistiques</div>
+      <div class="cv-line" id="o-lang">Ukrainien, russe, anglais, français (B1)</div>
+      <div class="cv-sec">Expérience &amp; engagement</div>
+      <div class="cv-line" id="o-exp">Bénévolat : enseignement du français, animation Croix-Rouge</div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-ghost" onclick="alert('Maquette : le PDF serait téléchargé ici.')">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Télécharger en PDF
+        </button>
+        <button class="btn btn-ghost" onclick="alert('Maquette : redirection vers l’OMAT / consultation sociale du service cantonal.')">Faire relire par un·e conseiller·ère</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 — Matching -->
+<section class="feature-demo reveal" id="f-match">
+  <div class="fd-head">
+    <span class="fd-num">FONCTION 02</span>
+    <span class="fd-tag">Algorithme de matching</span>
+  </div>
+  <h2 class="fd-title">Des mesures <em>adaptées à votre profil.</em></h2>
+  <p class="fd-intro">Renseignez quelques caractéristiques : la plateforme recommande des mesures d'insertion pertinentes selon l'âge, le permis, le niveau de formation et de langue.</p>
+
+  <div class="demo-panel">
+    <div class="form-grid">
+      <div>
+        <label>Tranche d'âge</label>
+        <select id="m-age"><option>16–25 ans</option><option selected>26–40 ans</option><option>41–55 ans</option><option>56 ans et +</option></select>
+      </div>
+      <div>
+        <label>Statut / permis</label>
+        <select id="m-permis"><option selected>Permis S</option><option>Permis B</option><option>Permis F</option><option>Autre / en cours</option></select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label>Niveau de français</label>
+        <select id="m-lang"><option>A1 – débutant</option><option selected>A2</option><option>B1</option><option>B2 et +</option></select>
+      </div>
+      <div>
+        <label>Niveau de formation</label>
+        <select id="m-edu"><option>École obligatoire</option><option>Secondaire / CFC</option><option selected>Études supérieures</option></select>
+      </div>
+    </div>
+    <button class="btn" onclick="runMatch()">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3M11 18a7 7 0 100-14 7 7 0 000 14z"/></svg>
+      Trouver mes mesures
+    </button>
+    <div class="match-results" id="m-output"></div>
+  </div>
+</section>
+
+<!-- 03 — Directory -->
+<section class="feature-demo reveal" id="f-dir">
+  <div class="fd-head">
+    <span class="fd-num">FONCTION 03</span>
+    <span class="fd-tag">Annuaire &amp; cartographie</span>
+  </div>
+  <h2 class="fd-title">Le <em>bon interlocuteur</em>, tout de suite.</h2>
+  <p class="fd-intro">Une liste fiable et mise à jour des services par domaine — pour mettre fin au « ping-pong » administratif. Tapez un mot-clé pour filtrer.</p>
+
+  <div class="demo-panel">
+    <div class="dir-search">
+      <input type="text" id="dir-input" placeholder="Rechercher : santé, emploi, logement, urgence..." oninput="filterDir()">
+    </div>
+    <div class="dir-list" id="dir-list">
+      <div class="dir-item" data-cat="emploi formation travail orp">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><path d="M3 8h18v12H3z"/><path d="M9 8V5h6v3"/></svg></div>
+        <div><h5>Orientation emploi &amp; chômage</h5><p>Inscription, conseils candidature, mesures de réinsertion</p></div>
+        <span class="dir-cat">Emploi</span>
+      </div>
+      <div class="dir-item" data-cat="formation francais cours langue ecole">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg></div>
+        <div><h5>Cours de français &amp; formation</h5><p>Du niveau A1 au B2, équivalences de diplômes</p></div>
+        <span class="dir-cat">Formation</span>
+      </div>
+      <div class="dir-item" data-cat="sante medecin maladie assurance urgence hopital">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg></div>
+        <div><h5>Santé &amp; assurance maladie</h5><p>Trouver un médecin, franchises, interprétariat médical</p></div>
+        <span class="dir-cat">Santé</span>
+      </div>
+      <div class="dir-item" data-cat="logement appartement loyer bail social">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg></div>
+        <div><h5>Logement &amp; démarches</h5><p>Attribution, droits du locataire, changement d'adresse</p></div>
+        <span class="dir-cat">Logement</span>
+      </div>
+      <div class="dir-item" data-cat="urgence police pompier ambulance secours">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.8 8.5-9 10-5.2-1.5-9-5-9-10V6z"/></svg></div>
+        <div><h5>Numéros d'urgence</h5><p>Police 117 · Pompiers 118 · Ambulance 144 · Urgences 112</p></div>
+        <span class="dir-cat">Urgence</span>
+      </div>
+      <div class="dir-item" data-cat="famille enfant ecole creche parascolaire">
+        <div class="dir-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+        <div><h5>Enfance &amp; scolarité</h5><p>Crèches, école obligatoire, activités parascolaires</p></div>
+        <span class="dir-cat">Famille</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 — Step by step multilingual -->
+<section class="feature-demo reveal">
+  <div class="fd-head">
+    <span class="fd-num">FONCTION 04 &amp; 05</span>
+    <span class="fd-tag">Parcours pas à pas · multilingue</span>
+  </div>
+  <h2 class="fd-title">Une démarche, <em>étape par étape.</em></h2>
+  <p class="fd-intro">Exemple : « S'inscrire à un cours de français ». Des séquences courtes, visuelles, dans la langue choisie. Anglais privilégié comme langue de référence après la langue maternelle.</p>
+
+  <div class="demo-panel">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="switchLang(this,'fr')">Français</button>
+      <button class="lang-btn" onclick="switchLang(this,'en')">English</button>
+      <button class="lang-btn" onclick="switchLang(this,'uk')">Українська</button>
+    </div>
+    <div class="steps" id="steps">
+      <div class="step-item done"><div class="step-num">1</div><div class="step-body"><h5 data-fr="Vérifier son statut" data-en="Check your status" data-uk="Перевірте свій статус">Vérifier son statut</h5><p data-fr="Permis S, B ou F : votre financement dépend de votre statut." data-en="Permit S, B or F: your funding depends on your status." data-uk="Дозвіл S, B чи F: фінансування залежить від статусу.">Permis S, B ou F : votre financement dépend de votre statut.</p></div></div>
+      <div class="step-item done"><div class="step-num">2</div><div class="step-body"><h5 data-fr="Évaluer son niveau" data-en="Assess your level" data-uk="Оцініть свій рівень">Évaluer son niveau</h5><p data-fr="Test gratuit en ligne pour situer votre niveau (A1 à B2)." data-en="Free online test to find your level (A1 to B2)." data-uk="Безкоштовний онлайн-тест для визначення рівня (A1–B2).">Test gratuit en ligne pour situer votre niveau (A1 à B2).</p></div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-body"><h5 data-fr="Choisir un cours" data-en="Choose a course" data-uk="Оберіть курс">Choisir un cours</h5><p data-fr="Comparez les écoles partenaires près de chez vous." data-en="Compare partner schools near you." data-uk="Порівняйте школи-партнери поблизу.">Comparez les écoles partenaires près de chez vous.</p></div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="step-body"><h5 data-fr="Demander le financement" data-en="Request funding" data-uk="Подайте запит на фінансування">Demander le financement</h5><p data-fr="Formulaire pré-rempli à transmettre à votre conseiller·ère." data-en="Pre-filled form to send to your advisor." data-uk="Заповнена форма для вашого радника.">Formulaire pré-rempli à transmettre à votre conseiller·ère.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 — Vivre ensemble map -->
+<section class="feature-demo reveal" id="f-vivre">
+  <div class="fd-head">
+    <span class="fd-num">FONCTION 06</span>
+    <span class="fd-tag">Carte du vivre ensemble</span>
+  </div>
+  <h2 class="fd-title">Briser <em>l'isolement.</em></h2>
+  <p class="fd-intro">Une cartographie vivante des associations, événements interculturels et espaces de rencontre — pour atteindre aussi les publics « invisibles » (regroupement familial, migration économique). Survolez les points.</p>
+
+  <div class="demo-panel">
+    <div class="map-mock" id="map">
+      <div class="map-pin" style="left:22%;top:30%" data-name="Café-rencontre multilingue"></div>
+      <div class="map-pin plum" style="left:55%;top:45%" data-name="Association femmes migrantes"></div>
+      <div class="map-pin olive" style="left:70%;top:25%" data-name="Atelier conversation française"></div>
+      <div class="map-pin" style="left:40%;top:65%" data-name="Permanence d'accueil bénévole"></div>
+      <div class="map-pin olive" style="left:80%;top:60%" data-name="Jardin communautaire partagé"></div>
+      <div class="map-pin plum" style="left:30%;top:50%" data-name="Soirée interculturelle mensuelle"></div>
+      <div class="map-tooltip" id="map-tip"></div>
+    </div>
+    <div class="map-legend">
+      <span><i style="background:#c8451d"></i> Accueil &amp; orientation</span>
+      <span><i style="background:#5a1a3f"></i> Associations communautaires</span>
+      <span><i style="background:#5c6b3a"></i> Activités &amp; événements</span>
+    </div>
+  </div>
+</section>
+
+<!-- Notifications bonus -->
+<section class="feature-demo reveal">
+  <div class="fd-head">
+    <span class="fd-num">RÉGLAGES</span>
+    <span class="fd-tag">Notifications ciblées</span>
+  </div>
+  <h2 class="fd-title">Être prévenu·e, <em>sans être submergé·e.</em></h2>
+  <p class="fd-intro">Des canaux non intrusifs (e-mail, WhatsApp), activables selon vos besoins.</p>
+
+  <div class="demo-panel">
+    <div class="notif-list">
+      <div class="notif-item"><div class="notif-text"><h5>Changements législatifs (permis, statut)</h5><p>Par e-mail · dès qu'une règle évolue</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="notif-item"><div class="notif-text"><h5>Événements d'intégration locale</h5><p>Par WhatsApp · une fois par semaine</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="notif-item"><div class="notif-text"><h5>Rappels de délais administratifs</h5><p>Par e-mail · 5 jours avant échéance</p></div><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+      <div class="notif-item"><div class="notif-text"><h5>Nouvelles offres d'emploi adaptées</h5><p>Par WhatsApp · selon votre profil</p></div><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+    </div>
+  </div>
+</section>
+
+<footer class="demo-footer">
+  <a class="back" href="ensemble.html">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Retour à la note de cadrage
+  </a>
+  <p>ENSEMBLE / 2026 — Prototype de démonstration · Données fictives</p>
+</footer>
+
+<script>
+  // CV generator
+  function genCV() {
+    document.getElementById('o-name').textContent = document.getElementById('cv-name').value || '—';
+    document.getElementById('o-field').textContent = 'Recherche un poste en ' + (document.getElementById('cv-field').value || '—');
+    document.getElementById('o-edu').textContent = document.getElementById('cv-edu').value || '—';
+    document.getElementById('o-lang').textContent = document.getElementById('cv-lang').value || '—';
+    document.getElementById('o-exp').textContent = document.getElementById('cv-exp').value || '—';
+    document.getElementById('cv-output').classList.add('show');
+    document.getElementById('cv-output').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // Matching engine (rule-based mock)
+  function runMatch() {
+    const age = document.getElementById('m-age').value;
+    const permis = document.getElementById('m-permis').value;
+    const lang = document.getElementById('m-lang').value;
+    const edu = document.getElementById('m-edu').value;
+    let measures = [];
+
+    if (lang.startsWith('A1') || lang.startsWith('A2')) {
+      measures.push({t:'Cours de français intensif', d:'Priorité absolue : atteindre B1 pour débloquer emploi et santé.', s:98});
+    }
+    if (lang.startsWith('B1') || lang.startsWith('B2')) {
+      measures.push({t:'Atelier CV & candidature suisse', d:'Votre niveau permet de viser directement l\'emploi.', s:94});
+    }
+    if (edu.includes('supérieures')) {
+      measures.push({t:'Reconnaissance des diplômes', d:'Accompagnement pour l\'équivalence de votre titre étranger.', s:91});
+    }
+    if (edu.includes('CFC') || edu.includes('obligatoire')) {
+      measures.push({t:'Préapprentissage Start Integration', d:'Voie structurée vers une place d\'apprentissage et un CFC.', s:90});
+    }
+    if (age.includes('16') ) {
+      measures.push({t:'Filière jeunes en transition', d:'Orientation scolaire et accompagnement personnalisé.', s:88});
+    }
+    if (permis.includes('S')) {
+      measures.push({t:'Liste d\'employeurs ouverts au permis S', d:'Entreprises du canton déjà sensibilisées au statut S.', s:85});
+    }
+    measures.push({t:'Café-rencontre & mise en réseau', d:'Créer des liens locaux — un levier clé pour trouver un emploi.', s:78});
+
+    const out = document.getElementById('m-output');
+    out.innerHTML = measures.map(m =>
+      `<div class="match-card"><div><h5>${m.t}</h5><p>${m.d}</p></div><div class="match-score">${m.s}%<small>PERTINENCE</small></div></div>`
+    ).join('');
+    out.classList.add('show');
+  }
+
+  // Directory filter
+  function filterDir() {
+    const q = document.getElementById('dir-input').value.toLowerCase().trim();
+    document.querySelectorAll('#dir-list .dir-item').forEach(item => {
+      const cat = item.dataset.cat + ' ' + item.querySelector('h5').textContent.toLowerCase();
+      item.classList.toggle('hidden', q && !cat.includes(q));
+    });
+  }
+
+  // Language switch
+  function switchLang(btn, lang) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#steps [data-fr]').forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+  }
+
+  // Map tooltips
+  const tip = document.getElementById('map-tip');
+  document.querySelectorAll('.map-pin').forEach(pin => {
+    pin.addEventListener('mouseenter', () => {
+      tip.textContent = pin.dataset.name;
+      tip.style.left = pin.style.left;
+      tip.style.top = pin.style.top;
+      tip.classList.add('show');
+    });
+    pin.addEventListener('mouseleave', () => tip.classList.remove('show'));
+  });
+
+  // Reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

@@ -54,6 +54,8 @@
     "skip": "Salta",
     "dontKnow": "Non lo so",
     "saveExit": "Salva ed esci",
+    "finish": "Ho finito",
+    "finishNote": "Puoi tornare a modificare le tue risposte in qualsiasi momento.",
     "back": "Indietro",
     "done": {
       "title": "Sei pronto!",
@@ -75,7 +77,45 @@
     }
   },
   "nav": {
-    "editProfile": "Modifica profilo"
+    "editProfile": "Modifica profilo",
+    "questionnaire": "Sondaggio",
+    "sections": {
+      "resources": "Risorse",
+      "pathways": "Percorsi",
+      "section2": "Comunità",
+      "section3": "Eventi",
+      "comingSoon": "Prossimamente"
+    }
+  },
+  "landing": {
+    "headline":    "Le risorse giuste. Per la tua situazione.",
+    "heroSub":     "Tutto ciò di cui hai bisogno per inserirti in Svizzera, nella tua lingua.",
+    "needLabel":   "Se hai bisogno di aiuto con uno di questi argomenti —",
+    "topicsMatch": "Questa piattaforma è per te.",
+    "topics": {
+      "work":    "Trovare lavoro",
+      "permit":  "Permesso di soggiorno",
+      "french":  "Corsi di francese",
+      "housing": "Alloggio",
+      "health":  "Salute",
+      "family":  "Famiglia e figli",
+      "banking": "Banca e denaro",
+      "rights":  "Diritti e pratiche"
+    },
+    "exTitles": "Quale permesso mi permette di lavorare?|Come funziona l'assicurazione malattia?|I miei figli possono andare a scuola?",
+    "exDescs":  "Il permesso B, C o L consente di lavorare. Il permesso S dà accesso ad alcuni lavori temporanei.|L'assicurazione malattia è obbligatoria in Svizzera. Hai 3 mesi dall'arrivo per scegliere una cassa.|La scuola è gratuita e obbligatoria dai 4 anni. L'iscrizione si fa presso il comune.",
+    "exCats":   "Lavoro|Salute|Famiglia",
+    "exHint":   "Queste risorse, e centinaia d'altre. Il questionario trova quelle adatte alla tua situazione.",
+    "q": {
+      "tag":        "Da dove vuoi iniziare?",
+      "cta":        "Rispondere al questionario",
+      "ctaUpdate":  "Rifare il questionario",
+      "ctaDesc":    "Risorse adatte alla tua situazione",
+      "ctaExplore": "Esplorare liberamente",
+      "exploreDesc":"Sfogliare tutte le risorse",
+      "privacy":    "Le tue risposte rimangono sul tuo dispositivo. Nessun dato viene trasmesso."
+    },
+    "skip": "Vedere tutte le informazioni senza profilo"
   },
   "categories": {
     "eyebrow": "Le tue risorse",
@@ -85,7 +125,10 @@
     "recommended": "Consigliate",
     "others": "Altre categorie",
     "forYou": "Per te",
-    "forYouDesc": "Le risorse più adatte al tuo profilo, da tutte le categorie."
+    "forYouDesc": "Le risorse più adatte al tuo profilo, da tutte le categorie.",
+    "aiSearch": "Ricerca IA",
+    "aiPlaceholder": "Di cosa hai bisogno?",
+    "aiSubmit": "Cerca"
   },
   "detail": {
     "empty": "Nessun documento in questa categoria per ora.",
@@ -103,5 +146,21 @@
     "byLanguage": "Consigliato · comunità {code}",
     "byStatus": "Consigliato · permesso {code}",
     "bySimilarity": "Simile a risorse che ti sono piaciute"
+  },
+  "hub": {
+    "title": "Di cosa hai bisogno?",
+    "resourcesDesc": "Informazioni pratiche per vivere in Svizzera.",
+    "pathwaysDesc": "Guide passo dopo passo per le procedure importanti in Svizzera.",
+    "communityDesc": "Entra in contatto con altre persone nella tua zona.",
+    "eventsDesc": "Workshop, appuntamenti ed eventi locali."
+  },
+  "pathways": {
+    "eyebrow": "Percorsi",
+    "title": "Procedure passo dopo passo",
+    "subtitle": "Segui i passaggi per le situazioni comuni in Svizzera.",
+    "steps": "{n} passaggi",
+    "back": "Tutti i percorsi",
+    "empty": "Nessun percorso ancora.",
+    "done": "Percorso completato"
   }
 }

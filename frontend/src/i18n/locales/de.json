@@ -54,6 +54,8 @@
     "skip": "Überspringen",
     "dontKnow": "Ich weiß es nicht",
     "saveExit": "Speichern & beenden",
+    "finish": "Fertig",
+    "finishNote": "Sie können Ihre Antworten jederzeit ändern.",
     "back": "Zurück",
     "done": {
       "title": "Alles bereit!",
@@ -75,7 +77,45 @@
     }
   },
   "nav": {
-    "editProfile": "Profil bearbeiten"
+    "editProfile": "Profil bearbeiten",
+    "questionnaire": "Bilan",
+    "sections": {
+      "resources": "Ressourcen",
+      "pathways": "Wege",
+      "section2": "Gemeinschaft",
+      "section3": "Veranstaltungen",
+      "comingSoon": "Demnächst"
+    }
+  },
+  "landing": {
+    "headline":    "Die richtigen Ressourcen. Für Ihre Situation.",
+    "heroSub":     "Alles, was Sie für den Alltag in der Schweiz brauchen. In Ihrer Sprache.",
+    "needLabel":   "Wenn Sie zu einem dieser Themen Hilfe brauchen —",
+    "topicsMatch": "Diese Plattform ist für Sie.",
+    "topics": {
+      "work":    "Arbeit finden",
+      "permit":  "Aufenthaltsbewilligung",
+      "french":  "Sprachkurse",
+      "housing": "Wohnen",
+      "health":  "Gesundheit",
+      "family":  "Familie & Kinder",
+      "banking": "Bank & Geld",
+      "rights":  "Rechte & Verfahren"
+    },
+    "exTitles": "Welche Bewilligung erlaubt mir zu arbeiten?|Wie funktioniert die Krankenversicherung?|Können meine Kinder zur Schule gehen?",
+    "exDescs":  "Ausweis B, C oder L erlaubt die Arbeit. Ausweis S gibt Zugang zu bestimmten Stellen.|Krankenversicherung ist in der Schweiz obligatorisch. Sie haben 3 Monate nach Ankunft zur Wahl.|Schule ist ab 4 Jahren kostenlos und obligatorisch. Anmeldung bei der Einwohnergemeinde.",
+    "exCats":   "Arbeit|Gesundheit|Familie",
+    "exHint":   "Diese Ressourcen, und Hunderte mehr. Der Fragebogen findet jene, die zu Ihrer Situation passen.",
+    "q": {
+      "tag":        "Wo möchten Sie anfangen?",
+      "cta":        "Fragebogen ausfüllen",
+      "ctaUpdate":  "Fragebogen wiederholen",
+      "ctaDesc":    "Ressourcen für Ihre Situation",
+      "ctaExplore": "Frei erkunden",
+      "exploreDesc":"Alle Ressourcen durchsuchen",
+      "privacy":    "Ihre Antworten bleiben auf Ihrem Gerät. Keine Daten werden übertragen."
+    },
+    "skip": "Alle Informationen ohne Profil ansehen"
   },
   "categories": {
     "eyebrow": "Ihre Ressourcen",
@@ -85,7 +125,10 @@
     "recommended": "Empfohlen",
     "others": "Weitere Kategorien",
     "forYou": "Für Sie",
-    "forYouDesc": "Die am besten zu Ihrem Profil passenden Ressourcen aus allen Kategorien."
+    "forYouDesc": "Die am besten zu Ihrem Profil passenden Ressourcen aus allen Kategorien.",
+    "aiSearch": "KI-Suche",
+    "aiPlaceholder": "Wobei brauchen Sie Hilfe?",
+    "aiSubmit": "Suchen"
   },
   "detail": {
     "empty": "Noch keine Dokumente in dieser Kategorie.",
@@ -103,5 +146,21 @@
     "byLanguage": "Empfohlen · Gemeinschaft {code}",
     "byStatus": "Empfohlen · Ausweis {code}",
     "bySimilarity": "Ähnlich wie Ressourcen, die Sie gemocht haben"
+  },
+  "hub": {
+    "title": "Was brauchen Sie?",
+    "resourcesDesc": "Praktische Infos für das Leben in der Schweiz.",
+    "pathwaysDesc": "Schritt-für-Schritt-Anleitungen für wichtige Verfahren.",
+    "communityDesc": "Austauschen mit anderen in Ihrer Region.",
+    "eventsDesc": "Workshops, Termine und lokale Veranstaltungen."
+  },
+  "pathways": {
+    "eyebrow": "Wege",
+    "title": "Schritt für Schritt",
+    "subtitle": "Folgen Sie den Schritten für häufige Situationen in der Schweiz.",
+    "steps": "{n} Schritte",
+    "back": "Alle Wege",
+    "empty": "Noch keine Wege.",
+    "done": "Weg abgeschlossen"
   }
 }

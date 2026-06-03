@@ -3,6 +3,16 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    pass
+
+INFOMANIAK_API_KEY = os.environ.get('INFOMANIAK_API_KEY', '')
+INFOMANIAK_PRODUCT_ID = os.environ.get('INFOMANIAK_PRODUCT_ID', '')
+INFOMANIAK_MODEL = os.environ.get('INFOMANIAK_MODEL', 'llama3')
+
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-%s3uk3i0f^7#fc!&&)fdi7a-@&eitsdmmcfm^i$mb^4odrfdvx',

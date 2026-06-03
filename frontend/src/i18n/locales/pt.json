@@ -54,6 +54,8 @@
     "skip": "Pular",
     "dontKnow": "Não sei",
     "saveExit": "Salvar e sair",
+    "finish": "Terminei",
+    "finishNote": "Pode voltar e actualizar as suas respostas a qualquer momento.",
     "back": "Voltar",
     "done": {
       "title": "Está tudo pronto!",
@@ -75,7 +77,45 @@
     }
   },
   "nav": {
-    "editProfile": "Editar perfil"
+    "editProfile": "Editar perfil",
+    "questionnaire": "Encuesta",
+    "sections": {
+      "resources": "Recursos",
+      "pathways": "Percursos",
+      "section2": "Comunidade",
+      "section3": "Eventos",
+      "comingSoon": "Em breve"
+    }
+  },
+  "landing": {
+    "headline":    "Os recursos certos. Para a sua situação.",
+    "heroSub":     "Tudo o que você precisa para se instalar na Suíça, no seu idioma.",
+    "needLabel":   "Se você precisa de ajuda com algum desses assuntos —",
+    "topicsMatch": "Esta plataforma é para você.",
+    "topics": {
+      "work":    "Encontrar trabalho",
+      "permit":  "Autorização de residência",
+      "french":  "Cursos de francês",
+      "housing": "Moradia",
+      "health":  "Saúde",
+      "family":  "Família e filhos",
+      "banking": "Banco e dinheiro",
+      "rights":  "Direitos e trâmites"
+    },
+    "exTitles": "Qual autorização me permite trabalhar?|Como funciona o seguro de saúde?|Meus filhos podem ir à escola?",
+    "exDescs":  "A autorização B, C ou L permite trabalhar. A autorização S dá acesso a alguns empregos temporários.|O seguro de saúde é obrigatório na Suíça. Você tem 3 meses após a chegada para escolher uma caixa.|A escola é gratuita e obrigatória a partir dos 4 anos. A inscrição é feita na commune.",
+    "exCats":   "Emprego|Saúde|Família",
+    "exHint":   "Esses recursos, e centenas de outros. O questionário identifica os que correspondem à sua situação.",
+    "q": {
+      "tag":        "Por onde quer começar?",
+      "cta":        "Responder ao questionário",
+      "ctaUpdate":  "Refazer o questionário",
+      "ctaDesc":    "Recursos adaptados à sua situação",
+      "ctaExplore": "Explorar livremente",
+      "exploreDesc":"Ver todos os recursos",
+      "privacy":    "Suas respostas ficam no seu dispositivo. Nenhum dado é transmitido."
+    },
+    "skip": "Ver todas as informações sem perfil"
   },
   "categories": {
     "eyebrow": "Seus recursos",
@@ -85,7 +125,10 @@
     "recommended": "Recomendadas",
     "others": "Outras categorias",
     "forYou": "Para você",
-    "forYouDesc": "Os recursos mais adequados ao seu perfil, de todas as categorias."
+    "forYouDesc": "Os recursos mais adequados ao seu perfil, de todas as categorias.",
+    "aiSearch": "Pesquisa IA",
+    "aiPlaceholder": "Do que você precisa?",
+    "aiSubmit": "Pesquisar"
   },
   "detail": {
     "empty": "Sem documentos nesta categoria ainda.",
@@ -103,5 +146,21 @@
     "byLanguage": "Recomendado · comunidade {code}",
     "byStatus": "Recomendado · licença {code}",
     "bySimilarity": "Semelhante a recursos que você gostou"
+  },
+  "hub": {
+    "title": "De que precisa?",
+    "resourcesDesc": "Informações práticas para viver na Suíça.",
+    "pathwaysDesc": "Guias passo a passo para procedimentos importantes na Suíça.",
+    "communityDesc": "Conecte-se com outras pessoas na sua área.",
+    "eventsDesc": "Workshops, consultas e eventos locais."
+  },
+  "pathways": {
+    "eyebrow": "Percursos",
+    "title": "Procedimentos passo a passo",
+    "subtitle": "Siga os passos para situações comuns na Suíça.",
+    "steps": "{n} passos",
+    "back": "Todos os percursos",
+    "empty": "Sem percursos ainda.",
+    "done": "Percurso concluído"
   }
 }

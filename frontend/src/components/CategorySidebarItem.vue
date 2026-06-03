@@ -9,7 +9,7 @@ defineEmits(['click'])
 
 <template>
   <button
-    class="flex items-center gap-3 w-full px-4 py-3 text-sm rounded-md transition-all duration-150 cursor-pointer text-left border-l-2"
+    class="flex items-center gap-3 w-full flex-1 min-h-0 px-4 text-sm rounded-md transition-all duration-150 cursor-pointer text-left border-l-2"
     :class="active
       ? 'border-brand-400 bg-surface-400 font-semibold text-white'
       : 'border-transparent text-surface-200 hover:bg-surface-400 hover:text-white'"

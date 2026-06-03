@@ -1,23 +1,42 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SparklesIcon } from '@heroicons/vue/24/outline'
 import ResourceCard from '@/components/ResourceCard.vue'
 
 const { t } = useI18n()
 
-defineProps({
+const props = defineProps({
   sections: { type: Array, required: true },
   showCategory: { type: Boolean, default: false },
   feedbackMap: { type: Object, default: () => ({}) },
+  initialResourceId: { type: Number, default: null },
 })
 defineEmits(['feedback-change'])
 
-const expandedId = ref(null)
+const expandedId = ref(props.initialResourceId)
+
+async function scrollToResource(id) {
+  if (!id) return
+  await nextTick()
+  const el = document.querySelector(`[data-resource-id="${id}"]`)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - 70
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+}
 
 function toggle(id) {
-  expandedId.value = expandedId.value === id ? null : id
+  const opening = expandedId.value !== id
+  expandedId.value = opening ? id : null
+  if (opening) scrollToResource(id)
 }
+
+onMounted(() => scrollToResource(props.initialResourceId))
+
+watch(() => props.initialResourceId, (newId) => {
+  expandedId.value = newId
+  scrollToResource(newId)
+})
 </script>
 
 <template>
