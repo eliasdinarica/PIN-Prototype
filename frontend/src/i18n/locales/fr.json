@@ -145,7 +145,12 @@
     "forYouDesc": "Les ressources les plus adaptées à votre profil, toutes catégories confondues.",
     "aiSearch": "Recherche IA",
     "aiPlaceholder": "De quoi avez-vous besoin ?",
-    "aiSubmit": "Chercher"
+    "aiSubmit": "Chercher",
+    "aiSuggestions": [
+      "Je veux apprendre le français",
+      "Quels sont mes droits avec un permis N ?",
+      "Comment trouver du travail en Suisse ?"
+    ]
   },
   "detail": {
     "empty": "Aucun document dans cette catégorie pour l'instant.",

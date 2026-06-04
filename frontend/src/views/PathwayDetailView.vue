@@ -57,7 +57,6 @@ onMounted(async () => {
 
         <!-- Step count pill -->
         <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-white border border-surface-200 text-surface-600 px-3 py-1.5 rounded-full shadow-sm">
-          <component :is="getIcon(pathway.icon)" class="w-3.5 h-3.5 text-brand-500" />
           {{ t('pathways.steps', { n: pathway.step_count }) }}
         </span>
       </header>
@@ -90,26 +89,14 @@ onMounted(async () => {
                 {{ step.resource.description }}
               </p>
               <ArticleRenderer
-                v-if="step.resource.body?.sections?.length || step.resource.body?.blocks?.length"
+                v-if="step.resource.body?.length"
                 :body="step.resource.body"
               />
             </div>
           </div>
         </div>
 
-        <!-- Finish indicator -->
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="w-8 h-8 rounded-full bg-brand-100 border-2 border-brand-500 flex items-center justify-center shrink-0">
-              <svg class="w-4 h-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            </div>
-          </div>
-          <div class="flex-1 pb-4 flex items-center">
-            <p class="text-sm font-medium text-brand-500">{{ t('pathways.done') }}</p>
-          </div>
-        </div>
+        
 
       </main>
     </template>

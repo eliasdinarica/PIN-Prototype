@@ -128,7 +128,12 @@
     "forYouDesc": "Os recursos mais adequados ao seu perfil, de todas as categorias.",
     "aiSearch": "Pesquisa IA",
     "aiPlaceholder": "Do que você precisa?",
-    "aiSubmit": "Pesquisar"
+    "aiSubmit": "Pesquisar",
+    "aiSuggestions": [
+      "Quero aprender francês",
+      "Quais são os meus direitos com a autorização N?",
+      "Como encontro trabalho na Suíça?"
+    ]
   },
   "detail": {
     "empty": "Sem documentos nesta categoria ainda.",

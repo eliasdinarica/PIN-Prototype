@@ -1,4 +1,9 @@
 from django.db import models
+from wagtail.fields import StreamField
+from wagtail import blocks
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.models import PreviewableMixin
 
 
 class Profile(models.Model):
@@ -95,7 +100,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50, blank=True, choices=ICON_CHOICES)
     audiences = models.ManyToManyField(Audience, blank=True, related_name='categories', help_text="Leave empty to show to everyone.")
-    priority = models.IntegerField(default=0, help_text="Higher = shown first when relevance is equal.")
+    priority = models.IntegerField(default=0, help_text="Higher = shown first.")
 
     class Meta:
         verbose_name_plural = 'categories'
@@ -124,12 +129,12 @@ class Tag(models.Model):
         return self.label
 
 
+_RICHTEXT_FEATURES = ['h2', 'h3', 'bold', 'italic', 'link', 'ol', 'ul', 'blockquote', 'hr', 'image', 'embed']
+_RICHTEXT_FEATURES_SIMPLE = ['h2', 'h3', 'bold', 'italic', 'link', 'ol', 'ul', 'blockquote']
 
-def _default_body():
-    return {'sections': []}
 
-
-class Resource(models.Model):
+class Resource(PreviewableMixin, models.Model):
+    preview_modes = [('default', 'Mobile preview')]
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='resources', null=True, blank=True)
     subcategory = models.ForeignKey(
         Subcategory, on_delete=models.SET_NULL,
@@ -139,8 +144,28 @@ class Resource(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    body = models.JSONField(default=_default_body, blank=True, help_text="Editor.js article body (JSON)")
+    body = StreamField([
+        ('richtext', blocks.RichTextBlock(
+            features=_RICHTEXT_FEATURES,
+            label='Rich text',
+        )),
+        ('image', ImageChooserBlock(label='Image')),
+        ('embed', EmbedBlock(label='Video / embed')),
+        ('columns', blocks.StructBlock([
+            ('left', blocks.RichTextBlock(features=_RICHTEXT_FEATURES_SIMPLE, label='Left column')),
+            ('right', blocks.RichTextBlock(features=_RICHTEXT_FEATURES_SIMPLE, label='Right column')),
+        ], label='Two columns')),
+        ('callout', blocks.StructBlock([
+            ('text', blocks.RichTextBlock(features=['bold', 'italic', 'link', 'ul'], label='Callout text')),
+        ], label='Callout box')),
+    ], use_json_field=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_preview_template(self, request, mode_name):
+        return 'pin_prototype/resource_preview.html'
+
+    def get_preview_context(self, request, mode_name):
+        return {'resource': self}
 
     def __str__(self):
         return self.name

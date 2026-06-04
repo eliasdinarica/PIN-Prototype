@@ -145,7 +145,12 @@
     "forYouDesc": "The resources best matched to your profile, across all categories.",
     "aiSearch": "AI Search",
     "aiPlaceholder": "What do you need help with?",
-    "aiSubmit": "Search"
+    "aiSubmit": "Search",
+    "aiSuggestions": [
+      "I want to learn French",
+      "What are my rights with a permit N?",
+      "How do I find work in Switzerland?"
+    ]
   },
   "detail": {
     "empty": "No documents in this category yet.",

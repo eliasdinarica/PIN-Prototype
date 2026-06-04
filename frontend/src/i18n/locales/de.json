@@ -128,7 +128,12 @@
     "forYouDesc": "Die am besten zu Ihrem Profil passenden Ressourcen aus allen Kategorien.",
     "aiSearch": "KI-Suche",
     "aiPlaceholder": "Wobei brauchen Sie Hilfe?",
-    "aiSubmit": "Suchen"
+    "aiSubmit": "Suchen",
+    "aiSuggestions": [
+      "Ich möchte Französisch lernen",
+      "Welche Rechte habe ich mit Ausweis N?",
+      "Wie finde ich Arbeit in der Schweiz?"
+    ]
   },
   "detail": {
     "empty": "Noch keine Dokumente in dieser Kategorie.",

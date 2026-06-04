@@ -11,7 +11,7 @@ import OnboardingTutorial from '@/components/OnboardingTutorial.vue'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, tm } = useI18n()
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -22,16 +22,6 @@ const feedbackMap = ref({}) // { [resource_id]: { id, is_useful } }
 const loading = ref(true)
 const activePillEl = ref(null)
 const pillsScrollRef = ref(null)
-const otherPillsRef = ref(null)
-const visibleSection = ref('recommended')
-
-function onPillsScroll() {
-  const container = pillsScrollRef.value
-  const othersDiv = otherPillsRef.value
-  if (!container || !othersDiv) return
-  const viewportCenter = container.scrollLeft + container.offsetWidth / 2
-  visibleSection.value = viewportCenter >= othersDiv.offsetLeft ? 'others' : 'recommended'
-}
 
 const isForYou = computed(() => route.params.id === 'for-you')
 const isAiSearch = computed(() => route.params.id === 'ai')
@@ -47,14 +37,6 @@ const aiSections = computed(() =>
   aiResources.value.length ? [{ key: 'all', items: aiResources.value }] : []
 )
 
-const categorySections = computed(() => {
-  const rec = categories.value.filter(c => c.is_recommended)
-  const oth = categories.value.filter(c => !c.is_recommended)
-  const s = []
-  if (rec.length) s.push({ key: 'recommended', items: rec })
-  if (oth.length) s.push({ key: 'others', items: oth })
-  return s
-})
 
 const resourceSections = computed(() => {
   const resources = category.value?.resources || []
@@ -275,24 +257,14 @@ watch(() => route.query.q, (newQ) => {
           @click="router.push('/categories/ai')"
         />
         <div class="mb-2 border-t border-surface-400" />
-        <template v-for="(section, si) in categorySections" :key="section.key">
-          <div v-if="si > 0" class="my-2 border-t border-surface-400" />
-          <p
-            v-if="section.key === 'recommended' || si > 0"
-            class="text-xs font-semibold uppercase tracking-wider px-4 mb-1 mt-1 flex items-center gap-1.5"
-            :class="section.key === 'recommended' ? 'text-brand-400' : 'text-surface-300'"
-          >
-             {{ t(`categories.${section.key}`) }}
-          </p>
-          <CategorySidebarItem
-            v-for="cat in section.items"
-            :key="cat.id"
-            :label="cat.name"
-            :icon="getCategoryIcon(cat)"
-            :active="isActive(cat)"
-            @click="router.push(`/categories/${cat.id}`)"
-          />
-        </template>
+        <CategorySidebarItem
+          v-for="cat in categories"
+          :key="cat.id"
+          :label="cat.name"
+          :icon="getCategoryIcon(cat)"
+          :active="isActive(cat)"
+          @click="router.push(`/categories/${cat.id}`)"
+        />
       </div>
     </aside>
 
@@ -322,22 +294,10 @@ watch(() => route.query.q, (newQ) => {
       <div v-if="categories.length">
 
         <!-- Label de section dynamique -->
-        <div class="px-4 pt-3 pb-1">
-          <template v-if="isAiSearch">
-            <p class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1">
-              <MagnifyingGlassIcon class="w-3 h-3" />{{ t('categories.aiSearch') }}
-            </p>
-          </template>
-          <template v-else>
-            <p
-              v-if="visibleSection === 'others'"
-              class="text-xs font-semibold uppercase tracking-wider text-surface-500"
-            >{{ t('categories.others') }}</p>
-            <p
-              v-else
-              class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1"
-            ><SparklesIcon class="w-3 h-3" />{{ t('categories.recommended') }}</p>
-          </template>
+        <div v-if="isAiSearch" class="px-4 pt-3 pb-1">
+          <p class="text-xs font-semibold uppercase tracking-wider text-brand-400 flex items-center gap-1">
+            <MagnifyingGlassIcon class="w-3 h-3" />{{ t('categories.aiSearch') }}
+          </p>
         </div>
 
         <!-- Scrollable pills -->
@@ -345,51 +305,31 @@ watch(() => route.query.q, (newQ) => {
           ref="pillsScrollRef"
           data-tut="cats-mobile"
           class="flex items-center gap-2 px-4 pb-4 overflow-x-auto pills-scroll"
-          @scroll="onPillsScroll"
         >
-          <!-- Recommended pills -->
-          <div class="flex gap-2 shrink-0">
-            <CategoryMobilePill
-              v-if="topResources.length"
-              :ref="isForYou ? el => { activePillEl = el } : undefined"
-              :label="t('categories.forYou')"
-              :icon="SparklesIcon"
-              :active="isForYou"
-              @click="router.push('/categories/for-you')"
-            />
-            <CategoryMobilePill
-              :ref="isAiSearch ? el => { activePillEl = el } : undefined"
-              :label="t('categories.aiSearch')"
-              :icon="MagnifyingGlassIcon"
-              :active="isAiSearch"
-              @click="router.push('/categories/ai')"
-            />
-            <CategoryMobilePill
-              v-for="cat in (categorySections.find(s => s.key === 'recommended')?.items ?? [])"
-              :key="cat.id"
-              :ref="isActive(cat) ? el => { activePillEl = el } : undefined"
-              :label="cat.name"
-              :icon="getCategoryIcon(cat)"
-              :active="isActive(cat)"
-              @click="router.push(`/categories/${cat.id}`)"
-            />
-          </div>
-
-          <!-- Divider + Others pills -->
-          <template v-if="categorySections.some(s => s.key === 'others')">
-            <div class="w-px h-7 bg-surface-600 shrink-0" />
-            <div ref="otherPillsRef" class="flex gap-2 shrink-0">
-              <CategoryMobilePill
-                v-for="cat in (categorySections.find(s => s.key === 'others')?.items ?? [])"
-                :key="cat.id"
-                :ref="isActive(cat) ? el => { activePillEl = el } : undefined"
-                :label="cat.name"
-                :icon="getCategoryIcon(cat)"
-                :active="isActive(cat)"
-                @click="router.push(`/categories/${cat.id}`)"
-              />
-            </div>
-          </template>
+          <CategoryMobilePill
+            v-if="topResources.length"
+            :ref="isForYou ? el => { activePillEl = el } : undefined"
+            :label="t('categories.forYou')"
+            :icon="SparklesIcon"
+            :active="isForYou"
+            @click="router.push('/categories/for-you')"
+          />
+          <CategoryMobilePill
+            :ref="isAiSearch ? el => { activePillEl = el } : undefined"
+            :label="t('categories.aiSearch')"
+            :icon="MagnifyingGlassIcon"
+            :active="isAiSearch"
+            @click="router.push('/categories/ai')"
+          />
+          <CategoryMobilePill
+            v-for="cat in categories"
+            :key="cat.id"
+            :ref="isActive(cat) ? el => { activePillEl = el } : undefined"
+            :label="cat.name"
+            :icon="getCategoryIcon(cat)"
+            :active="isActive(cat)"
+            @click="router.push(`/categories/${cat.id}`)"
+          />
         </div>
 
       </div>
@@ -421,6 +361,16 @@ watch(() => route.query.q, (newQ) => {
               class="h-10 px-4 bg-brand-500 hover:bg-brand-600 disabled:bg-surface-200 text-white rounded-xl text-sm font-medium transition-colors cursor-pointer border-none shrink-0"
               @click="submitAiSearch"
             >{{ t('categories.aiSubmit') }}</button>
+          </div>
+
+          <!-- Suggestion chips — visible only before any search -->
+          <div v-if="!aiQuery && !aiLoading" class="flex flex-wrap gap-2 mb-6">
+            <button
+              v-for="s in (tm('categories.aiSuggestions'))"
+              :key="s"
+              class="text-sm px-4 py-2 rounded-full border border-surface-300 bg-white text-surface-600 hover:border-brand-400 hover:text-brand-500 transition-colors cursor-pointer"
+              @click="aiEditableQuery = s; submitAiSearch()"
+            >{{ s }}</button>
           </div>
 
           <div v-if="aiLoading" class="flex justify-center py-20">

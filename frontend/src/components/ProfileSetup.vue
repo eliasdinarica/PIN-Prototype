@@ -318,6 +318,9 @@ watch(currentStep, async (newVal) => {
         </nav>
       </div>
 
+      <!-- Right column: card + below-card actions -->
+      <div class="flex-1 flex flex-col gap-4">
+
       <!-- Form card -->
       <div class="bg-surface-500 rounded-2xl p-8 lg:p-10 w-full shadow-lg flex flex-col min-h-96">
 
@@ -346,32 +349,6 @@ watch(currentStep, async (newVal) => {
                 :class="wasReached(i) ? 'bg-surface-400' : 'bg-surface-200'"
               />
             </template>
-          </div>
-
-          <!-- Top navigation: back | skip | next -->
-          <div class="flex items-center gap-3 mb-6">
-            <button
-              v-if="!isFirst"
-              class="flex items-center gap-1 text-sm font-medium text-surface-300 hover:text-white transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
-              @click="back"
-            >
-              <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
-            </button>
-            <div class="flex-1" />
-            <button
-              v-if="!question.required && question.type !== 'intro'"
-              class="text-sm text-surface-300 hover:text-surface-100 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
-              @click="skip"
-            >
-              {{ t('profile.dontKnow') }}
-            </button>
-            <button
-              class="flex items-center gap-1 text-sm font-medium transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
-              :class="canAdvance ? 'text-surface-300 hover:text-white' : 'text-surface-500 cursor-not-allowed'"
-              @click="goNext"
-            >
-              {{ t('profile.next') }}<ArrowRightIcon class="w-4 h-4" />
-            </button>
           </div>
 
           <Transition
@@ -490,17 +467,6 @@ watch(currentStep, async (newVal) => {
             </div>
           </Transition>
 
-          <!-- Finish button + note -->
-          <div class="mt-8">
-            <button
-              class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white rounded-xl text-base font-semibold transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
-              @click="finish"
-            >
-              <CheckIcon class="w-5 h-5" />
-              {{ t('profile.finish') }}
-            </button>
-            <p class="text-xs text-surface-400 text-center mt-3 leading-relaxed">{{ t('profile.finishNote') }}</p>
-          </div>
         </template>
 
         <!-- Done -->
@@ -513,6 +479,51 @@ watch(currentStep, async (newVal) => {
             <p class="text-sm text-surface-300">{{ t('profile.done.subtitle') }}</p>
           </div>
         </template>
+
+      </div>
+
+      <!-- Below card: navigation + finish (only when not completed) -->
+      <template v-if="!completed">
+
+        <!-- Navigation: back | skip | next -->
+        <div class="flex items-center gap-3 px-1">
+          <button
+            v-if="!isFirst"
+            class="flex items-center gap-1 text-sm font-medium text-surface-500 hover:text-surface-700 transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
+            @click="back"
+          >
+            <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
+          </button>
+          <div class="flex-1" />
+          <button
+            v-if="!question.required && question.type !== 'intro'"
+            class="text-sm text-surface-400 hover:text-surface-600 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
+            @click="skip"
+          >
+            {{ t('profile.dontKnow') }}
+          </button>
+          <button
+            class="flex items-center gap-1 text-sm font-medium transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
+            :class="canAdvance ? 'text-surface-600 hover:text-surface-800' : 'text-surface-300 cursor-not-allowed'"
+            @click="goNext"
+          >
+            {{ t('profile.next') }}<ArrowRightIcon class="w-4 h-4" />
+          </button>
+        </div>
+
+        <!-- Finish button + note -->
+        <div>
+          <button
+            class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-base font-semibold transition-all duration-150 cursor-pointer border-none flex items-center justify-center gap-2"
+            @click="finish"
+          >
+            <CheckIcon class="w-5 h-5" />
+            {{ t('profile.finish') }}
+          </button>
+          <p class="text-xs text-surface-400 text-center mt-3 leading-relaxed">{{ t('profile.finishNote') }}</p>
+        </div>
+
+      </template>
 
       </div>
     </div>

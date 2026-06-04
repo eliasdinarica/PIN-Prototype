@@ -10,26 +10,45 @@ from django.core.management.base import BaseCommand
 from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep
 
 # ---------------------------------------------------------------------------
-# Helpers — construction des corps d'articles (format Editor.js)
+# Helpers — construction des corps d'articles (format Wagtail StreamField)
 # ---------------------------------------------------------------------------
 
 def para(text):
-    return {'type': 'paragraph', 'data': {'text': text}}
+    return f'<p>{text}</p>'
 
 def h3(text):
-    return {'type': 'header', 'data': {'text': text, 'level': 3}}
+    return f'<h3>{text}</h3>'
 
 def ul(*items):
-    return {'type': 'list', 'data': {'style': 'unordered', 'items': list(items)}}
+    return '<ul>' + ''.join(f'<li>{i}</li>' for i in items) + '</ul>'
 
 def ol(*items):
-    return {'type': 'list', 'data': {'style': 'ordered', 'items': list(items)}}
+    return '<ol>' + ''.join(f'<li>{i}</li>' for i in items) + '</ol>'
 
 def sec(title, *blocks, width='full'):
-    return {'title': title, 'width': width, 'body': {'blocks': list(blocks)}}
+    parts = ([f'<h2>{title}</h2>'] if title else []) + [str(b) for b in blocks if b]
+    html = ''.join(parts)
+    if width == 'half':
+        return ('__half__', html)
+    return {'type': 'richtext', 'value': html}
 
 def body(*sections):
-    return {'sections': list(sections)}
+    result = []
+    i = 0
+    while i < len(sections):
+        s = sections[i]
+        if isinstance(s, tuple) and s and s[0] == '__half__':
+            nxt = sections[i + 1] if i + 1 < len(sections) else None
+            if isinstance(nxt, tuple) and nxt and nxt[0] == '__half__':
+                result.append({'type': 'columns', 'value': {'left': s[1], 'right': nxt[1]}})
+                i += 2
+            else:
+                result.append({'type': 'richtext', 'value': s[1]})
+                i += 1
+        else:
+            result.append(s)
+            i += 1
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -3514,12 +3533,8 @@ class Command(BaseCommand):
                 if body_data:
                     res.body = body_data
                     res.save(update_fields=['body'])
-                elif not res.body or not res.body.get('sections'):
-                    res.body = {'sections': [
-                        {'title': 'Contenu', 'body': {'blocks': [
-                            {'type': 'paragraph', 'data': {'text': res.description}},
-                        ]}},
-                    ]}
+                elif not res.body:
+                    res.body = [{'type': 'richtext', 'value': f'<p>{res.description}</p>'}]
                     res.save(update_fields=['body'])
 
                 self.stdout.write(f'      {"+" if res_created else "~"} {res.name}')

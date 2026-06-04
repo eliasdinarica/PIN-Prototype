@@ -83,7 +83,7 @@ function filenameFromUrl(url) {
       <div class="bg-white rounded-xl px-6 py-5 shadow-sm">
         <p v-if="resource.description" class="text-gray-600 leading-relaxed mb-4">{{ resource.description }}</p>
         <ArticleRenderer
-          v-if="resource.body?.sections?.length || resource.body?.blocks?.length"
+          v-if="resource.body?.length"
           :body="resource.body"
         />
         <div v-if="resource.attachments?.length" class="mt-6 pt-5 border-t border-gray-100">

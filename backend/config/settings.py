@@ -11,7 +11,7 @@ except ImportError:
 
 INFOMANIAK_API_KEY = os.environ.get('INFOMANIAK_API_KEY', '')
 INFOMANIAK_PRODUCT_ID = os.environ.get('INFOMANIAK_PRODUCT_ID', '')
-INFOMANIAK_MODEL = os.environ.get('INFOMANIAK_MODEL', 'llama3')
+INFOMANIAK_MODEL = os.environ.get('INFOMANIAK_MODEL', 'mistral3')
 
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
@@ -29,15 +29,32 @@ ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',') if h.strip()] or [
 # Application definition
 
 INSTALLED_APPS = [
+    # Wagtail
+    'wagtail.contrib.redirects',
+    'wagtail.contrib.settings',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail',
+    'modelcluster',
+    'taggit',
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party
     'rest_framework',
     'corsheaders',
     'django_extensions',
+    # App
     'pin_prototype',
 ]
 
@@ -51,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -131,3 +149,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 _cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173')
 CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(',') if o.strip()]
+
+WAGTAIL_SITE_NAME = 'PIN Prototype'
+WAGTAILADMIN_BASE_URL = os.environ.get('WAGTAILADMIN_BASE_URL', 'http://localhost:8000')
+WAGTAILIMAGES_IMAGE_MODEL = 'wagtailimages.Image'

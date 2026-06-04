@@ -11,6 +11,7 @@ from .serializers import (
     ProfileSerializer, CategorySerializer, ResourceSerializer,
     TagSerializer, ResourceFeedbackSerializer, AudienceSerializer,
     CategoryBriefSerializer, PathwayBriefSerializer, PathwaySerializer,
+    _render_body,
 )
 
 
@@ -145,44 +146,9 @@ class CategoryViewSet(ModelViewSet):
         )
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        profile_id = request.query_params.get('profile')
-
-        if profile_id:
-            try:
-                profile = Profile.objects.get(pk=profile_id)
-                age = _compute_age(profile.birth_date)
-
-                recommended = []
-                universal = []
-                deprioritized = []
-                for cat in queryset:
-                    audiences = list(cat.audiences.all())
-                    if not audiences:
-                        universal.append(cat)
-                    else:
-                        matches = sum(1 for a in audiences if _audience_matches(a, profile, age))
-                        if matches > 0:
-                            recommended.append((cat, matches))
-                        else:
-                            deprioritized.append(cat)
-
-                recommended.sort(key=lambda x: (-x[1], -x[0].priority, x[0].name))
-                universal.sort(key=lambda c: (-c.priority, c.name))
-                deprioritized.sort(key=lambda c: (-c.priority, c.name))
-                ordered = (
-                    [(cat, True) for cat, _ in recommended]
-                    + [(cat, False) for cat in universal]
-                    + [(cat, False) for cat in deprioritized]
-                )
-            except Profile.DoesNotExist:
-                ordered = [(cat, False) for cat in queryset.order_by('-priority', 'name')]
-        else:
-            ordered = [(cat, False) for cat in queryset.order_by('-priority', 'name')]
-
-        serializer = self.get_serializer([cat for cat, _ in ordered], many=True)
-        data = [{**item, 'is_recommended': is_rec} for item, (_, is_rec) in zip(serializer.data, ordered)]
-        return Response(data)
+        queryset = self.get_queryset().order_by('-priority', 'name')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -497,9 +463,9 @@ RULES:
                 'id': r.id,
                 'name': r.name,
                 'description': r.description,
-                'body': r.body,
+                'body': _render_body(r),
                 'attachments': attachments,
-                'category': {'id': r.category.id, 'name': r.category.name},
+                'category': {'id': r.category.id, 'name': r.category.name} if r.category else None,
             })
 
         return Response({'reply': reply_text, 'resources': resource_data})
