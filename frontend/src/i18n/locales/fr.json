@@ -136,10 +136,9 @@
       "title": "Comment ça marche",
       "s1title": "Répondez à quelques questions",
       "s1desc": "Votre langue, votre permis, votre famille.",
-      "s2title": "Nous regardons votre situation",
-      "s2desc": "Nous lisons vos réponses.",
-      "s3title": "Recevez les bonnes ressources",
-      "s3desc": "Vous voyez les ressources faites pour vous."
+      "s2title": "Nous recommandons les bonnes ressources",
+      "s2desc": "Choisies pour votre profil.",
+      "note": "Aimez les ressources qui vous aident. Vous découvrez aussi ce que votre communauté recommande."
     },
     "skip": "Voir toutes les informations sans profil"
   },

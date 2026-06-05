@@ -119,10 +119,9 @@
       "title": "Como funciona",
       "s1title": "Responda a algumas perguntas",
       "s1desc": "A sua língua, a sua autorização, a sua família.",
-      "s2title": "Olhamos para a sua situação",
-      "s2desc": "Lemos as suas respostas.",
-      "s3title": "Receba os recursos certos",
-      "s3desc": "Você vê os recursos feitos para você."
+      "s2title": "Recomendamos os recursos certos",
+      "s2desc": "Escolhidos para o seu perfil.",
+      "note": "Curta os recursos que o ajudam. Também descobre o que a sua comunidade recomenda."
     },
     "skip": "Ver todas as informações sem perfil"
   },

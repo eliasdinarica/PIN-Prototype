@@ -4,8 +4,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
   SparklesIcon, MagnifyingGlassIcon,
-  ClipboardDocumentListIcon, AdjustmentsHorizontalIcon, DocumentTextIcon,
-  ArrowRightIcon,
+  ClipboardDocumentListIcon, AdjustmentsHorizontalIcon,
+  ArrowRightIcon, HandThumbUpIcon,
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -14,7 +14,6 @@ const { t } = useI18n()
 const steps = computed(() => [
   { icon: ClipboardDocumentListIcon, title: t('landing.how.s1title'), desc: t('landing.how.s1desc') },
   { icon: AdjustmentsHorizontalIcon, title: t('landing.how.s2title'), desc: t('landing.how.s2desc') },
-  { icon: DocumentTextIcon, title: t('landing.how.s3title'), desc: t('landing.how.s3desc') },
 ])
 </script>
 
@@ -40,9 +39,9 @@ const steps = computed(() => [
       <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-8 text-center">
         {{ t('landing.how.title') }}
       </p>
-      <div class="flex flex-col sm:flex-row items-stretch justify-center gap-3 sm:gap-2 mb-16">
+      <div class="flex flex-col sm:flex-row items-stretch justify-center gap-3 sm:gap-2 mb-6">
         <template v-for="(step, i) in steps" :key="i">
-          <div class="flex-1 flex flex-col items-center text-center bg-surface-800 border border-surface-700 rounded-2xl px-4 py-6">
+          <div class="flex-1 flex flex-col items-center text-center bg-surface-800 border border-surface-700 rounded-2xl px-5 py-6">
             <div class="w-12 h-12 rounded-full bg-brand-500/10 flex items-center justify-center mb-3">
               <component :is="step.icon" class="w-6 h-6 text-brand-400" />
             </div>
@@ -58,7 +57,16 @@ const steps = computed(() => [
         </template>
       </div>
 
-      <!-- ── Questionnaire : deux cercles (remplir un profil / explorer librement) ── -->
+      <!-- Note : likes + recommandations communautaires -->
+      <p class="flex items-start gap-2 text-surface-400 text-xs leading-relaxed max-w-md mx-auto text-center justify-center mb-16">
+        <HandThumbUpIcon class="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
+        <span>{{ t('landing.how.note') }}</span>
+      </p>
+
+      <!-- ── Point d'entrée : titre + deux cercles ── -->
+      <p class="text-white font-semibold text-lg text-center mb-8">
+        {{ t('landing.q.tag') }}
+      </p>
       <div class="flex items-center justify-center gap-8 sm:gap-14 flex-wrap">
 
         <div class="flex flex-col items-center gap-3">

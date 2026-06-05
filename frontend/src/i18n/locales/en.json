@@ -136,10 +136,9 @@
       "title": "How it works",
       "s1title": "Answer a few questions",
       "s1desc": "Your language, your permit, your family.",
-      "s2title": "We look at your situation",
-      "s2desc": "We read your answers.",
-      "s3title": "Get the right resources",
-      "s3desc": "You see the resources made for you."
+      "s2title": "We recommend the right resources",
+      "s2desc": "Picked for your profile.",
+      "note": "Like the resources that help you. You also discover what your community recommends."
     },
     "skip": "See all information without a profile"
   },

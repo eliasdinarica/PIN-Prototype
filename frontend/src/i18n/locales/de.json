@@ -119,10 +119,9 @@
       "title": "So funktioniert es",
       "s1title": "Beantworten Sie ein paar Fragen",
       "s1desc": "Ihre Sprache, Ihr Ausweis, Ihre Familie.",
-      "s2title": "Wir schauen Ihre Situation an",
-      "s2desc": "Wir lesen Ihre Antworten.",
-      "s3title": "Erhalten Sie die richtigen Ressourcen",
-      "s3desc": "Sie sehen die Ressourcen für Sie."
+      "s2title": "Wir empfehlen die richtigen Ressourcen",
+      "s2desc": "Passend zu Ihrem Profil.",
+      "note": "Markieren Sie die Ressourcen, die Ihnen helfen. Sie sehen auch, was Ihre Community empfiehlt."
     },
     "skip": "Alle Informationen ohne Profil ansehen"
   },
