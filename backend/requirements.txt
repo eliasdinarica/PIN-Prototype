@@ -1,5 +1,5 @@
 asgiref==3.11.1
-Django==6.0.4
+Django==5.2.3
 django-cors-headers==4.9.0
 django-extensions==3.2.3
 django-modelcluster==6.4
