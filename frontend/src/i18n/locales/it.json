@@ -115,6 +115,15 @@
       "exploreDesc":"Sfogliare tutte le risorse",
       "privacy":    "Le tue risposte rimangono sul tuo dispositivo. Nessun dato viene trasmesso."
     },
+    "how": {
+      "title": "Come funziona",
+      "s1title": "Rispondi ad alcune domande",
+      "s1desc": "La tua lingua, il tuo permesso, la tua famiglia.",
+      "s2title": "Guardiamo la tua situazione",
+      "s2desc": "Leggiamo le tue risposte.",
+      "s3title": "Ricevi le risorse giuste",
+      "s3desc": "Vedi le risorse fatte per te."
+    },
     "skip": "Vedere tutte le informazioni senza profilo"
   },
   "categories": {

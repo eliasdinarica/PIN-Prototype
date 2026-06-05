@@ -115,6 +115,15 @@
       "exploreDesc":"Alle Ressourcen durchsuchen",
       "privacy":    "Ihre Antworten bleiben auf Ihrem Gerät. Keine Daten werden übertragen."
     },
+    "how": {
+      "title": "So funktioniert es",
+      "s1title": "Beantworten Sie ein paar Fragen",
+      "s1desc": "Ihre Sprache, Ihr Ausweis, Ihre Familie.",
+      "s2title": "Wir schauen Ihre Situation an",
+      "s2desc": "Wir lesen Ihre Antworten.",
+      "s3title": "Erhalten Sie die richtigen Ressourcen",
+      "s3desc": "Sie sehen die Ressourcen für Sie."
+    },
     "skip": "Alle Informationen ohne Profil ansehen"
   },
   "categories": {

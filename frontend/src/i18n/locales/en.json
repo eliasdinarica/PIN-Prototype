@@ -132,6 +132,15 @@
       "exploreDesc":"Browse all resources",
       "privacy":    "Your answers stay on your device. Nothing is transmitted."
     },
+    "how": {
+      "title": "How it works",
+      "s1title": "Answer a few questions",
+      "s1desc": "Your language, your permit, your family.",
+      "s2title": "We look at your situation",
+      "s2desc": "We read your answers.",
+      "s3title": "Get the right resources",
+      "s3desc": "You see the resources made for you."
+    },
     "skip": "See all information without a profile"
   },
   "categories": {
