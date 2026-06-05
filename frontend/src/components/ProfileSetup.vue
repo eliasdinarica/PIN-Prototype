@@ -47,7 +47,7 @@ const questions = computed(() => [
   {
     id: 'language',
     type: 'choice',
-    required: true,
+    required: false,
     shortLabel: t('profile.timeline.language'),
     label: t('profile.language.label'),
     sublabel: t('profile.language.sublabel'),
@@ -65,7 +65,7 @@ const questions = computed(() => [
   {
     id: 'status',
     type: 'choice',
-    required: true,
+    required: false,
     shortLabel: t('profile.timeline.status'),
     label: t('profile.status.label'),
     sublabel: t('profile.status.sublabel'),
@@ -125,7 +125,7 @@ const questions = computed(() => [
   {
     id: 'hasChildren',
     type: 'boolean',
-    required: true,
+    required: false,
     shortLabel: t('profile.timeline.hasChildren'),
     label: t('profile.hasChildren.label'),
     sublabel: t('profile.hasChildren.sublabel'),
@@ -222,13 +222,6 @@ function languageLabel(langValue) {
 }
 
 
-function skip() {
-  const type = question.value.type
-  answers.value[question.value.id] = (type === 'boolean') ? null
-    : (type === 'language-with-levels') ? [] : ''
-  advance()
-}
-
 function isSelected(value) {
   const a = answers.value[question.value.id]
   return question.value.type === 'multi-select' ? (a || []).includes(value) : a === value
@@ -250,16 +243,6 @@ const activeStepEl = ref(null)
 
 function goToStep(index) {
   if (index === currentStep.value) return
-  if (!props.isEditing) {
-    for (let i = 0; i < index; i++) {
-      const q = questions.value[i]
-      if (q.required && q.type !== 'intro') {
-        const a = answers.value[q.id]
-        const has = q.type === 'boolean' ? (a === true || a === false) : (a !== undefined && a !== null && a !== '')
-        if (!has) { index = i; break }
-      }
-    }
-  }
   slideDirection.value = index > currentStep.value ? 'next' : 'prev'
   currentStep.value = index
 }
@@ -282,13 +265,13 @@ watch(currentStep, async (newVal) => {
             <div class="flex flex-col items-center shrink-0">
               <button
                 class="w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all duration-200 cursor-pointer"
-                :class="i === currentStep
+                :class="getStepVisualState(i) === 'current'
                   ? 'bg-brand-600 border-brand-600'
-                  : wasReached(i) ? 'bg-surface-600 border-surface-600' : 'bg-white border-surface-300'"
+                  : getStepVisualState(i) === 'answered' ? 'bg-surface-600 border-surface-600' : 'bg-white border-surface-300'"
                 @click="goToStep(i)"
               >
                 <CheckIcon v-if="getStepVisualState(i) === 'answered'" class="w-3.5 h-3.5 text-white" />
-                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-3.5 h-3.5 text-surface-300" />
+                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-4 h-4 text-surface-400" />
                 <span v-else-if="i === currentStep" class="w-2 h-2 bg-white rounded-full block" />
               </button>
               <div
@@ -324,13 +307,15 @@ watch(currentStep, async (newVal) => {
               <button
                 :ref="i === currentStep ? (el) => { activeStepEl = el } : undefined"
                 class="flex items-center gap-1.5 rounded-full border-2 transition-all duration-200 cursor-pointer shrink-0"
-                :class="i === currentStep
+                :class="getStepVisualState(i) === 'current'
                   ? 'bg-brand-600 border-brand-600 pl-2.5 pr-3 py-1.5'
-                  : wasReached(i) ? 'bg-surface-600 border-surface-600 p-1.5' : 'bg-surface-600 border-surface-400 p-1.5'"
+                  : getStepVisualState(i) === 'answered' ? 'bg-surface-600 border-surface-600 p-1.5'
+                  : getStepVisualState(i) === 'skipped' ? 'bg-white border-white p-1.5'
+                  : 'bg-surface-600 border-surface-400 p-1.5'"
                 @click="goToStep(i)"
               >
                 <CheckIcon v-if="getStepVisualState(i) === 'answered'" class="w-3.5 h-3.5 text-white shrink-0" />
-                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-3.5 h-3.5 text-surface-300 shrink-0" />
+                <QuestionMarkCircleIcon v-else-if="getStepVisualState(i) === 'skipped'" class="w-4 h-4 text-surface-500 shrink-0" />
                 <span v-else-if="i === currentStep" class="w-2 h-2 bg-white rounded-full block shrink-0" />
                 <span v-else class="w-3.5 h-3.5 flex items-center justify-center text-xs text-surface-300 font-semibold shrink-0">{{ i + 1 }}</span>
                 <span v-if="i === currentStep" class="text-white text-xs font-semibold whitespace-nowrap">{{ q.shortLabel }}</span>
@@ -477,7 +462,7 @@ watch(currentStep, async (newVal) => {
       <!-- Below card: navigation + finish (only when not completed) -->
       <template v-if="!completed">
 
-        <!-- Navigation: back | skip | next -->
+        <!-- Navigation: back | next -->
         <div class="flex items-center gap-3 px-1">
           <button
             v-if="!isFirst"
@@ -487,13 +472,6 @@ watch(currentStep, async (newVal) => {
             <ArrowLeftIcon class="w-4 h-4" />{{ t('profile.back') }}
           </button>
           <div class="flex-1" />
-          <button
-            v-if="!question.required && question.type !== 'intro'"
-            class="text-sm text-surface-400 hover:text-surface-600 transition-colors duration-150 cursor-pointer bg-transparent border-none shrink-0"
-            @click="skip"
-          >
-            {{ t('profile.dontKnow') }}
-          </button>
           <button
             class="flex items-center gap-1 text-sm font-medium transition-colors duration-150 cursor-pointer bg-transparent border-none p-0 shrink-0"
             :class="canAdvance ? 'text-surface-600 hover:text-surface-800' : 'text-surface-300 cursor-not-allowed'"

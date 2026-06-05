@@ -48,10 +48,10 @@ async function handleComplete(answers) {
   try {
     const isUpdate = !!profileId.value
     const body = {
-      language: answers.language,
+      language: answers.language || 'en',
       other_languages: answers.otherLanguages || [],
-      status: answers.status,
-      has_children: answers.hasChildren,
+      status: answers.status || 'other',
+      has_children: answers.hasChildren ?? null,
       arrived_over_year_ago: answers.arrivedOverYear ?? null,
       birth_date: answers.birthDate || null,
       has_driving_license: answers.hasDrivingLicense ?? null,

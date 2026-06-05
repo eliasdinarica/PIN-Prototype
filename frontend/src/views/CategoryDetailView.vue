@@ -7,7 +7,6 @@ import { InboxIcon, SparklesIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@he
 import ResourceList from '@/components/ResourceList.vue'
 import CategorySidebarItem from '@/components/CategorySidebarItem.vue'
 import CategoryMobilePill from '@/components/CategoryMobilePill.vue'
-import OnboardingTutorial from '@/components/OnboardingTutorial.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -430,8 +429,6 @@ watch(() => route.query.q, (newQ) => {
         </template>
 
     </div>
-
-    <OnboardingTutorial />
 
     </div>
 

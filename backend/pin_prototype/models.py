@@ -45,7 +45,7 @@ class Profile(models.Model):
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES)
     other_languages = models.JSONField(default=list, blank=True)
     status = models.CharField(max_length=5, choices=STATUS_CHOICES, default='other')
-    has_children = models.BooleanField()
+    has_children = models.BooleanField(null=True, blank=True)
     arrived_over_year_ago = models.BooleanField(null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     has_driving_license = models.BooleanField(null=True, blank=True)
