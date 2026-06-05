@@ -81,14 +81,6 @@ const questions = computed(() => [
     ],
   },
   {
-    id: 'hasChildren',
-    type: 'boolean',
-    required: true,
-    shortLabel: t('profile.timeline.hasChildren'),
-    label: t('profile.hasChildren.label'),
-    sublabel: t('profile.hasChildren.sublabel'),
-  },
-  {
     id: 'hasDrivingLicense',
     type: 'boolean',
     required: false,
@@ -131,12 +123,12 @@ const questions = computed(() => [
     label: t('profile.arrivedOverYear.label'),
   },
   {
-    id: 'birthDate',
-    type: 'date',
-    required: false,
-    shortLabel: t('profile.timeline.birthDate'),
-    label: t('profile.birthDate.label'),
-    sublabel: t('profile.birthDate.sublabel'),
+    id: 'hasChildren',
+    type: 'boolean',
+    required: true,
+    shortLabel: t('profile.timeline.hasChildren'),
+    label: t('profile.hasChildren.label'),
+    sublabel: t('profile.hasChildren.sublabel'),
   },
 ])
 

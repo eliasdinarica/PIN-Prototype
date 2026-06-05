@@ -99,8 +99,8 @@
     "sections": {
       "resources": "Resources",
       "pathways": "Pathways",
-      "section2": "Community",
-      "section3": "Events",
+      "cv": "CV generator",
+      "forum": "Forum",
       "comingSoon": "Coming soon"
     }
   },
@@ -141,7 +141,7 @@
     "explore": "Explore",
     "recommended": "Recommended categories",
     "others": "Other categories",
-    "forYou": "All resources",
+    "forYou": "All recommended resources",
     "forYouDesc": "The resources best matched to your profile, across all categories.",
     "aiSearch": "AI Search",
     "aiPlaceholder": "What do you need help with?",
@@ -172,8 +172,8 @@
     "title": "What do you need?",
     "resourcesDesc": "Practical information for living in Switzerland.",
     "pathwaysDesc": "Step-by-step guides for key procedures in Switzerland.",
-    "communityDesc": "Connect with others in your area.",
-    "eventsDesc": "Local workshops, appointments and events."
+    "cvDesc": "Create your Swiss CV step by step.",
+    "forumDesc": "Ask questions and share with others."
   },
   "pathways": {
     "eyebrow": "Pathways",

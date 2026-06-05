@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { BookOpenIcon, UsersIcon, CalendarDaysIcon, ArrowRightIcon, MapIcon } from '@heroicons/vue/24/outline'
+import { BookOpenIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, ArrowRightIcon, MapIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -51,34 +51,34 @@ const { t } = useI18n()
           </div>
         </button>
 
-        <!-- Community (coming soon) -->
+        <!-- CV generator (coming soon) -->
         <div class="w-full bg-surface-200/70 border border-surface-300/50 rounded-2xl p-5 opacity-60 select-none">
           <div class="flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl bg-surface-300 flex items-center justify-center shrink-0">
-              <UsersIcon class="w-6 h-6 text-surface-500" />
+              <DocumentTextIcon class="w-6 h-6 text-surface-500" />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="text-surface-600 font-semibold text-base">{{ t('nav.sections.section2') }}</h2>
+                <h2 class="text-surface-600 font-semibold text-base">{{ t('nav.sections.cv') }}</h2>
                 <span class="text-xs bg-surface-300 text-surface-500 px-2 py-0.5 rounded-full">{{ t('nav.sections.comingSoon') }}</span>
               </div>
-              <p class="text-surface-500 text-sm mt-0.5 leading-snug">{{ t('hub.communityDesc') }}</p>
+              <p class="text-surface-500 text-sm mt-0.5 leading-snug">{{ t('hub.cvDesc') }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Events (coming soon) -->
+        <!-- Forum (coming soon) -->
         <div class="w-full bg-surface-200/70 border border-surface-300/50 rounded-2xl p-5 opacity-60 select-none">
           <div class="flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl bg-surface-300 flex items-center justify-center shrink-0">
-              <CalendarDaysIcon class="w-6 h-6 text-surface-500" />
+              <ChatBubbleLeftRightIcon class="w-6 h-6 text-surface-500" />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="text-surface-600 font-semibold text-base">{{ t('nav.sections.section3') }}</h2>
+                <h2 class="text-surface-600 font-semibold text-base">{{ t('nav.sections.forum') }}</h2>
                 <span class="text-xs bg-surface-300 text-surface-500 px-2 py-0.5 rounded-full">{{ t('nav.sections.comingSoon') }}</span>
               </div>
-              <p class="text-surface-500 text-sm mt-0.5 leading-snug">{{ t('hub.eventsDesc') }}</p>
+              <p class="text-surface-500 text-sm mt-0.5 leading-snug">{{ t('hub.forumDesc') }}</p>
             </div>
           </div>
         </div>

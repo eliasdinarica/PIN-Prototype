@@ -82,8 +82,8 @@
     "sections": {
       "resources": "Ressourcen",
       "pathways": "Wege",
-      "section2": "Gemeinschaft",
-      "section3": "Veranstaltungen",
+      "cv": "CV-Generator",
+      "forum": "Forum",
       "comingSoon": "Demnächst"
     }
   },
@@ -156,8 +156,8 @@
     "title": "Was brauchen Sie?",
     "resourcesDesc": "Praktische Infos für das Leben in der Schweiz.",
     "pathwaysDesc": "Schritt-für-Schritt-Anleitungen für wichtige Verfahren.",
-    "communityDesc": "Austauschen mit anderen in Ihrer Region.",
-    "eventsDesc": "Workshops, Termine und lokale Veranstaltungen."
+    "cvDesc": "Erstellen Sie Ihren Schweizer Lebenslauf Schritt für Schritt.",
+    "forumDesc": "Stellen Sie Fragen und tauschen Sie sich mit anderen aus."
   },
   "pathways": {
     "eyebrow": "Wege",

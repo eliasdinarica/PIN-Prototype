@@ -82,8 +82,8 @@
     "sections": {
       "resources": "Recursos",
       "pathways": "Itinerarios",
-      "section2": "Comunidad",
-      "section3": "Eventos",
+      "cv": "Generador de CV",
+      "forum": "Foro",
       "comingSoon": "Próximamente"
     }
   },
@@ -156,8 +156,8 @@
     "title": "¿Qué necesita?",
     "resourcesDesc": "Información práctica para vivir en Suiza.",
     "pathwaysDesc": "Guías paso a paso para trámites importantes en Suiza.",
-    "communityDesc": "Conecte con otras personas en su zona.",
-    "eventsDesc": "Talleres, citas y eventos locales."
+    "cvDesc": "Cree su CV suizo paso a paso.",
+    "forumDesc": "Haga preguntas y comparta con los demás."
   },
   "pathways": {
     "eyebrow": "Itinerarios",
