@@ -6,8 +6,12 @@ Usage:
     python manage.py seed --reset    # efface tout puis recrée
 """
 
+import re
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep
+from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep, Contributor
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Wagtail StreamField)
@@ -49,6 +53,49 @@ def body(*sections):
             result.append(s)
             i += 1
     return result
+
+
+# Fixed-section fields (same template for every resource)
+SECTION_FIELDS = ('description', 'why_interesting', 'how_to', 'location')
+
+# Keyword hints to map an old freeform section (by its <h2> title) into one
+# of the three fixed sections.
+_WHY_KW = ('à quoi ça sert', 'a quoi ca sert', 'pourquoi', "c'est quoi", "qu'est-ce",
+           'avantages', 'intérêt', 'utile')
+_LOC_KW = ('adresse', 'contact', 'coordonnées', 'coordonnees', 'horaires',
+           'téléphone', 'telephone', 'permanence', 'guichet',
+           'où s', 'où se', 'où aller', 'où trouver', 'où aller', 'où m')
+
+
+def _block_title(html):
+    m = re.search(r'<h2>(.*?)</h2>', html or '')
+    return (m.group(1) if m else '').lower()
+
+
+def body_to_sections(blocks_list):
+    """Map an old StreamField-style body (list of blocks) into the three fixed
+    rich-text sections, using each block's <h2> title as a hint."""
+    buckets = {'why': [], 'how': [], 'location': []}
+    for b in blocks_list or []:
+        btype = b.get('type')
+        if btype == 'richtext':
+            html = b.get('value', '')
+            title = _block_title(html)
+            if any(k in title for k in _WHY_KW):
+                buckets['why'].append(html)
+            elif any(k in title for k in _LOC_KW):
+                buckets['location'].append(html)
+            else:
+                buckets['how'].append(html)
+        elif btype == 'columns':
+            v = b.get('value', {})
+            buckets['location'].append((v.get('left', '') or '') + (v.get('right', '') or ''))
+        elif btype == 'callout':
+            buckets['how'].append(b.get('value', {}).get('text', ''))
+    # Demote h2 → h3 so old titles nest nicely under the accordion header.
+    def join(parts):
+        return ''.join(parts).replace('<h2>', '<h3>').replace('</h2>', '</h3>')
+    return {k: join(v) for k, v in buckets.items()}
 
 
 # ---------------------------------------------------------------------------
@@ -209,6 +256,48 @@ CATEGORIES = [
                 'description': "Le ONE m'aide à chercher un emploi. Si j'ai cotisé en Suisse, je peux aussi recevoir de l'argent chaque mois pendant ma recherche.",
                 'tags': ['Recherche emploi', 'Travail', 'Chomage', 'Formulaire', 'En personne', 'En ligne'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
+                'why_interesting': (
+                    para("L'ORP (Office Régional de Placement) s'appelle ONE à Neuchâtel. C'est le service public qui aide les personnes sans emploi à trouver un travail.")
+                    + para("Si vous avez travaillé en Suisse et cotisé à l'assurance chômage, vous pouvez aussi recevoir des indemnités — de l'argent chaque mois pendant votre recherche.")
+                ),
+                'how_to': (
+                    h3("Qui peut s'inscrire")
+                    + ul(
+                        "Vous avez travaillé en Suisse et cotisé à l'assurance chômage",
+                        "Vous avez un permis de séjour valide (B, C, ou parfois L)",
+                        "Vous êtes disponible pour travailler tout de suite",
+                    )
+                    + h3("Les étapes")
+                    + ol(
+                        "Inscrivez-vous dès le premier jour sans emploi — n'attendez pas",
+                        "En ligne sur <a href='https://www.arbeit.swiss'>arbeit.swiss</a> (24h/24)",
+                        "L'ONE vous contacte dans les 24–48 heures pour un rendez-vous",
+                        "Inscrivez-vous aussi à une caisse de chômage",
+                        "Envoyez 8 à 12 candidatures par mois et gardez une preuve de chaque envoi",
+                    )
+                    + h3("Documents à apporter")
+                    + ul(
+                        "Carte d'identité ou passeport + permis de séjour",
+                        "Numéro AVS (votre numéro d'assurance sociale suisse)",
+                        "Attestation du dernier employeur et certificats de travail",
+                        "CV à jour",
+                    )
+                ),
+                'location': (
+                    h3("ONE Neuchâtel (ville)")
+                    + ul(
+                        "<b>Adresse :</b> Avenue Edouard-Dubois 20, 2000 Neuchâtel",
+                        "<b>Téléphone :</b> 032 889 68 18",
+                        "<b>Email :</b> one@ne.ch",
+                        "<b>Sur rendez-vous</b> (pris après inscription en ligne)",
+                    )
+                    + h3("ONE La Chaux-de-Fonds")
+                    + ul(
+                        "<b>Adresse :</b> Espacité 1, 2302 La Chaux-de-Fonds",
+                        "<b>Téléphone :</b> 032 889 69 00",
+                        "<b>Email :</b> one@ne.ch",
+                    )
+                ),
                 'body': body(
                     sec("À quoi ça sert",
                         para("L'ORP (Office Régional de Placement) s'appelle ONE à Neuchâtel. C'est le service public qui aide les personnes sans emploi à trouver un travail."),
@@ -262,6 +351,21 @@ CATEGORIES = [
                 'description': "Le CV suisse a des règles différentes. Je dois savoir quoi mettre et comment le présenter pour avoir des chances.",
                 'tags': ['CV candidature', 'Recherche emploi', 'Travail', 'Formation'],
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
+                'why_interesting': para("Le CV suisse a ses propres règles. Bien le présenter augmente vos chances d'être contacté par un employeur."),
+                'how_to': (
+                    h3("Le CV suisse — ce qui est différent")
+                    + ul(
+                        "Maximum 2 pages (1 page si moins de 10 ans d'expérience)",
+                        "Photo professionnelle recommandée (fond neutre)",
+                        "Pas d'état civil ni de religion",
+                        "Ordre antichronologique : le plus récent en premier",
+                        "Langues : indiquez votre niveau (A1 à C2)",
+                    )
+                ),
+                'location': ul(
+                    "<b>CV gratuit en ligne :</b> <a href='https://www.arbeit.swiss'>arbeit.swiss</a>",
+                    "<b>Aide à la rédaction :</b> votre conseiller ONE",
+                ),
                 'body': body(
                     sec("Le CV suisse — ce qui est différent",
                         ul(
@@ -1314,6 +1418,37 @@ CATEGORIES = [
                 'description': "Des cours de français gratuits ou peu chers existent pour les adultes migrants dans le canton de Neuchâtel.",
                 'tags': ['Cours de langue', 'Langue', 'Gratuit', 'Integration', 'En personne', 'Formation'],
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Jeune adulte'],
+                'why_interesting': para("Parler français facilite tout : trouver du travail, comprendre les courriers officiels, parler avec l'école de vos enfants. Des cours gratuits ou très peu chers existent partout dans le canton."),
+                'how_to': (
+                    h3("Trouver un cours près de chez vous")
+                    + ol(
+                        "Choisissez votre niveau (débutant A1 jusqu'à avancé) — en cas de doute, faites un bilan gratuit au COSM",
+                        "Contactez un organisme ci-dessous (COSM, Caritas, RECIF, Croix-Rouge)",
+                        "Demandez s'il reste de la place et la date de début du prochain cours",
+                        "Inscrivez-vous — beaucoup de cours sont gratuits ou coûtent quelques francs",
+                    )
+                    + h3("Bon à savoir")
+                    + ul(
+                        "Certains cours sont réservés aux femmes (RECIF)",
+                        "La garde d'enfants est parfois proposée pendant les cours",
+                        "Un cours de français peut compter pour le permis C ou la naturalisation",
+                    )
+                ),
+                'location': (
+                    h3("COSM — Cours officiels d'intégration")
+                    + ul(
+                        "<b>Adresse :</b> Place de la Gare 6, 2300 La Chaux-de-Fonds (+ permanences à Neuchâtel et Fleurier)",
+                        "<b>Téléphone :</b> 032 889 74 42",
+                        "<b>Email :</b> cosm@ne.ch",
+                        "<b>Site :</b> <a href='https://www.ne.ch/cosm'>ne.ch/cosm</a>",
+                    )
+                    + h3("Autres organismes")
+                    + ul(
+                        "<b>Caritas NE :</b> ateliers gratuits (bénévoles) — caritas.ateliers@ne.ch — 032 886 80 70",
+                        "<b>RECIF (femmes uniquement) :</b> cours A1 à B1 — <a href='https://recifne.ch'>recifne.ch</a>",
+                        "<b>Croix-Rouge NE :</b> cours de conversation — <a href='https://www.croix-rouge-ne.ch'>croix-rouge-ne.ch</a>",
+                    )
+                ),
                 'body': body(
                     sec("Pourquoi apprendre le français",
                         para("Parler français facilite tout : trouver du travail, comprendre les courriers officiels, parler avec l'école de vos enfants. Des cours gratuits ou très peu chers existent partout dans le canton."),
@@ -3456,6 +3591,47 @@ class Command(BaseCommand):
             Tag.objects.all().delete()
             self.stdout.write('  Données existantes supprimées.')
 
+        # -- Contributors + accès invités --
+        self.stdout.write('\nContributors et accès invités...')
+        cosm, _ = Contributor.objects.get_or_create(name='COSM', defaults={'is_default': True})
+        if not cosm.is_default:
+            cosm.is_default = True
+            cosm.save()
+        guest_orgs = {}
+        for org_name in ['Caritas Neuchâtel', 'RECIF', 'Croix-Rouge Neuchâtel']:
+            org, _ = Contributor.objects.get_or_create(name=org_name)
+            guest_orgs[org_name] = org
+        self.stdout.write(f'  + COSM (défaut) + {len(guest_orgs)} organisations invitées')
+
+        # Groupe "Guests" : peut écrire/éditer des ressources via le CMS, sans approuver.
+        guests_group, _ = Group.objects.get_or_create(name='Guests')
+        wanted_perms = [
+            ('wagtailadmin', 'access_admin'),
+            ('pin_prototype', 'add_resource'),
+            ('pin_prototype', 'change_resource'),
+            ('pin_prototype', 'view_resource'),
+            ('pin_prototype', 'view_contributor'),
+        ]
+        perms = []
+        for app_label, codename in wanted_perms:
+            p = Permission.objects.filter(content_type__app_label=app_label, codename=codename).first()
+            if p:
+                perms.append(p)
+        guests_group.permissions.set(perms)
+
+        # Utilisateur invité de démo (Caritas) — login: caritas / caritas123
+        User = get_user_model()
+        guest_user, created = User.objects.get_or_create(
+            username='caritas',
+            defaults={'email': 'caritas@example.org', 'is_staff': False, 'is_active': True},
+        )
+        if created:
+            guest_user.set_password('caritas123')
+            guest_user.save()
+        guest_user.groups.add(guests_group)
+        guest_orgs['Caritas Neuchâtel'].editors.add(guest_user)
+        self.stdout.write('  + Groupe "Guests" + invité de démo (caritas / caritas123)')
+
         # -- Tags --
         self.stdout.write('\nCréation des tags...')
         tag_map = {}
@@ -3513,15 +3689,26 @@ class Command(BaseCommand):
             for res_data in resources_data:
                 tag_labels = res_data.pop('tags')
                 res_audience_names = res_data.pop('audiences')
-                body_data = res_data.pop('body', None)
+                old_body = res_data.pop('body', None)
+
+                section_values = {k: res_data.get(k, '') for k in SECTION_FIELDS}
+                # If no hand-written sections, derive them from the old body.
+                if old_body and not any(section_values[k] for k in ('why_interesting', 'how_to', 'location')):
+                    derived = body_to_sections(old_body)
+                    section_values['why_interesting'] = derived['why']
+                    section_values['how_to'] = derived['how']
+                    section_values['location'] = derived['location']
 
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'], category=cat,
-                    defaults={k: v for k, v in res_data.items() if k != 'name'},
+                    defaults={**section_values, 'author': cosm, 'status': Resource.STATUS_APPROVED},
                 )
                 if not res_created:
-                    res.description = res_data.get('description', res.description)
-                    res.save(update_fields=['description'])
+                    for f, v in section_values.items():
+                        setattr(res, f, v)
+                    res.author = cosm
+                    res.status = Resource.STATUS_APPROVED
+                    res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
 
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
                 res.audiences.set([audience_map[n] for n in res_audience_names if n in audience_map])
@@ -3530,14 +3717,32 @@ class Command(BaseCommand):
                 res.subcategory = subcat_map.get(subcat_name)
                 res.save(update_fields=['subcategory'])
 
-                if body_data:
-                    res.body = body_data
-                    res.save(update_fields=['body'])
-                elif not res.body:
-                    res.body = [{'type': 'richtext', 'value': f'<p>{res.description}</p>'}]
-                    res.save(update_fields=['body'])
-
                 self.stdout.write(f'      {"+" if res_created else "~"} {res.name}')
+
+        # -- Démo : une ressource soumise par un invité, en attente de validation --
+        edu_cat = Category.objects.filter(name='Education').first()
+        demo, demo_created = Resource.objects.get_or_create(
+            name="Atelier conversation français (Caritas)",
+            defaults={
+                'category': edu_cat,
+                'description': "Un atelier hebdomadaire pour pratiquer le français à l'oral, animé par des bénévoles de Caritas.",
+                'how_to': h3('Comment participer') + ul(
+                    'Venez sans inscription le mardi après-midi',
+                    'Gratuit et ouvert à tous les niveaux',
+                ),
+                'location': h3('Caritas Neuchâtel') + ul(
+                    '<b>Adresse :</b> Rue du Vieux-Châtel 4, 2000 Neuchâtel',
+                    '<b>Téléphone :</b> 032 886 80 70',
+                ),
+                'author': guest_orgs['Caritas Neuchâtel'],
+                'status': Resource.STATUS_PENDING,
+            },
+        )
+        if not demo_created:
+            demo.author = guest_orgs['Caritas Neuchâtel']
+            demo.status = Resource.STATUS_PENDING
+            demo.save(update_fields=['author', 'status'])
+        self.stdout.write(f'  {"+" if demo_created else "~"} Démo en attente: {demo.name}')
 
         # -- Parcours --
         self.stdout.write('\nCréation des parcours...')
@@ -3561,15 +3766,24 @@ class Command(BaseCommand):
             for step_data in steps_data:
                 res_data = step_data['resource']
                 tag_labels = res_data.get('tags', [])
+                section_values = {k: res_data.get(k, '') for k in SECTION_FIELDS}
+                old_body = res_data.get('body')
+                if old_body and not any(section_values[k] for k in ('why_interesting', 'how_to', 'location')):
+                    derived = body_to_sections(old_body)
+                    section_values['why_interesting'] = derived['why']
+                    section_values['how_to'] = derived['how']
+                    section_values['location'] = derived['location']
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'],
                     category=None,
-                    defaults={'description': res_data.get('description', '')},
+                    defaults={**section_values, 'author': cosm, 'status': Resource.STATUS_APPROVED},
                 )
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
-                if res_data.get('body'):
-                    res.body = res_data['body']
-                    res.save(update_fields=['body', 'description'])
+                for f, v in section_values.items():
+                    setattr(res, f, v)
+                res.author = cosm
+                res.status = Resource.STATUS_APPROVED
+                res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
                 self.stdout.write(f'      {"+" if res_created else "~"} Resource: {res.name}')
 
                 ps, _ = PathwayStep.objects.get_or_create(

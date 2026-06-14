@@ -154,6 +154,9 @@
     "aiSearch": "AI Search",
     "aiPlaceholder": "What do you need help with?",
     "aiSubmit": "Search",
+    "saved": "Saved",
+    "savedDesc": "The resources you saved.",
+    "savedEmpty": "You haven't saved any resource yet.",
     "aiSuggestions": [
       "I want to learn French",
       "What are my rights with a permit N?",
@@ -175,6 +178,25 @@
     "byLanguage": "Recommended · {code} community",
     "byStatus": "Recommended · permit {code}",
     "bySimilarity": "Similar to resources you liked"
+  },
+  "resource": {
+    "writtenBy": "Written by {name}"
+  },
+  "actions": {
+    "save": "Save",
+    "saved": "Saved",
+    "share": "Share",
+    "copied": "Link copied!"
+  },
+  "feedback": {
+    "useful": "Is this resource useful?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "article": {
+    "why": "Why is it interesting?",
+    "how": "How to do it?",
+    "location": "Location"
   },
   "hub": {
     "title": "What do you need?",

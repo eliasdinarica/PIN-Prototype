@@ -1,3 +1,6 @@
+import re
+
+from django.conf import settings
 from rest_framework import serializers
 from wagtail.rich_text import expand_db_html
 from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment, Pathway, PathwayStep
@@ -47,28 +50,26 @@ class SubcategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'order']
 
 
-def _render_body(obj):
+def _absolutize_urls(html):
+    """Rewrite root-relative media/document URLs (Wagtail images & document
+    links) to absolute backend URLs so they work from the separate frontend."""
+    base = (getattr(settings, 'WAGTAILADMIN_BASE_URL', '') or '').rstrip('/')
+    if not base:
+        return html
+    return re.sub(r'(src|href)="(/(?:media|documents)/)', rf'\1="{base}\2', html)
+
+
+def render_sections(obj):
+    """Build the fixed-section list for a resource. Each section is a
+    collapsible card on the frontend; empty sections are omitted."""
     result = []
-    for block in obj.body:
-        btype = block.block_type
-        if btype == 'richtext':
-            result.append({'type': 'richtext', 'value': expand_db_html(str(block.value.source))})
-        elif btype == 'image':
-            img = block.value
-            result.append({'type': 'image', 'value': {'url': img.file.url, 'alt': img.title, 'width': img.width, 'height': img.height}})
-        elif btype == 'embed':
-            result.append({'type': 'embed', 'value': {'url': str(block.value), 'html': block.value.html if hasattr(block.value, 'html') else ''}})
-        elif btype == 'columns':
-            result.append({'type': 'columns', 'value': {
-                'left': expand_db_html(str(block.value['left'].source)),
-                'right': expand_db_html(str(block.value['right'].source)),
-            }})
-        elif btype == 'callout':
-            result.append({'type': 'callout', 'value': {
-                'text': expand_db_html(str(block.value['text'].source)),
-            }})
-        else:
-            result.append({'type': btype, 'value': str(block.value)})
+    for key, value in (
+        ('why', obj.why_interesting),
+        ('how', obj.how_to),
+        ('location', obj.location),
+    ):
+        if value and str(value).strip():
+            result.append({'key': key, 'html': _absolutize_urls(expand_db_html(str(value)))})
     return result
 
 
@@ -76,7 +77,8 @@ class ResourceSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
     subcategory = SubcategorySerializer(read_only=True)
-    body = serializers.SerializerMethodField()
+    sections = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
     tag_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
     )
@@ -84,17 +86,20 @@ class ResourceSerializer(serializers.ModelSerializer):
         many=True, source='audiences', read_only=True
     )
 
-    def get_body(self, obj):
+    def get_sections(self, obj):
         try:
-            return _render_body(obj)
+            return render_sections(obj)
         except Exception:
             return []
+
+    def get_author(self, obj):
+        return obj.author.name if obj.author_id else 'COSM'
 
     class Meta:
         model = Resource
         fields = [
             'id', 'category', 'subcategory', 'audiences', 'audience_ids', 'tags', 'tag_ids',
-            'name', 'description', 'body', 'attachments', 'created_at',
+            'name', 'description', 'sections', 'author', 'attachments', 'created_at',
         ]
         read_only_fields = ['id', 'created_at', 'audiences', 'audience_ids', 'subcategory']
 

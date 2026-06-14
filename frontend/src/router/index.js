@@ -7,6 +7,7 @@ import AdminResourceListView from '@/views/AdminResourceListView.vue'
 import AdminResourceFormView from '@/views/AdminResourceFormView.vue'
 import PathwaysView from '@/views/PathwaysView.vue'
 import PathwayDetailView from '@/views/PathwayDetailView.vue'
+import ResourceShareView from '@/views/ResourceShareView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +16,7 @@ const router = createRouter({
     { path: '/hub', component: HubView },
     { path: '/profile', component: ProfileSetupView },
     { path: '/categories/:id?', component: CategoryDetailView },
+    { path: '/r/:id', component: ResourceShareView },
     { path: '/pathways', component: PathwaysView },
     { path: '/pathways/:id', component: PathwayDetailView },
     { path: '/admin/resources', component: AdminResourceListView },

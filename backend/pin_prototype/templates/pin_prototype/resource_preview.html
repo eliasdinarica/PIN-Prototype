@@ -31,6 +31,7 @@
   .phone-body { flex: 1; overflow-y: auto; padding: 1.25rem; }
 
   /* richtext */
+  .rt h1 { font-size: 1.3rem; font-weight: 700; margin: 1.25rem 0 0.5rem; color: #0f172a; }
   .rt h2 { font-size: 1.1rem; font-weight: 700; margin: 1.25rem 0 0.5rem; color: #0f172a; }
   .rt h3 { font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.4rem; color: #0f172a; }
   .rt p  { font-size: 0.9rem; line-height: 1.65; margin-bottom: 0.75rem; color: #374151; }
@@ -43,22 +44,14 @@
   .rt mark { background: #fef08a; }
   .rt img { max-width: 100%; border-radius: 0.5rem; margin: 0.5rem 0; }
 
-  /* columns */
-  .cols { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
-  .col  { flex: 1; min-width: 0; background: #f8fafc; border-radius: 0.75rem; padding: 0.75rem; }
+  /* embed (inline in richtext) */
+  .rt .responsive-object { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0.75rem; margin-bottom: 1rem; }
+  .rt .responsive-object iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-  /* callout */
-  .callout {
-    background: #eff6ff; border-left: 4px solid #3b82f6;
-    border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 1rem;
-  }
-
-  /* embed */
-  .embed-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0.75rem; margin-bottom: 1rem; }
-  .embed-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-  /* standalone image */
-  .block-image img { width: 100%; border-radius: 0.75rem; margin-bottom: 1rem; }
+  /* section cards */
+  .section { background: #fff; border: 1px solid #f1f5f9; border-radius: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 1rem 1.1rem; margin-bottom: 0.75rem; }
+  .section-title { font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.6rem; line-height: 1.2; }
+  .section .rt :first-child { margin-top: 0; }
 </style>
 </head>
 <body>
@@ -68,29 +61,24 @@
     {% if resource.description %}<p>{{ resource.description }}</p>{% endif %}
   </div>
   <div class="phone-body">
-    {% for block in resource.body %}
-      {% if block.block_type == 'richtext' %}
-        <div class="rt">{{ block.value }}</div>
-
-      {% elif block.block_type == 'image' %}
-        <div class="block-image">
-          {% image block.value width-740 %}
-        </div>
-
-      {% elif block.block_type == 'embed' %}
-        <div class="embed-wrap">{{ block.value }}</div>
-
-      {% elif block.block_type == 'columns' %}
-        <div class="cols">
-          <div class="col rt">{{ block.value.left }}</div>
-          <div class="col rt">{{ block.value.right }}</div>
-        </div>
-
-      {% elif block.block_type == 'callout' %}
-        <div class="callout rt">{{ block.value.text }}</div>
-
-      {% endif %}
-    {% endfor %}
+    {% if resource.why_interesting %}
+      <div class="section">
+        <div class="section-title">Why is it interesting?</div>
+        <div class="rt">{{ resource.why_interesting|richtext }}</div>
+      </div>
+    {% endif %}
+    {% if resource.how_to %}
+      <div class="section">
+        <div class="section-title">How to do it?</div>
+        <div class="rt">{{ resource.how_to|richtext }}</div>
+      </div>
+    {% endif %}
+    {% if resource.location %}
+      <div class="section">
+        <div class="section-title">Location</div>
+        <div class="rt">{{ resource.location|richtext }}</div>
+      </div>
+    {% endif %}
   </div>
 </div>
 </body>

@@ -3,20 +3,23 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import * as HeroIcons from '@heroicons/vue/24/outline'
-import { InboxIcon, SparklesIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
+import { InboxIcon, SparklesIcon, MagnifyingGlassIcon, ArrowLeftIcon, BookmarkIcon } from '@heroicons/vue/24/outline'
 import ResourceList from '@/components/ResourceList.vue'
 import CategorySidebarItem from '@/components/CategorySidebarItem.vue'
 import CategoryMobilePill from '@/components/CategoryMobilePill.vue'
+import { useSaved } from '@/composables/useSaved'
 
 const route = useRoute()
 const router = useRouter()
 const { t, tm } = useI18n()
+const { savedIds } = useSaved()
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const category = ref(null)
 const categories = ref([])
 const topResources = ref([])
+const savedResourcesData = ref([])
 const feedbackMap = ref({}) // { [resource_id]: { id, is_useful } }
 const loading = ref(true)
 const activePillEl = ref(null)
@@ -24,6 +27,7 @@ const pillsScrollRef = ref(null)
 
 const isForYou = computed(() => route.params.id === 'for-you')
 const isAiSearch = computed(() => route.params.id === 'ai')
+const isSavedView = computed(() => route.params.id === 'saved')
 const initialResourceId = computed(() => route.query.resource ? parseInt(route.query.resource) : null)
 
 const aiEditableQuery = ref('')
@@ -70,6 +74,20 @@ const forYouSections = computed(() =>
   topResources.value.length ? [{ key: 'recommended', items: topResources.value }] : []
 )
 
+const savedSections = computed(() =>
+  savedResourcesData.value.length ? [{ key: 'all', items: savedResourcesData.value }] : []
+)
+
+async function loadSaved() {
+  const ids = savedIds.value
+  if (!ids.length) { savedResourcesData.value = []; return }
+  const results = await Promise.all(
+    ids.map(id => fetch(`${API}/api/resources/${id}/`).then(r => r.ok ? r.json() : null).catch(() => null))
+  )
+  // Keep saved order, drop any that no longer exist
+  savedResourcesData.value = results.filter(Boolean)
+}
+
 function getCategoryIcon(cat) {
   return HeroIcons[cat.icon] || HeroIcons.StarIcon
 }
@@ -115,7 +133,7 @@ function onAiKeydown(e) {
 }
 
 async function loadCategory(id) {
-  if (id === 'for-you' || id === 'ai') { loading.value = false; return }
+  if (id === 'for-you' || id === 'ai' || id === 'saved') { loading.value = false; return }
   loading.value = true
   category.value = null
   try {
@@ -199,6 +217,8 @@ onMounted(async () => {
 
   await loadCategory(id)
 
+  if (route.params.id === 'saved') await loadSaved()
+
   if (route.params.id === 'ai' && route.query.q) {
     aiEditableQuery.value = route.query.q
     runAiSearch(route.query.q)
@@ -214,10 +234,14 @@ function scrollPillToCenter(el) {
 
 watch(() => route.params.id, async (newId) => {
   if (newId === 'ai' || newId === 'for-you') { loading.value = false; category.value = null }
+  else if (newId === 'saved') { loading.value = false; category.value = null; loadSaved() }
   else if (newId) loadCategory(newId)
   await nextTick()
   scrollPillToCenter(activePillEl.value?.$el ?? activePillEl.value)
 })
+
+// Keep the saved list fresh when items are added/removed while viewing it.
+watch(savedIds, () => { if (isSavedView.value) loadSaved() }, { deep: true })
 
 watch(() => route.query.q, (newQ) => {
   if (isAiSearch.value && newQ) {
@@ -254,6 +278,13 @@ watch(() => route.query.q, (newQ) => {
           :active="isAiSearch"
           class="mb-1"
           @click="router.push('/categories/ai')"
+        />
+        <CategorySidebarItem
+          :label="t('categories.saved')"
+          :icon="BookmarkIcon"
+          :active="isSavedView"
+          class="mb-1"
+          @click="router.push('/categories/saved')"
         />
         <div class="mb-2 border-t border-surface-400" />
         <CategorySidebarItem
@@ -319,6 +350,13 @@ watch(() => route.query.q, (newQ) => {
             :icon="MagnifyingGlassIcon"
             :active="isAiSearch"
             @click="router.push('/categories/ai')"
+          />
+          <CategoryMobilePill
+            :ref="isSavedView ? el => { activePillEl = el } : undefined"
+            :label="t('categories.saved')"
+            :icon="BookmarkIcon"
+            :active="isSavedView"
+            @click="router.push('/categories/saved')"
           />
           <CategoryMobilePill
             v-for="cat in categories"
@@ -396,6 +434,22 @@ watch(() => route.query.q, (newQ) => {
           </div>
           <p class="text-gray-500 text-sm mb-8 leading-relaxed">{{ t('categories.forYouDesc') }}</p>
           <ResourceList :sections="forYouSections" show-category :feedback-map="feedbackMap" :initial-resource-id="initialResourceId" @feedback-change="handleFeedbackChange" />
+        </template>
+
+        <!-- Saved view -->
+        <template v-else-if="isSavedView">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 bg-surface-100 rounded-xl flex items-center justify-center shrink-0">
+              <BookmarkIcon class="w-5 h-5 text-surface-600" />
+            </div>
+            <h1 class="text-2xl font-bold text-surface-800">{{ t('categories.saved') }}</h1>
+          </div>
+          <p class="text-gray-500 text-sm mb-8 leading-relaxed">{{ t('categories.savedDesc') }}</p>
+          <div v-if="!savedSections.length" class="bg-surface-500 rounded-2xl p-12 text-center shadow-sm">
+            <BookmarkIcon class="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p class="text-gray-400 text-sm">{{ t('categories.savedEmpty') }}</p>
+          </div>
+          <ResourceList v-else :sections="savedSections" show-category :feedback-map="feedbackMap" :initial-resource-id="initialResourceId" @feedback-change="handleFeedbackChange" />
         </template>
 
         <template v-else>

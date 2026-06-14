@@ -154,6 +154,9 @@
     "aiSearch": "Recherche IA",
     "aiPlaceholder": "De quoi avez-vous besoin ?",
     "aiSubmit": "Chercher",
+    "saved": "Enregistrées",
+    "savedDesc": "Les ressources que vous avez enregistrées.",
+    "savedEmpty": "Vous n'avez encore rien enregistré.",
     "aiSuggestions": [
       "Je veux apprendre le français",
       "Quels sont mes droits avec un permis N ?",
@@ -176,6 +179,25 @@
     "byLanguage": "Recommandé · communauté {code}",
     "byStatus": "Recommandé · permis {code}",
     "bySimilarity": "Similaire à des ressources que vous avez aimées"
+  },
+  "resource": {
+    "writtenBy": "Écrit par {name}"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "share": "Partager",
+    "copied": "Lien copié !"
+  },
+  "feedback": {
+    "useful": "Cette ressource est-elle utile ?",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "article": {
+    "why": "Pourquoi c'est intéressant ?",
+    "how": "Comment faire ?",
+    "location": "Lieu"
   },
   "hub": {
     "title": "Que cherchez-vous ?",

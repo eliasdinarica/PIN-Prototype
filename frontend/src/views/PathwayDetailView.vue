@@ -89,8 +89,8 @@ onMounted(async () => {
                 {{ step.resource.description }}
               </p>
               <ArticleRenderer
-                v-if="step.resource.body?.length"
-                :body="step.resource.body"
+                v-if="step.resource.sections?.length"
+                :sections="step.resource.sections"
               />
             </div>
           </div>

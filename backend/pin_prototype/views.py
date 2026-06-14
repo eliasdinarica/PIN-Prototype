@@ -1,5 +1,5 @@
 from datetime import date as date_cls
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -11,7 +11,7 @@ from .serializers import (
     ProfileSerializer, CategorySerializer, ResourceSerializer,
     TagSerializer, ResourceFeedbackSerializer, AudienceSerializer,
     CategoryBriefSerializer, PathwayBriefSerializer, PathwaySerializer,
-    _render_body,
+    render_sections,
 )
 
 
@@ -139,10 +139,14 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
 
     def get_queryset(self):
+        approved = (
+            Resource.objects.filter(status=Resource.STATUS_APPROVED)
+            .select_related('subcategory', 'author')
+            .prefetch_related('tags', 'audiences', 'attachments')
+        )
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
-            'resources', 'resources__tags', 'resources__audiences',
-            'resources__attachments', 'resources__subcategory',
+            Prefetch('resources', queryset=approved),
         )
 
     def list(self, request, *args, **kwargs):
@@ -224,6 +228,8 @@ def top_resources(request):
         'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory',
     ).all():
         for resource in cat.resources.all():
+            if resource.status != Resource.STATUS_APPROVED:
+                continue
             resource_tag_ids = frozenset(t.id for t in resource.tags.all())
             r_audiences = list(resource.audiences.all())
             if not r_audiences:
@@ -253,9 +259,9 @@ class ResourceViewSet(ModelViewSet):
     serializer_class = ResourceSerializer
 
     def get_queryset(self):
-        qs = Resource.objects.prefetch_related(
+        qs = Resource.objects.filter(status=Resource.STATUS_APPROVED).prefetch_related(
             'tags', 'audiences', 'attachments',
-        ).select_related('category').order_by('name')
+        ).select_related('category', 'author').order_by('name')
         category_id = self.request.query_params.get('category')
         search = self.request.query_params.get('search')
         if category_id:
@@ -385,7 +391,7 @@ def chat_view(request):
     if not user_message:
         return Response({'error': 'Message required'}, status=400)
 
-    all_resources = Resource.objects.prefetch_related('tags').select_related('category').all()
+    all_resources = Resource.objects.filter(status=Resource.STATUS_APPROVED).prefetch_related('tags').select_related('category')
 
     catalog_lines = []
     for r in all_resources:
@@ -450,7 +456,7 @@ RULES:
         reply_text = parsed.get('message', raw)
         resource_ids = [int(i) for i in parsed.get('resource_ids', []) if str(i).isdigit()]
 
-        matched = Resource.objects.filter(id__in=resource_ids).select_related('category').prefetch_related('attachments')
+        matched = Resource.objects.filter(id__in=resource_ids, status=Resource.STATUS_APPROVED).select_related('category').prefetch_related('attachments')
         resource_data = []
         for r in matched:
             attachments = []
@@ -463,7 +469,7 @@ RULES:
                 'id': r.id,
                 'name': r.name,
                 'description': r.description,
-                'body': _render_body(r),
+                'sections': render_sections(r),
                 'attachments': attachments,
                 'category': {'id': r.category.id, 'name': r.category.name} if r.category else None,
             })

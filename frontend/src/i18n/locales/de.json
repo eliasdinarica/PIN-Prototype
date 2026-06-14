@@ -137,6 +137,9 @@
     "aiSearch": "KI-Suche",
     "aiPlaceholder": "Wobei brauchen Sie Hilfe?",
     "aiSubmit": "Suchen",
+    "saved": "Gespeichert",
+    "savedDesc": "Die von Ihnen gespeicherten Ressourcen.",
+    "savedEmpty": "Sie haben noch nichts gespeichert.",
     "aiSuggestions": [
       "Ich möchte Französisch lernen",
       "Welche Rechte habe ich mit Ausweis N?",
@@ -159,6 +162,25 @@
     "byLanguage": "Empfohlen · Gemeinschaft {code}",
     "byStatus": "Empfohlen · Ausweis {code}",
     "bySimilarity": "Ähnlich wie Ressourcen, die Sie gemocht haben"
+  },
+  "resource": {
+    "writtenBy": "Geschrieben von {name}"
+  },
+  "actions": {
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "share": "Teilen",
+    "copied": "Link kopiert!"
+  },
+  "feedback": {
+    "useful": "Ist diese Ressource nützlich?",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "article": {
+    "why": "Warum ist es interessant?",
+    "how": "Wie geht das?",
+    "location": "Ort"
   },
   "hub": {
     "title": "Was brauchen Sie?",

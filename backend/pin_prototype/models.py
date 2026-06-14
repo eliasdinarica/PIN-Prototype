@@ -1,8 +1,6 @@
+from django.conf import settings
 from django.db import models
-from wagtail.fields import StreamField
-from wagtail import blocks
-from wagtail.images.blocks import ImageChooserBlock
-from wagtail.embeds.blocks import EmbedBlock
+from wagtail.fields import RichTextField
 from wagtail.models import PreviewableMixin
 
 
@@ -129,12 +127,40 @@ class Tag(models.Model):
         return self.label
 
 
-_RICHTEXT_FEATURES = ['h2', 'h3', 'bold', 'italic', 'link', 'ol', 'ul', 'blockquote', 'hr', 'image', 'embed']
-_RICHTEXT_FEATURES_SIMPLE = ['h2', 'h3', 'bold', 'italic', 'link', 'ol', 'ul', 'blockquote']
+class Contributor(models.Model):
+    """An organisation that can author resources (COSM by default, or a guest
+    organisation such as Caritas). Guest users are linked here via `editors`."""
+    name = models.CharField(max_length=100, unique=True)
+    is_default = models.BooleanField(default=False, help_text='The default author (COSM). Keep only one.')
+    editors = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name='contributor_orgs',
+        help_text='Guest users who write on behalf of this organisation.',
+    )
+
+    class Meta:
+        ordering = ['-is_default', 'name']
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_default(cls):
+        return cls.objects.filter(is_default=True).first() or cls.objects.first()
+
+
+_RICHTEXT_FEATURES = ['h1', 'h2', 'h3', 'bold', 'italic', 'link', 'document-link', 'ol', 'ul', 'blockquote', 'hr', 'image', 'embed']
 
 
 class Resource(PreviewableMixin, models.Model):
     preview_modes = [('default', 'Mobile preview')]
+
+    STATUS_PENDING = 'pending'
+    STATUS_APPROVED = 'approved'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending review'),
+        (STATUS_APPROVED, 'Approved'),
+    ]
+
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='resources', null=True, blank=True)
     subcategory = models.ForeignKey(
         Subcategory, on_delete=models.SET_NULL,
@@ -143,23 +169,24 @@ class Resource(PreviewableMixin, models.Model):
     audiences = models.ManyToManyField(Audience, blank=True, related_name='resources')
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    body = StreamField([
-        ('richtext', blocks.RichTextBlock(
-            features=_RICHTEXT_FEATURES,
-            label='Rich text',
-        )),
-        ('image', ImageChooserBlock(label='Image')),
-        ('embed', EmbedBlock(label='Video / embed')),
-        ('columns', blocks.StructBlock([
-            ('left', blocks.RichTextBlock(features=_RICHTEXT_FEATURES_SIMPLE, label='Left column')),
-            ('right', blocks.RichTextBlock(features=_RICHTEXT_FEATURES_SIMPLE, label='Right column')),
-        ], label='Two columns')),
-        ('callout', blocks.StructBlock([
-            ('text', blocks.RichTextBlock(features=['bold', 'italic', 'link', 'ul'], label='Callout text')),
-        ], label='Callout box')),
-    ], use_json_field=True, blank=True)
+    # Sections fixes (même template pour chaque ressource) — inspiré de refugies.info
+    description = models.TextField(blank=True, help_text='Short intro shown at the top.')
+    why_interesting = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='Why is it interesting?')
+    how_to = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='How to do it?')
+    location = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='Location')
+    author = models.ForeignKey(
+        Contributor, on_delete=models.SET_NULL, null=True, blank=True, related_name='resources',
+        help_text='Organisation that wrote this resource. Defaults to COSM.',
+    )
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default=STATUS_APPROVED,
+        help_text='Guest-written resources start pending and must be approved by COSM before appearing in the app.',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def author_name(self):
+        return self.author.name if self.author else 'COSM'
 
     def get_preview_template(self, request, mode_name):
         return 'pin_prototype/resource_preview.html'
