@@ -92,14 +92,26 @@ class ResourceSerializer(serializers.ModelSerializer):
         except Exception:
             return []
 
+    places = serializers.SerializerMethodField()
+
     def get_author(self, obj):
         return obj.author.name if obj.author_id else 'COSM'
+
+    def get_places(self, obj):
+        return [
+            {
+                'name': p.name, 'city': p.city, 'address': p.address,
+                'phone': p.phone, 'email': p.email,
+                'lat': p.latitude, 'lng': p.longitude,
+            }
+            for p in obj.places.all()
+        ]
 
     class Meta:
         model = Resource
         fields = [
             'id', 'category', 'subcategory', 'audiences', 'audience_ids', 'tags', 'tag_ids',
-            'name', 'description', 'sections', 'author', 'attachments', 'created_at',
+            'name', 'description', 'sections', 'author', 'places', 'attachments', 'created_at',
         ]
         read_only_fields = ['id', 'created_at', 'audiences', 'audience_ids', 'subcategory']
 

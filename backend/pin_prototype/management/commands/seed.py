@@ -11,7 +11,7 @@ import re
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep, Contributor
+from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep, Contributor, ResourcePlace
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Wagtail StreamField)
@@ -61,41 +61,92 @@ SECTION_FIELDS = ('description', 'why_interesting', 'how_to', 'location')
 # Keyword hints to map an old freeform section (by its <h2> title) into one
 # of the three fixed sections.
 _WHY_KW = ('à quoi ça sert', 'a quoi ca sert', 'pourquoi', "c'est quoi", "qu'est-ce",
-           'avantages', 'intérêt', 'utile')
+           'ce que c\'est', 'ce que ça', 'avantages', 'intérêt', 'utile')
 _LOC_KW = ('adresse', 'contact', 'coordonnées', 'coordonnees', 'horaires',
            'téléphone', 'telephone', 'permanence', 'guichet',
-           'où s', 'où se', 'où aller', 'où trouver', 'où aller', 'où m')
+           'où s', 'où se', 'où aller', 'où trouver', 'où m')
+
+_CONTACT_RE = re.compile(r'<b>\s*(Adresse|Téléphone|Tél|Tel|Email|E-mail|Courriel)\b', re.IGNORECASE)
 
 
 def _block_title(html):
-    m = re.search(r'<h2>(.*?)</h2>', html or '')
+    m = re.search(r'<h[123]>(.*?)</h[123]>', html or '')
     return (m.group(1) if m else '').lower()
 
 
-def body_to_sections(blocks_list):
-    """Map an old StreamField-style body (list of blocks) into the three fixed
-    rich-text sections, using each block's <h2> title as a hint."""
+def _strip_tags(s):
+    return re.sub(r'<[^>]+>', '', s or '').strip()
+
+
+def _labeled(html, labels):
+    """Value of a '<b>Label :</b> value</li>' item, stripped of tags."""
+    for label in labels:
+        m = re.search(r'<b>\s*' + label + r'[^<]*</b>\s*(.*?)</li>', html, re.IGNORECASE | re.DOTALL)
+        if m:
+            return _strip_tags(m.group(1)).lstrip(': ').strip()
+    return ''
+
+
+def _city_from_address(address):
+    m = re.search(r'\b\d{4}\s+([A-Za-zÀ-ÿ][\wÀ-ÿ.\- ]+?)(?:,|$)', address)
+    return m.group(1).strip() if m else ''
+
+
+def split_body(blocks_list):
+    """Sort an old body into the three fixed sections. Contact cards go to the
+    'location' bucket; two-column blocks are sorted side by side (not dumped)."""
     buckets = {'why': [], 'how': [], 'location': []}
+
+    def place_html(html):
+        if not html:
+            return
+        if _CONTACT_RE.search(html):
+            buckets['location'].append(html)
+            return
+        title = _block_title(html)
+        if any(k in title for k in _WHY_KW):
+            buckets['why'].append(html)
+        elif any(k in title for k in _LOC_KW):
+            buckets['location'].append(html)
+        else:
+            buckets['how'].append(html)
+
     for b in blocks_list or []:
         btype = b.get('type')
         if btype == 'richtext':
-            html = b.get('value', '')
-            title = _block_title(html)
-            if any(k in title for k in _WHY_KW):
-                buckets['why'].append(html)
-            elif any(k in title for k in _LOC_KW):
-                buckets['location'].append(html)
-            else:
-                buckets['how'].append(html)
+            place_html(b.get('value', ''))
         elif btype == 'columns':
             v = b.get('value', {})
-            buckets['location'].append((v.get('left', '') or '') + (v.get('right', '') or ''))
+            place_html(v.get('left', ''))
+            place_html(v.get('right', ''))
         elif btype == 'callout':
             buckets['how'].append(b.get('value', {}).get('text', ''))
-    # Demote h2 → h3 so old titles nest nicely under the accordion header.
+
     def join(parts):
         return ''.join(parts).replace('<h2>', '<h3>').replace('</h2>', '</h3>')
     return {k: join(v) for k, v in buckets.items()}
+
+
+def extract_places_from_html(html):
+    """Turn contact cards (heading + Adresse/Téléphone/Email items) into
+    structured place dicts. Used to fill the 'Location' section."""
+    if not html:
+        return []
+    parts = re.split(r'<h[123]>(.*?)</h[123]>', html)
+    out = []
+    for i in range(1, len(parts), 2):
+        name = _strip_tags(parts[i])
+        content = parts[i + 1] if i + 1 < len(parts) else ''
+        address = _labeled(content, ['Adresse'])
+        phone = _labeled(content, ['Téléphone', 'Tél', 'Tel'])
+        email = _labeled(content, ['Email', 'E-mail', 'Courriel'])
+        if not (address or phone or email):
+            continue
+        out.append({
+            'name': name[:200], 'city': _city_from_address(address)[:120],
+            'address': address[:300], 'phone': phone[:50], 'email': email[:120],
+        })
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -3657,6 +3708,21 @@ class Command(BaseCommand):
             audience_map[aud.name] = aud
             self.stdout.write(f'  {"+" if created else "~"} Audience: {aud.name}')
 
+        # Lieu générique pour remplir les ressources sans contact propre.
+        GENERIC_PLACE = dict(
+            name='COSM Neuchâtel', city='Neuchâtel',
+            address='Rue des Beaux-Arts 13, 2000 Neuchâtel',
+            phone='032 889 66 87', email='cosm@ne.ch',
+            latitude=46.9931, longitude=6.9398,
+        )
+
+        def add_places(resource, extracted):
+            if resource.places.exists():
+                return
+            items = extracted or [GENERIC_PLACE]
+            for i, pl in enumerate(items):
+                ResourcePlace(resource=resource, sort_order=i, **pl).save(geocode=False)
+
         # -- Catégories + Sous-catégories + Ressources --
         self.stdout.write('\nCréation des catégories et ressources...')
         for cat_data in CATEGORIES:
@@ -3694,10 +3760,14 @@ class Command(BaseCommand):
                 section_values = {k: res_data.get(k, '') for k in SECTION_FIELDS}
                 # If no hand-written sections, derive them from the old body.
                 if old_body and not any(section_values[k] for k in ('why_interesting', 'how_to', 'location')):
-                    derived = body_to_sections(old_body)
+                    derived = split_body(old_body)
                     section_values['why_interesting'] = derived['why']
                     section_values['how_to'] = derived['how']
                     section_values['location'] = derived['location']
+                # Move contact cards out of the location text into structured places.
+                extracted = extract_places_from_html(section_values['location'])
+                if extracted:
+                    section_values['location'] = ''
 
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'], category=cat,
@@ -3716,6 +3786,8 @@ class Command(BaseCommand):
                 subcat_name = RESOURCE_SUBCATEGORY.get(res.name)
                 res.subcategory = subcat_map.get(subcat_name)
                 res.save(update_fields=['subcategory'])
+
+                add_places(res, extracted)
 
                 self.stdout.write(f'      {"+" if res_created else "~"} {res.name}')
 
@@ -3738,10 +3810,13 @@ class Command(BaseCommand):
                 'status': Resource.STATUS_PENDING,
             },
         )
-        if not demo_created:
-            demo.author = guest_orgs['Caritas Neuchâtel']
-            demo.status = Resource.STATUS_PENDING
-            demo.save(update_fields=['author', 'status'])
+        demo.author = guest_orgs['Caritas Neuchâtel']
+        demo.status = Resource.STATUS_PENDING
+        demo_places = extract_places_from_html(demo.location)
+        if demo_places:
+            demo.location = ''
+        demo.save(update_fields=['author', 'status', 'location'])
+        add_places(demo, demo_places)
         self.stdout.write(f'  {"+" if demo_created else "~"} Démo en attente: {demo.name}')
 
         # -- Parcours --
@@ -3769,10 +3844,13 @@ class Command(BaseCommand):
                 section_values = {k: res_data.get(k, '') for k in SECTION_FIELDS}
                 old_body = res_data.get('body')
                 if old_body and not any(section_values[k] for k in ('why_interesting', 'how_to', 'location')):
-                    derived = body_to_sections(old_body)
+                    derived = split_body(old_body)
                     section_values['why_interesting'] = derived['why']
                     section_values['how_to'] = derived['how']
                     section_values['location'] = derived['location']
+                extracted = extract_places_from_html(section_values['location'])
+                if extracted:
+                    section_values['location'] = ''
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'],
                     category=None,
@@ -3784,6 +3862,7 @@ class Command(BaseCommand):
                 res.author = cosm
                 res.status = Resource.STATUS_APPROVED
                 res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
+                add_places(res, extracted)
                 self.stdout.write(f'      {"+" if res_created else "~"} Resource: {res.name}')
 
                 ps, _ = PathwayStep.objects.get_or_create(

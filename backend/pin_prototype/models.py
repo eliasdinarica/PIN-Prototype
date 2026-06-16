@@ -1,7 +1,40 @@
+import json
+import urllib.parse
+import urllib.request
+
 from django.conf import settings
 from django.db import models
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
-from wagtail.models import PreviewableMixin
+from wagtail.models import Orderable, PreviewableMixin
+
+
+def geocode_ch(address):
+    """Geocode a Swiss address to (lat, lng) using the official swisstopo
+    search service. Returns None on failure (network, no result)."""
+    if not address:
+        return None
+    # Drop parenthetical notes (e.g. "(+ permanences …)") that confuse geocoding.
+    query = address.split(' (')[0].strip()
+    if not query:
+        return None
+    try:
+        url = 'https://api3.geo.admin.ch/rest/services/api/SearchServer?' + urllib.parse.urlencode({
+            'type': 'locations', 'origins': 'address', 'limit': '1', 'sr': '4326',
+            'searchText': query,
+        })
+        req = urllib.request.Request(url, headers={'User-Agent': 'pin-prototype'})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            results = json.loads(resp.read()).get('results') or []
+        if not results:
+            return None
+        attrs = results[0].get('attrs', {})
+        lat, lon = attrs.get('lat'), attrs.get('lon')
+        return (float(lat), float(lon)) if lat is not None and lon is not None else None
+    except Exception:
+        return None
 
 
 class Profile(models.Model):
@@ -151,7 +184,7 @@ class Contributor(models.Model):
 _RICHTEXT_FEATURES = ['h1', 'h2', 'h3', 'bold', 'italic', 'link', 'document-link', 'ol', 'ul', 'blockquote', 'hr', 'image', 'embed']
 
 
-class Resource(PreviewableMixin, models.Model):
+class Resource(PreviewableMixin, ClusterableModel):
     preview_modes = [('default', 'Mobile preview')]
 
     STATUS_PENDING = 'pending'
@@ -193,6 +226,44 @@ class Resource(PreviewableMixin, models.Model):
 
     def get_preview_context(self, request, mode_name):
         return {'resource': self}
+
+    def __str__(self):
+        return self.name
+
+
+class ResourcePlace(Orderable):
+    """A map location shown in a resource's 'Location' section. The editor only
+    enters a name and an address; coordinates are geocoded automatically."""
+    resource = ParentalKey(Resource, on_delete=models.CASCADE, related_name='places')
+    name = models.CharField(max_length=200, help_text='Name of the place, e.g. "COSM Neuchâtel".')
+    city = models.CharField(max_length=120, blank=True, help_text='City, shown under the name.')
+    address = models.CharField(max_length=300, blank=True, help_text='Full address. The map location is found automatically.')
+    phone = models.CharField(max_length=50, blank=True)
+    email = models.CharField(max_length=120, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    # The editor fills these; coordinates are geocoded from the address on save.
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('city'),
+        FieldPanel('address'),
+        FieldPanel('phone'),
+        FieldPanel('email'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_address = self.address
+
+    def save(self, *args, geocode=True, **kwargs):
+        # Geocode when coordinates are missing or the address changed.
+        if geocode and self.address and (self.latitude is None or self.longitude is None or self.address != self.__original_address):
+            coords = geocode_ch(self.address)
+            if coords:
+                self.latitude, self.longitude = coords
+        super().save(*args, **kwargs)
+        self.__original_address = self.address
 
     def __str__(self):
         return self.name

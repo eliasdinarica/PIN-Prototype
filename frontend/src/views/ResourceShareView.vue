@@ -1,10 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ShareIcon, BookmarkIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
+import ResourceLocation from '@/components/ResourceLocation.vue'
 import { useSaved } from '@/composables/useSaved'
 
 const route = useRoute()
@@ -19,6 +20,11 @@ const notFound = ref(false)
 const copied = ref(false)
 
 const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺' }
+
+const displaySections = computed(() => {
+  const s = resource.value?.sections || []
+  return resource.value?.places?.length ? s.filter(x => x.key !== 'location') : s
+})
 
 async function share() {
   const url = window.location.href
@@ -102,11 +108,14 @@ onMounted(async () => {
             </p>
           </div>
 
-          <!-- Section cards -->
+          <!-- Section cards (Why / How) -->
           <ArticleRenderer
-            v-if="resource.sections?.length"
-            :sections="resource.sections"
+            v-if="displaySections.length"
+            :sections="displaySections"
           />
+
+          <!-- Location: structured places + map -->
+          <ResourceLocation v-if="resource.places?.length" :places="resource.places" />
         </div>
       </template>
 

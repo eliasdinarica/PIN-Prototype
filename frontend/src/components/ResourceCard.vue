@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   SparklesIcon, UsersIcon, ShieldCheckIcon, ArrowDownTrayIcon, DocumentTextIcon,
@@ -7,6 +7,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
+import ResourceLocation from '@/components/ResourceLocation.vue'
 import { useSaved } from '@/composables/useSaved'
 
 const { t, locale } = useI18n()
@@ -20,6 +21,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['toggle', 'feedback-change'])
+
+// When structured places exist, the Location section is rendered separately.
+const displaySections = computed(() => {
+  const s = props.resource.sections || []
+  return props.resource.places?.length ? s.filter(x => x.key !== 'location') : s
+})
 
 const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺' }
 const copied = ref(false)
@@ -145,11 +152,14 @@ function filenameFromUrl(url) {
         </p>
       </div>
 
-      <!-- Section cards (Why / How / Location) -->
+      <!-- Section cards (Why / How) -->
       <ArticleRenderer
-        v-if="resource.sections?.length"
-        :sections="resource.sections"
+        v-if="displaySections.length"
+        :sections="displaySections"
       />
+
+      <!-- Location: structured places + map -->
+      <ResourceLocation v-if="resource.places?.length" :places="resource.places" />
 
       <!-- Attachments -->
       <div v-if="resource.attachments?.length" class="bg-white rounded-2xl px-6 py-5 shadow-sm">

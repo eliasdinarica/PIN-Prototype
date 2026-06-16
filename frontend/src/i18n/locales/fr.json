@@ -184,6 +184,7 @@
     "writtenBy": "Écrit par {name}"
   },
   "actions": {
+    "copy": "Copier",
     "save": "Enregistrer",
     "saved": "Enregistré",
     "share": "Partager",

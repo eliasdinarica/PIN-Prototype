@@ -183,6 +183,7 @@
     "writtenBy": "Written by {name}"
   },
   "actions": {
+    "copy": "Copy",
     "save": "Save",
     "saved": "Saved",
     "share": "Share",

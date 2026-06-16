@@ -142,7 +142,7 @@ class CategoryViewSet(ModelViewSet):
         approved = (
             Resource.objects.filter(status=Resource.STATUS_APPROVED)
             .select_related('subcategory', 'author')
-            .prefetch_related('tags', 'audiences', 'attachments')
+            .prefetch_related('tags', 'audiences', 'attachments', 'places')
         )
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
@@ -225,7 +225,7 @@ def top_resources(request):
     stat_likes = _cohort_likes_by_status(profile)
     results = []
     for cat in Category.objects.prefetch_related(
-        'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory',
+        'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory', 'resources__places',
     ).all():
         for resource in cat.resources.all():
             if resource.status != Resource.STATUS_APPROVED:
@@ -260,7 +260,7 @@ class ResourceViewSet(ModelViewSet):
 
     def get_queryset(self):
         qs = Resource.objects.filter(status=Resource.STATUS_APPROVED).prefetch_related(
-            'tags', 'audiences', 'attachments',
+            'tags', 'audiences', 'attachments', 'places',
         ).select_related('category', 'author').order_by('name')
         category_id = self.request.query_params.get('category')
         search = self.request.query_params.get('search')

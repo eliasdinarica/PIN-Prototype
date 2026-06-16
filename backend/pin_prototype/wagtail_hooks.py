@@ -3,7 +3,7 @@ from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
-from wagtail.admin.panels import FieldPanel, TabbedInterface, ObjectList
+from wagtail.admin.panels import FieldPanel, InlinePanel, TabbedInterface, ObjectList
 from .models import Resource, Pathway, Contributor
 
 
@@ -22,6 +22,7 @@ class ResourceSnippetViewSet(SnippetViewSet):
         FieldPanel('why_interesting'),
         FieldPanel('how_to'),
         FieldPanel('location'),
+        InlinePanel('places', label='Map locations', heading='Map locations'),
     ]
 
     meta_panels = [

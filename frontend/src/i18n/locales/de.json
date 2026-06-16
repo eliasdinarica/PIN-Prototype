@@ -167,6 +167,7 @@
     "writtenBy": "Geschrieben von {name}"
   },
   "actions": {
+    "copy": "Kopieren",
     "save": "Speichern",
     "saved": "Gespeichert",
     "share": "Teilen",

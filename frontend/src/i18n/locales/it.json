@@ -167,6 +167,7 @@
     "writtenBy": "Scritto da {name}"
   },
   "actions": {
+    "copy": "Copia",
     "save": "Salva",
     "saved": "Salvato",
     "share": "Condividi",
