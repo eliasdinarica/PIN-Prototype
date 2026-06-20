@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { BookOpenIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, ArrowRightIcon, MapIcon } from '@heroicons/vue/24/outline'
+import { BookOpenIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, ArrowRightIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -34,22 +34,6 @@ const { t } = useI18n()
           </div>
         </button>
 
-        <!-- Parcours (active) -->
-        <button
-          class="group w-full text-left bg-white border border-surface-200 shadow-sm rounded-2xl p-5 hover:border-brand-500/40 hover:shadow-md transition-all cursor-pointer"
-          @click="router.push('/pathways')"
-        >
-          <div class="flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-brand-500/10 flex items-center justify-center shrink-0">
-              <MapIcon class="w-6 h-6 text-brand-500" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <h2 class="text-surface-800 font-semibold text-base">{{ t('nav.sections.pathways') }}</h2>
-              <p class="text-surface-500 text-sm mt-0.5 leading-snug">{{ t('hub.pathwaysDesc') }}</p>
-            </div>
-            <ArrowRightIcon class="w-5 h-5 text-surface-400 group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-        </button>
 
         <!-- CV generator (coming soon) -->
         <div class="w-full bg-surface-200/70 border border-surface-300/50 rounded-2xl p-5 opacity-60 select-none">

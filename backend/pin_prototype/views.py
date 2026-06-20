@@ -142,7 +142,7 @@ class CategoryViewSet(ModelViewSet):
         approved = (
             Resource.objects.filter(status=Resource.STATUS_APPROVED)
             .select_related('subcategory', 'author')
-            .prefetch_related('tags', 'audiences', 'attachments', 'places')
+            .prefetch_related('tags', 'audiences', 'attachments', 'places', 'translations')
         )
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
@@ -200,6 +200,16 @@ class CategoryViewSet(ModelViewSet):
                 data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
         else:
             data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
+
+        # Pathways shown under this category (co-located with resources).
+        pathways = (
+            instance.pathways.filter(is_active=True).order_by('order')
+            .prefetch_related(
+                'steps__resource__tags', 'steps__resource__places',
+                'steps__resource__attachments', 'steps__resource__translations',
+            )
+        )
+        data['pathways'] = PathwaySerializer(pathways, many=True, context={'request': request}).data
 
         return Response(data)
 
@@ -260,7 +270,7 @@ class ResourceViewSet(ModelViewSet):
 
     def get_queryset(self):
         qs = Resource.objects.filter(status=Resource.STATUS_APPROVED).prefetch_related(
-            'tags', 'audiences', 'attachments', 'places',
+            'tags', 'audiences', 'attachments', 'places', 'translations',
         ).select_related('category', 'author').order_by('name')
         category_id = self.request.query_params.get('category')
         search = self.request.query_params.get('search')
@@ -406,19 +416,32 @@ def chat_view(request):
 
     catalog = '\n'.join(catalog_lines) if catalog_lines else '(no resources yet)'
 
+    pathway_lines = []
+    for pw in Pathway.objects.filter(is_active=True).select_related('category'):
+        cat_name = pw.category.name if pw.category else 'Parcours'
+        line = f"[PW={pw.id}][{cat_name}] {pw.title}"
+        if pw.description:
+            line += f" — {pw.description}"
+        pathway_lines.append(line)
+    pathways_catalog = '\n'.join(pathway_lines) if pathway_lines else '(no pathways yet)'
+
     system_prompt = f"""You are a helpful assistant for newcomers (migrants) living in Switzerland.
-Your job is to recommend relevant resources from the list below based on what the user needs.
+Your job is to recommend relevant resources and step-by-step pathways from the lists below.
 
 AVAILABLE RESOURCES (each starts with its ID):
 {catalog}
 
+AVAILABLE PATHWAYS (step-by-step guides, each starts with its PW id):
+{pathways_catalog}
+
 RULES:
 - Respond ONLY with valid JSON, no other text, no markdown code block.
-- Format: {{"message": "Your short explanation here.", "resource_ids": [id1, id2]}}
-- Recommend 1 to 3 resources max. Use the exact integer IDs from the list.
+- Format: {{"message": "Your short explanation here.", "resource_ids": [id1, id2], "pathway_ids": [pw1]}}
+- Recommend 1 to 3 items total (resources and/or pathways). Use the exact integer IDs.
+- Prefer a pathway when the user needs a full step-by-step process.
 - The message must be short, simple sentences (FALC style).
 - Reply in the same language the user writes in.
-- If no resource matches, return: {{"message": "I could not find a matching resource.", "resource_ids": []}}"""
+- If nothing matches, return: {{"message": "I could not find a matching resource.", "resource_ids": [], "pathway_ids": []}}"""
 
     messages = [
         {'role': 'system', 'content': system_prompt},
@@ -455,8 +478,9 @@ RULES:
 
         reply_text = parsed.get('message', raw)
         resource_ids = [int(i) for i in parsed.get('resource_ids', []) if str(i).isdigit()]
+        pathway_ids = [int(i) for i in parsed.get('pathway_ids', []) if str(i).isdigit()]
 
-        matched = Resource.objects.filter(id__in=resource_ids, status=Resource.STATUS_APPROVED).select_related('category').prefetch_related('attachments')
+        matched = Resource.objects.filter(id__in=resource_ids, status=Resource.STATUS_APPROVED).select_related('category').prefetch_related('attachments', 'places')
         resource_data = []
         for r in matched:
             attachments = []
@@ -474,7 +498,14 @@ RULES:
                 'category': {'id': r.category.id, 'name': r.category.name} if r.category else None,
             })
 
-        return Response({'reply': reply_text, 'resources': resource_data})
+        pathway_data = []
+        if pathway_ids:
+            pws = Pathway.objects.filter(id__in=pathway_ids, is_active=True).prefetch_related(
+                'steps__resource__tags', 'steps__resource__places', 'steps__resource__attachments',
+            )
+            pathway_data = PathwaySerializer(pws, many=True, context={'request': request}).data
+
+        return Response({'reply': reply_text, 'resources': resource_data, 'pathways': pathway_data})
     except urllib.error.HTTPError as e:
         body = e.read().decode()
         return Response({'error': f'AI API error ({e.code}): {body}'}, status=502)

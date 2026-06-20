@@ -10,7 +10,7 @@ import { useSaved } from '@/composables/useSaved'
 
 const route = useRoute()
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -21,10 +21,25 @@ const copied = ref(false)
 
 const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺' }
 
+const currentLang = ref('fr')
+const langOpen = ref(false)
+
 const displaySections = computed(() => {
   const s = resource.value?.sections || []
   return resource.value?.places?.length ? s.filter(x => x.key !== 'location') : s
 })
+
+async function selectLang(lang) {
+  langOpen.value = false
+  if (lang === currentLang.value) return
+  const url = lang === 'fr'
+    ? `${API}/api/resources/${route.params.id}/`
+    : `${API}/api/resources/${route.params.id}/?lang=${lang}`
+  try {
+    const res = await fetch(url)
+    if (res.ok) { resource.value = await res.json(); currentLang.value = lang }
+  } catch { /* keep current */ }
+}
 
 async function share() {
   const url = window.location.href
@@ -96,11 +111,30 @@ onMounted(async () => {
                   {{ copied ? t('actions.copied') : t('actions.share') }}
                 </button>
               </div>
-              <button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-surface-600 bg-transparent border-none cursor-default">
-                <span>{{ FLAGS[locale] }}</span>
-                <span>{{ locale.toUpperCase() }}</span>
-                <ChevronDownIcon class="w-3.5 h-3.5 text-surface-400" />
-              </button>
+              <div class="relative">
+                <button
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-surface-600 hover:text-brand-600 bg-transparent border-none cursor-pointer"
+                  @click="langOpen = !langOpen"
+                >
+                  <span>{{ FLAGS[currentLang] }}</span>
+                  <span>{{ currentLang.toUpperCase() }}</span>
+                  <ChevronDownIcon class="w-3.5 h-3.5 text-surface-400" />
+                </button>
+                <div
+                  v-if="langOpen"
+                  class="absolute right-0 mt-1 z-20 bg-white rounded-lg shadow-lg border border-surface-200 py-1 min-w-28"
+                >
+                  <button
+                    v-for="lang in (resource.languages || ['fr'])"
+                    :key="lang"
+                    class="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm cursor-pointer bg-transparent border-none hover:bg-surface-100"
+                    :class="lang === currentLang ? 'text-brand-600 font-semibold' : 'text-surface-600'"
+                    @click="selectLang(lang)"
+                  >
+                    <span>{{ FLAGS[lang] }}</span><span>{{ lang.toUpperCase() }}</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             <p v-if="resource.description" class="text-surface-700 text-[15px] leading-relaxed">

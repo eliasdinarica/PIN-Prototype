@@ -10,7 +10,7 @@ import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import ResourceLocation from '@/components/ResourceLocation.vue'
 import { useSaved } from '@/composables/useSaved'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
 
 const props = defineProps({
@@ -22,14 +22,31 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle', 'feedback-change'])
 
-// When structured places exist, the Location section is rendered separately.
-const displaySections = computed(() => {
-  const s = props.resource.sections || []
-  return props.resource.places?.length ? s.filter(x => x.key !== 'location') : s
-})
-
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺' }
 const copied = ref(false)
+
+// Per-resource language switch: base content vs. a fetched translation.
+const currentLang = ref('fr')
+const translated = ref(null)
+const langOpen = ref(false)
+const content = computed(() => translated.value || props.resource)
+
+async function selectLang(lang) {
+  langOpen.value = false
+  if (lang === currentLang.value) return
+  if (lang === 'fr') { translated.value = null; currentLang.value = 'fr'; return }
+  try {
+    const res = await fetch(`${API}/api/resources/${props.resource.id}/?lang=${lang}`)
+    if (res.ok) { translated.value = await res.json(); currentLang.value = lang }
+  } catch { /* keep current */ }
+}
+
+// When structured places exist, the Location section is rendered separately.
+const displaySections = computed(() => {
+  const s = content.value.sections || []
+  return content.value.places?.length ? s.filter(x => x.key !== 'location') : s
+})
 
 function onFeedback(isUseful) {
   if (props.feedback?.is_useful === isUseful) {
@@ -101,7 +118,7 @@ function filenameFromUrl(url) {
         >
           <div class="flex-1 min-w-0">
             <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
-            <h3 class="font-bold text-xl leading-snug text-surface-800">{{ resource.name }}</h3>
+            <h3 class="font-bold text-xl leading-snug text-surface-800">{{ content.name }}</h3>
             <p v-if="resource.author" class="text-xs text-surface-400 mt-0.5">{{ t('resource.writtenBy', { name: resource.author }) }}</p>
             <div class="flex flex-col gap-0.5 mt-1">
               <span v-if="resource.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
@@ -137,18 +154,36 @@ function filenameFromUrl(url) {
               {{ copied ? t('actions.copied') : t('actions.share') }}
             </button>
           </div>
-          <button
-            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-surface-600 bg-transparent border-none cursor-default"
-          >
-            <span>{{ FLAGS[locale] }}</span>
-            <span>{{ locale.toUpperCase() }}</span>
-            <ChevronDownIcon class="w-3.5 h-3.5 text-surface-400" />
-          </button>
+          <!-- Language switch -->
+          <div class="relative">
+            <button
+              class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-surface-600 hover:text-brand-600 bg-transparent border-none cursor-pointer"
+              @click.stop="langOpen = !langOpen"
+            >
+              <span>{{ FLAGS[currentLang] }}</span>
+              <span>{{ currentLang.toUpperCase() }}</span>
+              <ChevronDownIcon class="w-3.5 h-3.5 text-surface-400" />
+            </button>
+            <div
+              v-if="langOpen"
+              class="absolute right-0 mt-1 z-20 bg-white rounded-lg shadow-lg border border-surface-200 py-1 min-w-28"
+            >
+              <button
+                v-for="lang in (resource.languages || ['fr'])"
+                :key="lang"
+                class="flex items-center gap-2 w-full text-left px-3 py-1.5 text-sm cursor-pointer bg-transparent border-none hover:bg-surface-100"
+                :class="lang === currentLang ? 'text-brand-600 font-semibold' : 'text-surface-600'"
+                @click.stop="selectLang(lang)"
+              >
+                <span>{{ FLAGS[lang] }}</span><span>{{ lang.toUpperCase() }}</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Description -->
-        <p v-if="resource.description" class="text-surface-700 text-[15px] leading-relaxed">
-          {{ resource.description }}
+        <p v-if="content.description" class="text-surface-700 text-[15px] leading-relaxed">
+          {{ content.description }}
         </p>
       </div>
 
@@ -159,7 +194,7 @@ function filenameFromUrl(url) {
       />
 
       <!-- Location: structured places + map -->
-      <ResourceLocation v-if="resource.places?.length" :places="resource.places" />
+      <ResourceLocation v-if="content.places?.length" :places="content.places" />
 
       <!-- Attachments -->
       <div v-if="resource.attachments?.length" class="bg-white rounded-2xl px-6 py-5 shadow-sm">
@@ -184,7 +219,7 @@ function filenameFromUrl(url) {
       </div>
 
       <!-- Sticky feedback — review the open resource while reading -->
-      <div class="sticky bottom-3 z-10 pt-1">
+      <div class="sticky bottom-3 z-[1100] pt-1">
         <div class="bg-white rounded-2xl shadow-lg border border-surface-200 px-5 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p class="flex items-center gap-2 text-surface-800 font-semibold text-sm">
             {{ t('feedback.useful') }}

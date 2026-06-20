@@ -34,16 +34,22 @@ const aiEditableQuery = ref('')
 const aiQuery = ref('')
 const aiReply = ref('')
 const aiResources = ref([])
+const aiPathways = ref([])
 const aiLoading = ref(false)
 const aiError = ref('')
-const aiSections = computed(() =>
-  aiResources.value.length ? [{ key: 'all', items: aiResources.value }] : []
-)
+// Tag pathways so the list renders them as a pathway card (with its badge).
+const asPathwayItems = (pathways) => (pathways || []).map(p => ({ ...p, _kind: 'pathway' }))
+
+const aiSections = computed(() => {
+  const items = [...asPathwayItems(aiPathways.value), ...aiResources.value]
+  return items.length ? [{ key: 'all', items }] : []
+})
 
 
 const resourceSections = computed(() => {
   const resources = category.value?.resources || []
-  if (!resources.length) return []
+  const pathways = asPathwayItems(category.value?.pathways)
+  if (!resources.length && !pathways.length) return []
 
   // Group by subcategory (resources already sorted by score from backend)
   const grouped = new Map()
@@ -60,11 +66,17 @@ const resourceSections = computed(() => {
     grouped.get(key).items.push(r)
   }
 
-  const groups = [...grouped.values()].sort((a, b) => a.order - b.order)
+  let groups = [...grouped.values()].sort((a, b) => a.order - b.order)
 
-  // Single group with no label → flat list, no header
+  // Single resource group with no label → flat list, no header
   if (groups.length === 1 && groups[0].label === null) {
-    return [{ key: 'all', items: resources }]
+    groups = [{ key: 'all', items: resources }]
+  }
+
+  // Pathways are mixed in with the resources (top of the list), no separate header.
+  if (pathways.length) {
+    if (groups.length) groups[0] = { ...groups[0], items: [...pathways, ...groups[0].items] }
+    else groups = [{ key: 'all', items: pathways }]
   }
 
   return groups
@@ -105,6 +117,7 @@ async function runAiSearch(q) {
   aiLoading.value = true
   aiReply.value = ''
   aiResources.value = []
+  aiPathways.value = []
   aiError.value = ''
   aiQuery.value = q
   try {
@@ -115,7 +128,7 @@ async function runAiSearch(q) {
     })
     const data = await res.json()
     if (data.error) aiError.value = data.error
-    else { aiReply.value = data.reply; aiResources.value = data.resources || [] }
+    else { aiReply.value = data.reply; aiResources.value = data.resources || []; aiPathways.value = data.pathways || [] }
   } catch {
     aiError.value = 'Connection error. Please try again.'
   }

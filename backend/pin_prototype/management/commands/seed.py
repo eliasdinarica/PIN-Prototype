@@ -3051,6 +3051,7 @@ PATHWAYS = [
     # -----------------------------------------------------------------------
     {
         'title': "Certifier son niveau de français — le test fide",
+        'category': 'Education',
         'description': "Faites reconnaître officiellement votre niveau de français. Le test fide est accepté pour le renouvellement de permis et la naturalisation.",
         'icon': 'LanguageIcon',
         'order': 0,
@@ -3192,6 +3193,7 @@ PATHWAYS = [
     # -----------------------------------------------------------------------
     {
         'title': "S'inscrire au chômage à Neuchâtel — ONE",
+        'category': 'Work',
         'description': "Activez vos droits aux indemnités chômage dès que vous perdez votre emploi. Chaque jour de retard peut vous faire perdre des indemnités.",
         'icon': 'BriefcaseIcon',
         'order': 1,
@@ -3332,6 +3334,7 @@ PATHWAYS = [
     # -----------------------------------------------------------------------
     {
         'title': "Faire reconnaître son diplôme étranger en Suisse",
+        'category': 'Education',
         'description': "Votre diplôme obtenu à l'étranger peut être reconnu en Suisse. Une attestation officielle facilite votre recherche d'emploi et est obligatoire pour certaines professions.",
         'icon': 'AcademicCapIcon',
         'order': 2,
@@ -3478,6 +3481,7 @@ PATHWAYS = [
     # -----------------------------------------------------------------------
     {
         'title': "S'assurer avec la LAMal — assurance maladie obligatoire",
+        'category': 'Health',
         'description': "Toute personne qui habite en Suisse doit avoir une assurance maladie. Vous avez 3 mois après l'arrivée pour choisir votre caisse.",
         'icon': 'HeartIcon',
         'order': 3,
@@ -3823,18 +3827,21 @@ class Command(BaseCommand):
         self.stdout.write('\nCréation des parcours...')
         for pw_data in PATHWAYS:
             steps_data = pw_data['steps']
+            pw_category = Category.objects.filter(name=pw_data.get('category')).first()
             pw, pw_created = Pathway.objects.get_or_create(
                 title=pw_data['title'],
                 defaults={
                     'description': pw_data['description'],
                     'icon': pw_data['icon'],
                     'order': pw_data['order'],
+                    'category': pw_category,
                 },
             )
             if not pw_created:
                 pw.description = pw_data['description']
                 pw.icon = pw_data['icon']
                 pw.order = pw_data['order']
+                pw.category = pw_category
                 pw.save()
             self.stdout.write(f'  {"+" if pw_created else "~"} Pathway: {pw.title}')
 

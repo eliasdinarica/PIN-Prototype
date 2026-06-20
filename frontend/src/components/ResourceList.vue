@@ -3,6 +3,7 @@ import { ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SparklesIcon } from '@heroicons/vue/24/outline'
 import ResourceCard from '@/components/ResourceCard.vue'
+import PathwayCard from '@/components/PathwayCard.vue'
 
 const { t } = useI18n()
 
@@ -16,10 +17,10 @@ defineEmits(['feedback-change'])
 
 const expandedId = ref(props.initialResourceId)
 
-async function scrollToResource(id) {
-  if (!id) return
+async function scrollToEl(selector) {
+  if (!selector) return
   await nextTick()
-  const el = document.querySelector(`[data-resource-id="${id}"]`)
+  const el = document.querySelector(selector)
   if (!el) return
   const top = el.getBoundingClientRect().top + window.scrollY - 70
   window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
@@ -28,14 +29,24 @@ async function scrollToResource(id) {
 function toggle(id) {
   const opening = expandedId.value !== id
   expandedId.value = opening ? id : null
-  if (opening) scrollToResource(id)
+  if (opening) scrollToEl(`[data-resource-id="${id}"]`)
 }
 
-onMounted(() => scrollToResource(props.initialResourceId))
+// Pathways share the expand state but use a namespaced key to avoid id clashes.
+function togglePathway(id) {
+  const key = `p${id}`
+  const opening = expandedId.value !== key
+  expandedId.value = opening ? key : null
+  if (opening) scrollToEl(`[data-pathway-id="${id}"]`)
+}
+
+onMounted(() => {
+  if (props.initialResourceId) scrollToEl(`[data-resource-id="${props.initialResourceId}"]`)
+})
 
 watch(() => props.initialResourceId, (newId) => {
   expandedId.value = newId
-  scrollToResource(newId)
+  if (newId) scrollToEl(`[data-resource-id="${newId}"]`)
 })
 </script>
 
@@ -51,16 +62,24 @@ watch(() => props.initialResourceId, (newId) => {
       {{ section.label ?? t(`detail.${section.key}`) }}
     </p>
     <div :data-tut="si === 0 ? 'res' : undefined">
-      <ResourceCard
-        v-for="resource in section.items"
-        :key="resource.id"
-        :resource="resource"
-        :category="showCategory ? resource.category : null"
-        :feedback="feedbackMap[resource.id] ?? null"
-        :expanded="expandedId === resource.id"
-        @toggle="toggle"
-        @feedback-change="$emit('feedback-change', $event)"
-      />
+      <template v-for="item in section.items" :key="(item._kind === 'pathway' ? 'p' : 'r') + item.id">
+        <PathwayCard
+          v-if="item._kind === 'pathway'"
+          :pathway="item"
+          :category="showCategory ? item.category : null"
+          :expanded="expandedId === 'p' + item.id"
+          @toggle="togglePathway"
+        />
+        <ResourceCard
+          v-else
+          :resource="item"
+          :category="showCategory ? item.category : null"
+          :feedback="feedbackMap[item.id] ?? null"
+          :expanded="expandedId === item.id"
+          @toggle="toggle"
+          @feedback-change="$emit('feedback-change', $event)"
+        />
+      </template>
     </div>
   </template>
 </template>

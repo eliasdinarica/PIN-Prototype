@@ -5,8 +5,6 @@ import ProfileSetupView from '@/views/ProfileSetupView.vue'
 import CategoryDetailView from '@/views/CategoryDetailView.vue'
 import AdminResourceListView from '@/views/AdminResourceListView.vue'
 import AdminResourceFormView from '@/views/AdminResourceFormView.vue'
-import PathwaysView from '@/views/PathwaysView.vue'
-import PathwayDetailView from '@/views/PathwayDetailView.vue'
 import ResourceShareView from '@/views/ResourceShareView.vue'
 
 const router = createRouter({
@@ -17,8 +15,6 @@ const router = createRouter({
     { path: '/profile', component: ProfileSetupView },
     { path: '/categories/:id?', component: CategoryDetailView },
     { path: '/r/:id', component: ResourceShareView },
-    { path: '/pathways', component: PathwaysView },
-    { path: '/pathways/:id', component: PathwayDetailView },
     { path: '/admin/resources', component: AdminResourceListView },
     { path: '/admin/resources/new', component: AdminResourceFormView },
     { path: '/admin/resources/:id/edit', component: AdminResourceFormView },

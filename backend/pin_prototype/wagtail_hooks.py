@@ -65,6 +65,7 @@ class PathwaySnippetViewSet(SnippetViewSet):
 
     panels = [
         FieldPanel('title'),
+        FieldPanel('category'),
         FieldPanel('description'),
         FieldPanel('icon'),
         FieldPanel('order'),

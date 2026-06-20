@@ -282,7 +282,30 @@ class Attachment(models.Model):
         return self.label or self.file.name
 
 
+class ResourceTranslation(models.Model):
+    """A machine translation of a resource's text into another language.
+    HTML sections are stored as-is. The base content (French) stays on Resource."""
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='translations')
+    language = models.CharField(max_length=5)
+    name = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    why_interesting = models.TextField(blank=True)
+    how_to = models.TextField(blank=True)
+    location = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['resource', 'language']]
+
+    def __str__(self):
+        return f"{self.resource} [{self.language}]"
+
+
 class Pathway(models.Model):
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, related_name='pathways', null=True, blank=True,
+        help_text='Category this pathway is shown under.',
+    )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50)

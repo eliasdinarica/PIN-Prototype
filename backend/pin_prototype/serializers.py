@@ -59,26 +59,32 @@ def _absolutize_urls(html):
     return re.sub(r'(src|href)="(/(?:media|documents)/)', rf'\1="{base}\2', html)
 
 
-def render_sections(obj):
-    """Build the fixed-section list for a resource. Each section is a
-    collapsible card on the frontend; empty sections are omitted."""
+BASE_LANG = 'fr'  # Language the resource content is authored in.
+
+
+def render_section_values(why, how, location):
+    """Build the fixed-section list from raw field values."""
     result = []
-    for key, value in (
-        ('why', obj.why_interesting),
-        ('how', obj.how_to),
-        ('location', obj.location),
-    ):
+    for key, value in (('why', why), ('how', how), ('location', location)):
         if value and str(value).strip():
             result.append({'key': key, 'html': _absolutize_urls(expand_db_html(str(value)))})
     return result
+
+
+def render_sections(obj):
+    return render_section_values(obj.why_interesting, obj.how_to, obj.location)
 
 
 class ResourceSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
     subcategory = SubcategorySerializer(read_only=True)
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
     sections = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
+    languages = serializers.SerializerMethodField()
+    places = serializers.SerializerMethodField()
     tag_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
     )
@@ -86,13 +92,38 @@ class ResourceSerializer(serializers.ModelSerializer):
         many=True, source='audiences', read_only=True
     )
 
+    def _translation(self, obj):
+        """Return the ResourceTranslation matching the requested ?lang, or None."""
+        request = self.context.get('request')
+        params = getattr(request, 'query_params', None) or getattr(request, 'GET', {})
+        lang = params.get('lang') if request else None
+        if not lang or lang == BASE_LANG:
+            return None
+        return next((t for t in obj.translations.all() if t.language == lang), None)
+
+    def get_name(self, obj):
+        tr = self._translation(obj)
+        return tr.name if (tr and tr.name) else obj.name
+
+    def get_description(self, obj):
+        tr = self._translation(obj)
+        return tr.description if (tr and tr.description) else obj.description
+
     def get_sections(self, obj):
         try:
+            tr = self._translation(obj)
+            if tr:
+                return render_section_values(
+                    tr.why_interesting or obj.why_interesting,
+                    tr.how_to or obj.how_to,
+                    tr.location or obj.location,
+                )
             return render_sections(obj)
         except Exception:
             return []
 
-    places = serializers.SerializerMethodField()
+    def get_languages(self, obj):
+        return [BASE_LANG] + sorted({t.language for t in obj.translations.all()})
 
     def get_author(self, obj):
         return obj.author.name if obj.author_id else 'COSM'
@@ -111,7 +142,7 @@ class ResourceSerializer(serializers.ModelSerializer):
         model = Resource
         fields = [
             'id', 'category', 'subcategory', 'audiences', 'audience_ids', 'tags', 'tag_ids',
-            'name', 'description', 'sections', 'author', 'places', 'attachments', 'created_at',
+            'name', 'description', 'sections', 'author', 'languages', 'places', 'attachments', 'created_at',
         ]
         read_only_fields = ['id', 'created_at', 'audiences', 'audience_ids', 'subcategory']
 
