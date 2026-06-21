@@ -79,9 +79,10 @@
   "nav": {
     "editProfile": "Profil bearbeiten",
     "questionnaire": "Bilan",
+    "surveyHint": "Ein paar Fragen für bessere Empfehlungen",
     "sections": {
       "resources": "Ressourcen",
-      "pathways": "Wege",
+      "pathways": "Anleitungen",
       "cv": "CV-Generator",
       "forum": "Forum",
       "comingSoon": "Demnächst"
@@ -124,6 +125,24 @@
       "note": "Markieren Sie die Ressourcen, die Ihnen helfen. Sie sehen auch, was Ihre Community empfiehlt."
     },
     "skip": "Alle Informationen ohne Profil ansehen"
+  },
+  "search": {
+    "title": "Eine Ressource finden",
+    "sentenceStart": "Ich suche",
+    "on": "über",
+    "anyTopic": "alle Themen",
+    "addTheme": "Thema hinzufügen",
+    "count": "{n} Ergebnis(se)",
+    "empty": "Nichts entspricht Ihrer Auswahl.",
+    "askAi": "Ihre Situation der KI beschreiben",
+    "aiPlaceholder": "z. B. Ich bin gerade mit meinen Kindern angekommen und suche eine Wohnung…",
+    "aiClear": "Zurück zu den Filtern",
+    "type": { "all": "Informationen", "resources": "Ressourcen", "pathways": "Anleitungen", "saved": "meine gespeicherten" },
+    "tabs": { "all": "Alle", "resources": "Ressourcen", "pathways": "Anleitungen", "saved": "Gespeichert" }
+  },
+  "assistant": {
+    "title": "Ressourcen mit KI finden",
+    "placeholder": "Wobei brauchen Sie Hilfe?"
   },
   "categories": {
     "eyebrow": "Ihre Ressourcen",

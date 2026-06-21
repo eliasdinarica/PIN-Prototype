@@ -183,10 +183,14 @@ class PathwayBriefSerializer(serializers.ModelSerializer):
 class PathwaySerializer(serializers.ModelSerializer):
     steps = PathwayStepSerializer(many=True, read_only=True)
     step_count = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     def get_step_count(self, obj):
         return obj.steps.count()
 
+    def get_category(self, obj):
+        return {'id': obj.category_id, 'name': obj.category.name} if obj.category_id else None
+
     class Meta:
         model = Pathway
-        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order', 'steps']
+        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order', 'category', 'steps']

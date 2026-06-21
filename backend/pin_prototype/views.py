@@ -265,6 +265,84 @@ def top_resources(request):
     return Response(results[:limit])
 
 
+@api_view(['GET'])
+def search_data(request):
+    """Everything the search page needs in one call: the theme list, all
+    approved resources and all active pathways (with their category)."""
+    cats = [
+        {
+            'id': c.id, 'name': c.name, 'icon': c.icon,
+            'subcategories': [{'id': s.id, 'name': s.name} for s in c.subcategories.all()],
+        }
+        for c in Category.objects.order_by('-priority', 'name').prefetch_related('subcategories')
+    ]
+    cat_names = {c['id']: c['name'] for c in cats}
+
+    # Only standalone resources (those with a category). Resources that exist
+    # purely as pathway steps have no category and are shown inside pathways.
+    resources = (
+        Resource.objects.filter(status=Resource.STATUS_APPROVED, category__isnull=False)
+        .select_related('category', 'author', 'subcategory')
+        .prefetch_related('tags', 'audiences', 'attachments', 'places', 'translations')
+        .order_by('name')
+    )
+    rdata = ResourceSerializer(resources, many=True, context={'request': request}).data
+    for r in rdata:
+        cid = r.get('category')
+        r['category'] = {'id': cid, 'name': cat_names[cid]} if cid in cat_names else None
+
+    # Default ranking: surface resources recommended by the system (COSM) and by
+    # the community first, based on the visitor's profile.
+    profile_id = request.query_params.get('profile')
+    if profile_id:
+        try:
+            profile = Profile.objects.get(pk=profile_id)
+            tag_ids = _matched_tag_ids(profile)
+            age = _compute_age(profile.birth_date)
+            all_audiences = {a.id: a for a in Audience.objects.all()}
+            lang_likes = _cohort_likes_by_language(profile)
+            stat_likes = _cohort_likes_by_status(profile)
+
+            def score(r):
+                r_tag_ids = frozenset(t['id'] for t in r.get('tags', []))
+                aid_list = r.get('audience_ids', [])
+                if not aid_list:
+                    return 0, False
+                matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile, age))
+                if matches == 0:
+                    return 0, False
+                overlap = len(r_tag_ids & tag_ids)
+                if overlap == 0:
+                    return 0, False
+                return matches + overlap * 0.5, overlap >= 2
+
+            for r in rdata:
+                s, rec = score(r)
+                community_lang = profile.language if r['id'] in lang_likes else None
+                community_status = profile.status if r['id'] in stat_likes else None
+                r['recommended_by_system'] = rec
+                r['community_by_language'] = community_lang
+                r['community_by_status'] = community_status
+                # Community-liked items also bubble up.
+                r['_score'] = s + (1 if (community_lang or community_status) else 0)
+            rdata.sort(key=lambda r: (-r['_score'], r['name']))
+            for r in rdata:
+                r.pop('_score', None)
+        except Profile.DoesNotExist:
+            pass
+
+    pathways = (
+        Pathway.objects.filter(is_active=True).select_related('category').order_by('order')
+        .prefetch_related(
+            'steps__resource__tags', 'steps__resource__places',
+            'steps__resource__attachments', 'steps__resource__translations',
+        )
+    )
+    pdata = PathwaySerializer(pathways, many=True, context={'request': request}).data
+
+    return Response({'categories': cats, 'resources': rdata, 'pathways': pdata})
+
+
 class ResourceViewSet(ModelViewSet):
     serializer_class = ResourceSerializer
 

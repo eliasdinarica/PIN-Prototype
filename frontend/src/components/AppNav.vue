@@ -8,13 +8,20 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="fixed top-5 right-5 z-50">
+  <!-- Discreet banner pinned to the bottom-left -->
+  <aside class="fixed left-0 bottom-6 z-50">
     <button
-      class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white px-4 py-2.5 rounded-full shadow-lg transition-all duration-150 cursor-pointer border-none"
+      class="flex items-center gap-2.5 w-56 bg-white border border-l-0 border-surface-200 shadow-lg rounded-r-2xl pl-3 pr-3.5 py-3 cursor-pointer text-left transition-shadow duration-200 hover:shadow-xl"
+      :aria-label="t('nav.questionnaire')"
       @click="router.push('/profile')"
     >
-      <BookOpenIcon class="w-4 h-4 shrink-0" />
-      <span class="text-sm font-semibold">{{ t('nav.questionnaire') }}</span>
+      <span class="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center shrink-0">
+        <BookOpenIcon class="w-5 h-5 text-brand-500" />
+      </span>
+      <span class="min-w-0">
+        <span class="block text-sm font-semibold text-surface-800 leading-tight">{{ t('nav.questionnaire') }}</span>
+        <span class="block text-xs text-surface-500 leading-snug">{{ t('nav.surveyHint') }}</span>
+      </span>
     </button>
-  </div>
+  </aside>
 </template>

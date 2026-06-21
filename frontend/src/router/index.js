@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
 import HubView from '@/views/HubView.vue'
 import ProfileSetupView from '@/views/ProfileSetupView.vue'
-import CategoryDetailView from '@/views/CategoryDetailView.vue'
+import SearchView from '@/views/SearchView.vue'
 import AdminResourceListView from '@/views/AdminResourceListView.vue'
 import AdminResourceFormView from '@/views/AdminResourceFormView.vue'
 import ResourceShareView from '@/views/ResourceShareView.vue'
@@ -13,7 +13,8 @@ const router = createRouter({
     { path: '/', component: LandingView },
     { path: '/hub', component: HubView },
     { path: '/profile', component: ProfileSetupView },
-    { path: '/categories/:id?', component: CategoryDetailView },
+    { path: '/categories', component: SearchView },
+    { path: '/search', component: SearchView },
     { path: '/r/:id', component: ResourceShareView },
     { path: '/admin/resources', component: AdminResourceListView },
     { path: '/admin/resources/new', component: AdminResourceFormView },

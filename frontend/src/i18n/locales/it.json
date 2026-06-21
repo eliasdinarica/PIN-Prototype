@@ -79,9 +79,10 @@
   "nav": {
     "editProfile": "Modifica profilo",
     "questionnaire": "Sondaggio",
+    "surveyHint": "Poche domande per consigli migliori",
     "sections": {
       "resources": "Risorse",
-      "pathways": "Percorsi",
+      "pathways": "Guide",
       "cv": "Generatore di CV",
       "forum": "Forum",
       "comingSoon": "Prossimamente"
@@ -124,6 +125,24 @@
       "note": "Metti mi piace alle risorse che ti aiutano. Scopri anche cosa consiglia la tua comunità."
     },
     "skip": "Vedere tutte le informazioni senza profilo"
+  },
+  "search": {
+    "title": "Trova una risorsa",
+    "sentenceStart": "Cerco",
+    "on": "su",
+    "anyTopic": "qualsiasi tema",
+    "addTheme": "aggiungi un tema",
+    "count": "{n} risultato/i",
+    "empty": "Nulla corrisponde alla tua selezione.",
+    "askAi": "Descrivi la tua situazione all'IA",
+    "aiPlaceholder": "es. Sono appena arrivato con i miei figli e cerco un alloggio…",
+    "aiClear": "Torna ai filtri",
+    "type": { "all": "informazioni", "resources": "risorse", "pathways": "guide", "saved": "i miei salvati" },
+    "tabs": { "all": "Tutto", "resources": "Risorse", "pathways": "Guide", "saved": "Salvati" }
+  },
+  "assistant": {
+    "title": "Trova risorse con l'IA",
+    "placeholder": "Di cosa hai bisogno?"
   },
   "categories": {
     "eyebrow": "Le tue risorse",

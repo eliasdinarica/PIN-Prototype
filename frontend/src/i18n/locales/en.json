@@ -96,9 +96,10 @@
   "nav": {
     "editProfile": "Edit profile",
     "questionnaire": "Survey",
+    "surveyHint": "A few questions for better recommendations",
     "sections": {
       "resources": "Resources",
-      "pathways": "Pathways",
+      "pathways": "Guides",
       "cv": "CV generator",
       "forum": "Forum",
       "comingSoon": "Coming soon"
@@ -141,6 +142,24 @@
       "note": "Like the resources that help you. You also discover what your community recommends."
     },
     "skip": "See all information without a profile"
+  },
+  "search": {
+    "title": "Find a resource",
+    "sentenceStart": "I'm looking for",
+    "on": "about",
+    "anyTopic": "any topic",
+    "addTheme": "add a topic",
+    "count": "{n} result(s)",
+    "empty": "Nothing matches your selection.",
+    "askAi": "Describe your situation to the AI",
+    "aiPlaceholder": "e.g. I just arrived with my children and I'm looking for housing…",
+    "aiClear": "Back to filters",
+    "type": { "all": "information", "resources": "resources", "pathways": "guides", "saved": "my saved items" },
+    "tabs": { "all": "All", "resources": "Resources", "pathways": "Guides", "saved": "Saved" }
+  },
+  "assistant": {
+    "title": "Find resources with AI",
+    "placeholder": "What do you need help with?"
   },
   "categories": {
     "eyebrow": "Your resources",
