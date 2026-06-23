@@ -3,7 +3,7 @@ import re
 from django.conf import settings
 from rest_framework import serializers
 from wagtail.rich_text import expand_db_html
-from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment, Pathway, PathwayStep
+from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment, Guide, GuideStep
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -161,29 +161,37 @@ class CategoryBriefSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'icon']
 
 
-class PathwayStepSerializer(serializers.ModelSerializer):
+class GuideStepSerializer(serializers.ModelSerializer):
     resource = ResourceSerializer(read_only=True)
 
     class Meta:
-        model = PathwayStep
+        model = GuideStep
         fields = ['id', 'order', 'step_label', 'resource']
 
 
-class PathwayBriefSerializer(serializers.ModelSerializer):
+class GuideBriefSerializer(serializers.ModelSerializer):
     step_count = serializers.SerializerMethodField()
 
     def get_step_count(self, obj):
         return obj.steps.count()
 
     class Meta:
-        model = Pathway
+        model = Guide
         fields = ['id', 'title', 'description', 'icon', 'step_count', 'order']
 
 
-class PathwaySerializer(serializers.ModelSerializer):
-    steps = PathwayStepSerializer(many=True, read_only=True)
+class GuideSerializer(serializers.ModelSerializer):
+    steps = GuideStepSerializer(many=True, read_only=True)
     step_count = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    languages = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True, read_only=True)
+    tag_ids = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
+    )
+    audience_ids = serializers.PrimaryKeyRelatedField(
+        many=True, source='audiences', read_only=True
+    )
 
     def get_step_count(self, obj):
         return obj.steps.count()
@@ -191,6 +199,18 @@ class PathwaySerializer(serializers.ModelSerializer):
     def get_category(self, obj):
         return {'id': obj.category_id, 'name': obj.category.name} if obj.category_id else None
 
+    def get_languages(self, obj):
+        # The guide title/description stay in the base language, but its step
+        # resources may have translations — offer those as switchable languages.
+        langs = set()
+        for step in obj.steps.all():
+            for tr in step.resource.translations.all():
+                langs.add(tr.language)
+        return [BASE_LANG] + sorted(langs)
+
     class Meta:
-        model = Pathway
-        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order', 'category', 'steps']
+        model = Guide
+        fields = [
+            'id', 'title', 'description', 'icon', 'step_count', 'order', 'category',
+            'languages', 'tags', 'tag_ids', 'audience_ids', 'steps',
+        ]

@@ -6,11 +6,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
-from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment, Pathway
+from .models import Profile, Audience, Category, Resource, Tag, ResourceFeedback, Attachment, Guide
 from .serializers import (
     ProfileSerializer, CategorySerializer, ResourceSerializer,
     TagSerializer, ResourceFeedbackSerializer, AudienceSerializer,
-    CategoryBriefSerializer, PathwayBriefSerializer, PathwaySerializer,
+    CategoryBriefSerializer, GuideBriefSerializer, GuideSerializer,
     render_sections,
 )
 
@@ -201,15 +201,15 @@ class CategoryViewSet(ModelViewSet):
         else:
             data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
 
-        # Pathways shown under this category (co-located with resources).
-        pathways = (
-            instance.pathways.filter(is_active=True).order_by('order')
+        # Guides shown under this category (co-located with resources).
+        guides = (
+            instance.guides.filter(is_active=True).order_by('order')
             .prefetch_related(
                 'steps__resource__tags', 'steps__resource__places',
                 'steps__resource__attachments', 'steps__resource__translations',
             )
         )
-        data['pathways'] = PathwaySerializer(pathways, many=True, context={'request': request}).data
+        data['guides'] = GuideSerializer(guides, many=True, context={'request': request}).data
 
         return Response(data)
 
@@ -265,10 +265,43 @@ def top_resources(request):
     return Response(results[:limit])
 
 
+def _rank_by_profile(items, name_key, profile, tag_ids, age, all_audiences, lang_likes, stat_likes):
+    """Annotate serialized items (resources or guides) with recommendation flags
+    and sort them so system- and community-recommended ones bubble up.
+
+    Guides and resources share the same tag/audience mechanism. Community
+    feedback only exists per resource, so guides are called with empty
+    lang_likes/stat_likes sets and get system recommendation only."""
+    def score(it):
+        it_tag_ids = frozenset(t['id'] for t in it.get('tags', []))
+        aid_list = it.get('audience_ids', [])
+        if not aid_list:
+            return 0, False
+        matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile, age))
+        if matches == 0:
+            return 0, False
+        overlap = len(it_tag_ids & tag_ids)
+        if overlap == 0:
+            return 0, False
+        return matches + overlap * 0.5, overlap >= 2
+
+    for it in items:
+        s, rec = score(it)
+        community_lang = profile.language if it['id'] in lang_likes else None
+        community_status = profile.status if it['id'] in stat_likes else None
+        it['recommended_by_system'] = rec
+        it['community_by_language'] = community_lang
+        it['community_by_status'] = community_status
+        it['_score'] = s + (1 if (community_lang or community_status) else 0)
+    items.sort(key=lambda it: (-it['_score'], it.get(name_key, '')))
+    for it in items:
+        it.pop('_score', None)
+
+
 @api_view(['GET'])
 def search_data(request):
     """Everything the search page needs in one call: the theme list, all
-    approved resources and all active pathways (with their category)."""
+    approved resources and all active guides (with their category)."""
     cats = [
         {
             'id': c.id, 'name': c.name, 'icon': c.icon,
@@ -279,7 +312,7 @@ def search_data(request):
     cat_names = {c['id']: c['name'] for c in cats}
 
     # Only standalone resources (those with a category). Resources that exist
-    # purely as pathway steps have no category and are shown inside pathways.
+    # purely as guide steps have no category and are shown inside guides.
     resources = (
         Resource.objects.filter(status=Resource.STATUS_APPROVED, category__isnull=False)
         .select_related('category', 'author', 'subcategory')
@@ -291,8 +324,20 @@ def search_data(request):
         cid = r.get('category')
         r['category'] = {'id': cid, 'name': cat_names[cid]} if cid in cat_names else None
 
-    # Default ranking: surface resources recommended by the system (COSM) and by
-    # the community first, based on the visitor's profile.
+    guides = (
+        Guide.objects.filter(is_active=True).select_related('category').order_by('order')
+        .prefetch_related(
+            'tags', 'audiences',
+            'steps__resource__tags', 'steps__resource__places',
+            'steps__resource__attachments', 'steps__resource__translations',
+        )
+    )
+    gdata = GuideSerializer(guides, many=True, context={'request': request}).data
+
+    # Default ranking: surface resources and guides recommended by the system
+    # (COSM) and by the community first, based on the visitor's profile. Guides
+    # and resources share the same tag/audience mechanism; community feedback is
+    # resource-only, so guides receive system recommendation alone.
     profile_id = request.query_params.get('profile')
     if profile_id:
         try:
@@ -302,45 +347,12 @@ def search_data(request):
             all_audiences = {a.id: a for a in Audience.objects.all()}
             lang_likes = _cohort_likes_by_language(profile)
             stat_likes = _cohort_likes_by_status(profile)
-
-            def score(r):
-                r_tag_ids = frozenset(t['id'] for t in r.get('tags', []))
-                aid_list = r.get('audience_ids', [])
-                if not aid_list:
-                    return 0, False
-                matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile, age))
-                if matches == 0:
-                    return 0, False
-                overlap = len(r_tag_ids & tag_ids)
-                if overlap == 0:
-                    return 0, False
-                return matches + overlap * 0.5, overlap >= 2
-
-            for r in rdata:
-                s, rec = score(r)
-                community_lang = profile.language if r['id'] in lang_likes else None
-                community_status = profile.status if r['id'] in stat_likes else None
-                r['recommended_by_system'] = rec
-                r['community_by_language'] = community_lang
-                r['community_by_status'] = community_status
-                # Community-liked items also bubble up.
-                r['_score'] = s + (1 if (community_lang or community_status) else 0)
-            rdata.sort(key=lambda r: (-r['_score'], r['name']))
-            for r in rdata:
-                r.pop('_score', None)
+            _rank_by_profile(rdata, 'name', profile, tag_ids, age, all_audiences, lang_likes, stat_likes)
+            _rank_by_profile(gdata, 'title', profile, tag_ids, age, all_audiences, set(), set())
         except Profile.DoesNotExist:
             pass
 
-    pathways = (
-        Pathway.objects.filter(is_active=True).select_related('category').order_by('order')
-        .prefetch_related(
-            'steps__resource__tags', 'steps__resource__places',
-            'steps__resource__attachments', 'steps__resource__translations',
-        )
-    )
-    pdata = PathwaySerializer(pathways, many=True, context={'request': request}).data
-
-    return Response({'categories': cats, 'resources': rdata, 'pathways': pdata})
+    return Response({'categories': cats, 'resources': rdata, 'guides': gdata})
 
 
 class ResourceViewSet(ModelViewSet):
@@ -444,19 +456,21 @@ class CategoryBriefViewSet(ReadOnlyModelViewSet):
     serializer_class = CategoryBriefSerializer
 
 
-class PathwayViewSet(ReadOnlyModelViewSet):
+class GuideViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         if self.action == 'retrieve':
-            return Pathway.objects.prefetch_related(
+            return Guide.objects.prefetch_related(
                 'steps__resource__tags',
                 'steps__resource__attachments',
+                'steps__resource__places',
+                'steps__resource__translations',
             ).filter(is_active=True).order_by('order')
-        return Pathway.objects.filter(is_active=True).order_by('order')
+        return Guide.objects.filter(is_active=True).order_by('order')
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return PathwayBriefSerializer
-        return PathwaySerializer
+            return GuideBriefSerializer
+        return GuideSerializer
 
 
 @api_view(['POST'])
@@ -494,32 +508,32 @@ def chat_view(request):
 
     catalog = '\n'.join(catalog_lines) if catalog_lines else '(no resources yet)'
 
-    pathway_lines = []
-    for pw in Pathway.objects.filter(is_active=True).select_related('category'):
-        cat_name = pw.category.name if pw.category else 'Parcours'
-        line = f"[PW={pw.id}][{cat_name}] {pw.title}"
-        if pw.description:
-            line += f" — {pw.description}"
-        pathway_lines.append(line)
-    pathways_catalog = '\n'.join(pathway_lines) if pathway_lines else '(no pathways yet)'
+    guide_lines = []
+    for gd in Guide.objects.filter(is_active=True).select_related('category'):
+        cat_name = gd.category.name if gd.category else 'Guide'
+        line = f"[GD={gd.id}][{cat_name}] {gd.title}"
+        if gd.description:
+            line += f" — {gd.description}"
+        guide_lines.append(line)
+    guides_catalog = '\n'.join(guide_lines) if guide_lines else '(no guides yet)'
 
     system_prompt = f"""You are a helpful assistant for newcomers (migrants) living in Switzerland.
-Your job is to recommend relevant resources and step-by-step pathways from the lists below.
+Your job is to recommend relevant resources and step-by-step guides from the lists below.
 
 AVAILABLE RESOURCES (each starts with its ID):
 {catalog}
 
-AVAILABLE PATHWAYS (step-by-step guides, each starts with its PW id):
-{pathways_catalog}
+AVAILABLE GUIDES (step-by-step guides, each starts with its GD id):
+{guides_catalog}
 
 RULES:
 - Respond ONLY with valid JSON, no other text, no markdown code block.
-- Format: {{"message": "Your short explanation here.", "resource_ids": [id1, id2], "pathway_ids": [pw1]}}
-- Recommend 1 to 3 items total (resources and/or pathways). Use the exact integer IDs.
-- Prefer a pathway when the user needs a full step-by-step process.
+- Format: {{"message": "Your short explanation here.", "resource_ids": [id1, id2], "guide_ids": [gd1]}}
+- Recommend 1 to 3 items total (resources and/or guides). Use the exact integer IDs.
+- Prefer a guide when the user needs a full step-by-step process.
 - The message must be short, simple sentences (FALC style).
 - Reply in the same language the user writes in.
-- If nothing matches, return: {{"message": "I could not find a matching resource.", "resource_ids": [], "pathway_ids": []}}"""
+- If nothing matches, return: {{"message": "I could not find a matching resource.", "resource_ids": [], "guide_ids": []}}"""
 
     messages = [
         {'role': 'system', 'content': system_prompt},
@@ -556,7 +570,7 @@ RULES:
 
         reply_text = parsed.get('message', raw)
         resource_ids = [int(i) for i in parsed.get('resource_ids', []) if str(i).isdigit()]
-        pathway_ids = [int(i) for i in parsed.get('pathway_ids', []) if str(i).isdigit()]
+        guide_ids = [int(i) for i in parsed.get('guide_ids', []) if str(i).isdigit()]
 
         matched = Resource.objects.filter(id__in=resource_ids, status=Resource.STATUS_APPROVED).select_related('category').prefetch_related('attachments', 'places')
         resource_data = []
@@ -576,14 +590,15 @@ RULES:
                 'category': {'id': r.category.id, 'name': r.category.name} if r.category else None,
             })
 
-        pathway_data = []
-        if pathway_ids:
-            pws = Pathway.objects.filter(id__in=pathway_ids, is_active=True).prefetch_related(
+        guide_data = []
+        if guide_ids:
+            gds = Guide.objects.filter(id__in=guide_ids, is_active=True).prefetch_related(
                 'steps__resource__tags', 'steps__resource__places', 'steps__resource__attachments',
+                'steps__resource__translations',
             )
-            pathway_data = PathwaySerializer(pws, many=True, context={'request': request}).data
+            guide_data = GuideSerializer(gds, many=True, context={'request': request}).data
 
-        return Response({'reply': reply_text, 'resources': resource_data, 'pathways': pathway_data})
+        return Response({'reply': reply_text, 'resources': resource_data, 'guides': guide_data})
     except urllib.error.HTTPError as e:
         body = e.read().decode()
         return Response({'error': f'AI API error ({e.code}): {body}'}, status=502)

@@ -23,7 +23,7 @@ const props = defineProps({
 const emit = defineEmits(['toggle', 'feedback-change'])
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺' }
+const FLAGS = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺', uk: '🇺🇦' }
 const copied = ref(false)
 
 // Per-resource language switch: base content vs. a fetched translation.
@@ -57,7 +57,9 @@ function onFeedback(isUseful) {
 }
 
 async function share() {
-  const url = `${window.location.origin}/r/${props.resource.id}`
+  // Keep the language currently being viewed in the shared link.
+  const suffix = currentLang.value && currentLang.value !== 'fr' ? `?lang=${currentLang.value}` : ''
+  const url = `${window.location.origin}/r/${props.resource.id}${suffix}`
   try {
     if (navigator.share) {
       await navigator.share({ title: props.resource.name, url })

@@ -3,7 +3,7 @@ import { ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SparklesIcon } from '@heroicons/vue/24/outline'
 import ResourceCard from '@/components/ResourceCard.vue'
-import PathwayCard from '@/components/PathwayCard.vue'
+import GuideCard from '@/components/GuideCard.vue'
 
 const { t } = useI18n()
 
@@ -32,12 +32,12 @@ function toggle(id) {
   if (opening) scrollToEl(`[data-resource-id="${id}"]`)
 }
 
-// Pathways share the expand state but use a namespaced key to avoid id clashes.
-function togglePathway(id) {
-  const key = `p${id}`
+// Guides share the expand state but use a namespaced key to avoid id clashes.
+function toggleGuide(id) {
+  const key = `g${id}`
   const opening = expandedId.value !== key
   expandedId.value = opening ? key : null
-  if (opening) scrollToEl(`[data-pathway-id="${id}"]`)
+  if (opening) scrollToEl(`[data-guide-id="${id}"]`)
 }
 
 onMounted(() => {
@@ -62,13 +62,13 @@ watch(() => props.initialResourceId, (newId) => {
       {{ section.label ?? t(`detail.${section.key}`) }}
     </p>
     <div :data-tut="si === 0 ? 'res' : undefined">
-      <template v-for="item in section.items" :key="(item._kind === 'pathway' ? 'p' : 'r') + item.id">
-        <PathwayCard
-          v-if="item._kind === 'pathway'"
-          :pathway="item"
+      <template v-for="item in section.items" :key="(item._kind === 'guide' ? 'g' : 'r') + item.id">
+        <GuideCard
+          v-if="item._kind === 'guide'"
+          :guide="item"
           :category="showCategory ? item.category : null"
-          :expanded="expandedId === 'p' + item.id"
-          @toggle="togglePathway"
+          :expanded="expandedId === 'g' + item.id"
+          @toggle="toggleGuide"
         />
         <ResourceCard
           v-else

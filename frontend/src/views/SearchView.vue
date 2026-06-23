@@ -16,7 +16,7 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const categories = ref([])
 const resources = ref([])
-const pathways = ref([])
+const guides = ref([])
 const feedbackMap = ref({})
 const loading = ref(true)
 
@@ -30,7 +30,7 @@ const aiInput = ref('')
 const aiLoading = ref(false)
 const aiReply = ref('')
 const aiResources = ref([])
-const aiPathways = ref([])
+const aiGuides = ref([])
 const aiActive = ref(false)
 
 const initialResourceId = computed(() => route.query.resource ? parseInt(route.query.resource) : null)
@@ -106,24 +106,38 @@ function matchesResource(r) {
   if (r.subcategory && selectedSubIds.value.includes(r.subcategory.id)) return true
   return false
 }
-function matchesPathway(p) {
+function matchesGuide(g) {
   if (!selectedThemes.value.length) return true
-  return p.category && activeCatIds.value.has(p.category.id)
+  return g.category && activeCatIds.value.has(g.category.id)
 }
 
 // Items, tagged so the list renders the right card.
-const pathwayItems = computed(() => pathways.value.map(p => ({ ...p, _kind: 'pathway' })))
+const guideItems = computed(() => guides.value.map(g => ({ ...g, _kind: 'guide' })))
+
+// A recommended item (guide or resource) bubbles to the top regardless of type.
+function isRecommended(it) {
+  return !!(it.recommended_by_system || it.community_by_language || it.community_by_status)
+}
+// Stable sort keeps the backend's per-type ranking, but puts recommended first.
+function recommendedFirst(items) {
+  return [...items].sort((a, b) => (isRecommended(b) ? 1 : 0) - (isRecommended(a) ? 1 : 0))
+}
 
 const results = computed(() => {
   if (aiActive.value) {
-    return [...aiPathways.value.map(p => ({ ...p, _kind: 'pathway' })), ...aiResources.value]
+    return [...aiGuides.value.map(g => ({ ...g, _kind: 'guide' })), ...aiResources.value]
   }
   const res = resources.value.filter(matchesResource)
-  const pw = pathwayItems.value.filter(matchesPathway)
+  const gd = guideItems.value.filter(matchesGuide)
   if (activeTab.value === 'resources') return res
-  if (activeTab.value === 'pathways') return pw
-  if (activeTab.value === 'saved') return res.filter(r => savedIds.value.includes(r.id))
-  return [...pw, ...res]
+  if (activeTab.value === 'pathways') return gd
+  if (activeTab.value === 'saved') {
+    return recommendedFirst([
+      ...gd.filter(g => savedIds.value.includes(`g:${g.id}`)),
+      ...res.filter(r => savedIds.value.includes(r.id)),
+    ])
+  }
+  return recommendedFirst([...gd, ...res])
 })
 
 const sections = computed(() => results.value.length ? [{ key: 'all', items: results.value }] : [])
@@ -132,7 +146,7 @@ async function runAi() {
   const q = aiInput.value.trim()
   if (!q) return
   aiLoading.value = true
-  aiReply.value = ''; aiResources.value = []; aiPathways.value = []
+  aiReply.value = ''; aiResources.value = []; aiGuides.value = []
   try {
     const res = await fetch(`${API}/api/chat/`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -142,7 +156,7 @@ async function runAi() {
     if (!data.error) {
       aiReply.value = data.reply
       aiResources.value = data.resources || []
-      aiPathways.value = data.pathways || []
+      aiGuides.value = data.guides || []
       aiActive.value = true
     }
   } catch { /* ignore */ }
@@ -151,7 +165,7 @@ async function runAi() {
 
 function clearAi() {
   aiActive.value = false; aiOpen.value = false
-  aiReply.value = ''; aiInput.value = ''; aiResources.value = []; aiPathways.value = []
+  aiReply.value = ''; aiInput.value = ''; aiResources.value = []; aiGuides.value = []
 }
 
 async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
@@ -179,7 +193,7 @@ onMounted(async () => {
   const data = await searchRes.json()
   categories.value = data.categories || []
   resources.value = data.resources || []
-  pathways.value = data.pathways || []
+  guides.value = data.guides || []
   if (fbRes) {
     const fb = await fbRes.json()
     feedbackMap.value = Object.fromEntries(fb.map(f => [f.resource, { id: f.id, is_useful: f.is_useful }]))

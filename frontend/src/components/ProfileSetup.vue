@@ -11,6 +11,15 @@ const emit = defineEmits(['complete', 'finish'])
 
 const { t, locale } = useI18n()
 
+// Main interface language: kept to the four the platform fully supports.
+const MAIN_LANGUAGE_OPTIONS = [
+  { value: 'en', label: 'English' },
+  { value: 'fr', label: 'Français' },
+  { value: 'uk', label: 'Українська' },
+  { value: 'ru', label: 'Русский' },
+]
+
+// Languages a person can additionally speak (broader list, not the UI language).
 const LANGUAGE_OPTIONS = [
   { value: 'en', label: 'English' },
   { value: 'fr', label: 'Français' },
@@ -18,6 +27,7 @@ const LANGUAGE_OPTIONS = [
   { value: 'it', label: 'Italiano' },
   { value: 'es', label: 'Español' },
   { value: 'pt', label: 'Português' },
+  { value: 'uk', label: 'Українська' },
   { value: 'ru', label: 'Русский' },
 ]
 
@@ -51,7 +61,7 @@ const questions = computed(() => [
     shortLabel: t('profile.timeline.language'),
     label: t('profile.language.label'),
     sublabel: t('profile.language.sublabel'),
-    options: LANGUAGE_OPTIONS,
+    options: MAIN_LANGUAGE_OPTIONS,
   },
   {
     id: 'otherLanguages',

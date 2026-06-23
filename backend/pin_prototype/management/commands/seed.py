@@ -11,7 +11,7 @@ import re
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Pathway, PathwayStep, Contributor, ResourcePlace
+from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Guide, GuideStep, Contributor, ResourcePlace
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Wagtail StreamField)
@@ -3637,8 +3637,8 @@ class Command(BaseCommand):
 
     def handle(self, *_args, **options):
         if options['reset']:
-            PathwayStep.objects.all().delete()
-            Pathway.objects.all().delete()
+            GuideStep.objects.all().delete()
+            Guide.objects.all().delete()
             Resource.objects.all().delete()
             Subcategory.objects.all().delete()
             Category.objects.all().delete()
@@ -3828,7 +3828,7 @@ class Command(BaseCommand):
         for pw_data in PATHWAYS:
             steps_data = pw_data['steps']
             pw_category = Category.objects.filter(name=pw_data.get('category')).first()
-            pw, pw_created = Pathway.objects.get_or_create(
+            pw, pw_created = Guide.objects.get_or_create(
                 title=pw_data['title'],
                 defaults={
                     'description': pw_data['description'],
@@ -3843,7 +3843,7 @@ class Command(BaseCommand):
                 pw.order = pw_data['order']
                 pw.category = pw_category
                 pw.save()
-            self.stdout.write(f'  {"+" if pw_created else "~"} Pathway: {pw.title}')
+            self.stdout.write(f'  {"+" if pw_created else "~"} Guide: {pw.title}')
 
             for step_data in steps_data:
                 res_data = step_data['resource']
@@ -3872,8 +3872,8 @@ class Command(BaseCommand):
                 add_places(res, extracted)
                 self.stdout.write(f'      {"+" if res_created else "~"} Resource: {res.name}')
 
-                ps, _ = PathwayStep.objects.get_or_create(
-                    pathway=pw,
+                ps, _ = GuideStep.objects.get_or_create(
+                    guide=pw,
                     order=step_data['order'],
                     defaults={'resource': res, 'step_label': step_data.get('step_label', '')},
                 )

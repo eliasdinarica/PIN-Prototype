@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ProfileViewSet, CategoryViewSet, ResourceViewSet, TagViewSet,
     ResourceFeedbackViewSet, AudienceViewSet, CategoryBriefViewSet,
-    PathwayViewSet, top_resources, editor_image_upload, chat_view, search_data,
+    GuideViewSet, top_resources, editor_image_upload, chat_view, search_data,
 )
 
 router = DefaultRouter()
@@ -14,7 +14,7 @@ router.register('audiences', AudienceViewSet)
 router.register('resources', ResourceViewSet, basename='resources')
 router.register('tags', TagViewSet)
 router.register('feedback', ResourceFeedbackViewSet, basename='feedback')
-router.register('pathways', PathwayViewSet, basename='pathway')
+router.register('guides', GuideViewSet, basename='guide')
 
 urlpatterns = router.urls + [
     path('top-resources/', top_resources),

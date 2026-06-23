@@ -105,7 +105,7 @@ class Audience(models.Model):
         return self.name
 
 
-class Category(models.Model):
+class Category(ClusterableModel):
     ICON_CHOICES = [
         ('CurrencyDollarIcon', 'Money & Budget'),
         ('BriefcaseIcon', 'Work'),
@@ -141,7 +141,7 @@ class Category(models.Model):
 
 
 class Subcategory(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    category = ParentalKey(Category, on_delete=models.CASCADE, related_name='subcategories')
     name = models.CharField(max_length=100)
     order = models.IntegerField(default=0)
 
@@ -301,11 +301,13 @@ class ResourceTranslation(models.Model):
         return f"{self.resource} [{self.language}]"
 
 
-class Pathway(models.Model):
+class Guide(models.Model):
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, related_name='pathways', null=True, blank=True,
-        help_text='Category this pathway is shown under.',
+        Category, on_delete=models.SET_NULL, related_name='guides', null=True, blank=True,
+        help_text='Category this guide is shown under.',
     )
+    audiences = models.ManyToManyField(Audience, blank=True, related_name='guides')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='guides')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50)
@@ -319,9 +321,9 @@ class Pathway(models.Model):
         return self.title
 
 
-class PathwayStep(models.Model):
-    pathway = models.ForeignKey(Pathway, related_name='steps', on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='pathway_steps')
+class GuideStep(models.Model):
+    guide = models.ForeignKey(Guide, related_name='steps', on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='guide_steps')
     order = models.IntegerField(default=0)
     step_label = models.CharField(max_length=200, blank=True)
 
@@ -329,7 +331,7 @@ class PathwayStep(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return f"{self.pathway.title} › étape {self.order}"
+        return f"{self.guide.title} › étape {self.order}"
 
 
 class ResourceFeedback(models.Model):

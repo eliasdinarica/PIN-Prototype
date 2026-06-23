@@ -3,8 +3,11 @@ from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
-from wagtail.admin.panels import FieldPanel, InlinePanel, TabbedInterface, ObjectList
-from .models import Resource, Pathway, Contributor
+from wagtail.admin.panels import (
+    FieldPanel, InlinePanel, TabbedInterface, ObjectList,
+    MultiFieldPanel, FieldRowPanel, HelpPanel,
+)
+from .models import Resource, Guide, Contributor, Audience, Category, Tag
 
 
 class ResourceSnippetViewSet(SnippetViewSet):
@@ -55,10 +58,10 @@ class ContributorSnippetViewSet(SnippetViewSet):
     ]
 
 
-class PathwaySnippetViewSet(SnippetViewSet):
-    model = Pathway
+class GuideSnippetViewSet(SnippetViewSet):
+    model = Guide
     icon = 'list-ul'
-    menu_label = 'Pathways'
+    menu_label = 'Guides'
     menu_order = 200
     list_display = ['title', 'order', 'is_active']
     search_fields = ['title']
@@ -70,12 +73,104 @@ class PathwaySnippetViewSet(SnippetViewSet):
         FieldPanel('icon'),
         FieldPanel('order'),
         FieldPanel('is_active'),
+        FieldPanel('audiences'),
+        FieldPanel('tags'),
+    ]
+
+
+class AudienceSnippetViewSet(SnippetViewSet):
+    model = Audience
+    icon = 'group'
+    menu_label = 'Audiences'
+    menu_order = 250
+    list_display = [
+        'name', 'statuses', 'has_children', 'arrived_over_year',
+        'min_age', 'max_age', 'min_computer_skills', 'min_education_level',
+    ]
+    list_filter = [
+        'has_children', 'arrived_over_year', 'has_driving_license',
+        'min_computer_skills', 'min_education_level',
+    ]
+    search_fields = ['name', 'description']
+
+    panels = [
+        HelpPanel(content=(
+            '<p>An <b>audience</b> describes a group of people through a set of '
+            'conditions. A profile that matches <b>all</b> the filled conditions '
+            'below will see the resources carrying the chosen tags pushed to the '
+            'top of its recommendations.</p>'
+            '<p>Leave a field empty to ignore that criterion.</p>'
+        )),
+        MultiFieldPanel(
+            [
+                FieldPanel('name'),
+                FieldPanel('description'),
+            ],
+            heading='Identity',
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel('statuses'),
+                FieldRowPanel([
+                    FieldPanel('has_children'),
+                    FieldPanel('arrived_over_year'),
+                ]),
+                FieldRowPanel([
+                    FieldPanel('min_age'),
+                    FieldPanel('max_age'),
+                ]),
+                FieldPanel('has_driving_license'),
+                FieldRowPanel([
+                    FieldPanel('min_computer_skills'),
+                    FieldPanel('min_education_level'),
+                ]),
+            ],
+            heading='Matching criteria',
+        ),
+        MultiFieldPanel(
+            [FieldPanel('relevant_tags')],
+            heading='Resources to highlight',
+        ),
+    ]
+
+
+class CategorySnippetViewSet(SnippetViewSet):
+    model = Category
+    icon = 'folder-open-inverse'
+    menu_label = 'Categories'
+    menu_order = 220
+    list_display = ['name', 'icon', 'priority']
+    search_fields = ['name', 'description']
+
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('description'),
+        FieldPanel('icon'),
+        FieldPanel('priority'),
+        FieldPanel('audiences'),
+        InlinePanel('subcategories', label='Subcategories', heading='Subcategories'),
+    ]
+
+
+class TagSnippetViewSet(SnippetViewSet):
+    model = Tag
+    icon = 'tag'
+    menu_label = 'Tags'
+    menu_order = 310
+    list_display = ['label']
+    search_fields = ['label']
+
+    panels = [
+        FieldPanel('label'),
     ]
 
 
 register_snippet(ResourceSnippetViewSet)
 register_snippet(ContributorSnippetViewSet)
-register_snippet(PathwaySnippetViewSet)
+register_snippet(GuideSnippetViewSet)
+register_snippet(AudienceSnippetViewSet)
+register_snippet(CategorySnippetViewSet)
+register_snippet(TagSnippetViewSet)
 
 
 # --- Guest workflow enforcement -------------------------------------------
