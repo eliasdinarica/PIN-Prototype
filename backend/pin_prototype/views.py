@@ -1,4 +1,3 @@
-from datetime import date as date_cls
 from django.db.models import Count, Prefetch
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -15,20 +14,11 @@ from .serializers import (
 )
 
 
-def _compute_age(birth_date):
-    if not birth_date:
-        return None
-    today = date_cls.today()
-    return today.year - birth_date.year - (
-        (today.month, today.day) < (birth_date.month, birth_date.day)
-    )
-
-
 _COMPUTER_SKILLS_ORDER = {'none': 0, 'basic': 1, 'advanced': 2}
 _EDUCATION_LEVEL_ORDER = {'primary': 0, 'secondary': 1, 'vocational': 2, 'bachelor': 3, 'master_plus': 4}
 
 
-def _audience_matches(audience, profile, age):
+def _audience_matches(audience, profile):
     if audience.statuses:
         allowed = [s.strip() for s in audience.statuses.split(',')]
         if profile.status not in allowed:
@@ -40,14 +30,6 @@ def _audience_matches(audience, profile, age):
 
     if audience.arrived_over_year is not None:
         if profile.arrived_over_year_ago != audience.arrived_over_year:
-            return False
-
-    if audience.min_age is not None and age is not None:
-        if age < audience.min_age:
-            return False
-
-    if audience.max_age is not None and age is not None:
-        if age > audience.max_age:
             return False
 
     if audience.has_driving_license is not None:
@@ -70,10 +52,9 @@ def _audience_matches(audience, profile, age):
 
 
 def _matched_tag_ids(profile):
-    age = _compute_age(profile.birth_date)
     tag_ids = set()
     for audience in Audience.objects.prefetch_related('relevant_tags').all():
-        if _audience_matches(audience, profile, age):
+        if _audience_matches(audience, profile):
             tag_ids.update(t.id for t in audience.relevant_tags.all())
     return tag_ids
 
@@ -164,7 +145,6 @@ class CategoryViewSet(ModelViewSet):
             try:
                 profile = Profile.objects.get(pk=profile_id)
                 tag_ids = _matched_tag_ids(profile)
-                age = _compute_age(profile.birth_date)
                 all_audiences = {a.id: a for a in Audience.objects.all()}
 
                 def score(r):
@@ -174,7 +154,7 @@ class CategoryViewSet(ModelViewSet):
                         return 0, False
                     audience_matches = sum(
                         1 for aid in aid_list
-                        if aid in all_audiences and _audience_matches(all_audiences[aid], profile, age)
+                        if aid in all_audiences and _audience_matches(all_audiences[aid], profile)
                     )
                     if audience_matches == 0:
                         return 0, False
@@ -230,7 +210,6 @@ def top_resources(request):
     if not tag_ids:
         return Response([])
 
-    age = _compute_age(profile.birth_date)
     lang_likes = _cohort_likes_by_language(profile)
     stat_likes = _cohort_likes_by_status(profile)
     results = []
@@ -244,7 +223,7 @@ def top_resources(request):
             r_audiences = list(resource.audiences.all())
             if not r_audiences:
                 continue
-            audience_matches = sum(1 for a in r_audiences if _audience_matches(a, profile, age))
+            audience_matches = sum(1 for a in r_audiences if _audience_matches(a, profile))
             if audience_matches == 0:
                 continue
             tag_overlap = len(resource_tag_ids & tag_ids)
@@ -265,7 +244,7 @@ def top_resources(request):
     return Response(results[:limit])
 
 
-def _rank_by_profile(items, name_key, profile, tag_ids, age, all_audiences, lang_likes, stat_likes):
+def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences, lang_likes, stat_likes):
     """Annotate serialized items (resources or guides) with recommendation flags
     and sort them so system- and community-recommended ones bubble up.
 
@@ -277,7 +256,7 @@ def _rank_by_profile(items, name_key, profile, tag_ids, age, all_audiences, lang
         aid_list = it.get('audience_ids', [])
         if not aid_list:
             return 0, False
-        matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile, age))
+        matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile))
         if matches == 0:
             return 0, False
         overlap = len(it_tag_ids & tag_ids)
@@ -343,12 +322,11 @@ def search_data(request):
         try:
             profile = Profile.objects.get(pk=profile_id)
             tag_ids = _matched_tag_ids(profile)
-            age = _compute_age(profile.birth_date)
             all_audiences = {a.id: a for a in Audience.objects.all()}
             lang_likes = _cohort_likes_by_language(profile)
             stat_likes = _cohort_likes_by_status(profile)
-            _rank_by_profile(rdata, 'name', profile, tag_ids, age, all_audiences, lang_likes, stat_likes)
-            _rank_by_profile(gdata, 'title', profile, tag_ids, age, all_audiences, set(), set())
+            _rank_by_profile(rdata, 'name', profile, tag_ids, all_audiences, lang_likes, stat_likes)
+            _rank_by_profile(gdata, 'title', profile, tag_ids, all_audiences, set(), set())
         except Profile.DoesNotExist:
             pass
 

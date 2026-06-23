@@ -42,10 +42,6 @@
     "arrivedOverYear": {
       "label": "Êtes-vous en Suisse depuis plus d'un an ?"
     },
-    "birthDate": {
-      "label": "Quelle est votre date de naissance ?",
-      "sublabel": "Votre date de naissance nous aide à personnaliser les ressources pour vous."
-    },
     "intro": {
       "eyebrow": "Bienvenue",
       "title": "Nous allons vous poser quelques questions.",
@@ -62,8 +58,7 @@
       "hasDrivingLicense": "Permis auto",
       "computerSkills": "Numérique",
       "educationLevel": "Formation",
-      "arrivedOverYear": "Durée en CH",
-      "birthDate": "Date de naiss."
+      "arrivedOverYear": "Durée en CH"
     },
     "yes": "Oui",
     "no": "Non",

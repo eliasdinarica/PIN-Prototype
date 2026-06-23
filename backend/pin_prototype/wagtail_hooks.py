@@ -70,7 +70,6 @@ class GuideSnippetViewSet(SnippetViewSet):
         FieldPanel('title'),
         FieldPanel('category'),
         FieldPanel('description'),
-        FieldPanel('icon'),
         FieldPanel('order'),
         FieldPanel('is_active'),
         FieldPanel('audiences'),
@@ -85,7 +84,7 @@ class AudienceSnippetViewSet(SnippetViewSet):
     menu_order = 250
     list_display = [
         'name', 'statuses', 'has_children', 'arrived_over_year',
-        'min_age', 'max_age', 'min_computer_skills', 'min_education_level',
+        'min_computer_skills', 'min_education_level',
     ]
     list_filter = [
         'has_children', 'arrived_over_year', 'has_driving_license',
@@ -114,10 +113,6 @@ class AudienceSnippetViewSet(SnippetViewSet):
                 FieldRowPanel([
                     FieldPanel('has_children'),
                     FieldPanel('arrived_over_year'),
-                ]),
-                FieldRowPanel([
-                    FieldPanel('min_age'),
-                    FieldPanel('max_age'),
                 ]),
                 FieldPanel('has_driving_license'),
                 FieldRowPanel([

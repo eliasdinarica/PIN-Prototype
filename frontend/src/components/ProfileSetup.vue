@@ -442,15 +442,6 @@ watch(currentStep, async (newVal) => {
                 </button>
               </div>
 
-              <!-- Date -->
-              <div v-else-if="question.type === 'date'">
-                <input
-                  type="date"
-                  class="w-full border-2 border-surface-400 bg-surface-600 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-surface-200 transition-colors duration-150"
-                  :value="answers[question.id] || ''"
-                  @input="answers[question.id] = $event.target.value"
-                />
-              </div>
             </div>
           </Transition>
 

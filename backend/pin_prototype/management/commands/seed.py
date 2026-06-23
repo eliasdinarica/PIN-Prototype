@@ -185,7 +185,7 @@ AUDIENCES = [
         'name': "Demandeur d'asile",
         'description': "Titulaires d'un permis N, F ou S.",
         'statuses': 'N,F,S', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis N/F/S', 'Asile', 'Droits', 'Aide sociale', 'Urgence', 'Logement urgence', 'Interprete'],
     },
@@ -193,7 +193,7 @@ AUDIENCES = [
         'name': 'Parents',
         'description': "Personnes ayant des enfants à charge.",
         'statuses': '', 'has_children': True,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Garde enfants', 'Enfants', 'Famille', 'Scolarisation', 'Allocations familiales', 'Soutien scolaire'],
     },
@@ -201,7 +201,7 @@ AUDIENCES = [
         'name': 'Nouveaux arrivants',
         'description': "Arrivés en Suisse depuis moins d'un an.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': False, 'min_age': None, 'max_age': None,
+        'arrived_over_year': False,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Logement', 'Langue', 'Cours de langue', 'Documents officiels', 'Assurance maladie', 'Banque', 'Traduction disponible'],
     },
@@ -209,7 +209,7 @@ AUDIENCES = [
         'name': "Établis depuis plus d'un an",
         'description': "En phase d'intégration avancée.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': True, 'min_age': None, 'max_age': None,
+        'arrived_over_year': True,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Formation', 'Reconnaissance diplome', 'Naturalisation', 'Vie sociale'],
     },
@@ -217,7 +217,7 @@ AUDIENCES = [
         'name': 'Résident long terme',
         'description': "Titulaires d'un permis B ou C.",
         'statuses': 'B,C', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis B', 'Permis C', 'Droits', 'Naturalisation', 'Impots'],
     },
@@ -225,31 +225,15 @@ AUDIENCES = [
         'name': 'Frontalier',
         'description': "Titulaires d'un permis G.",
         'statuses': 'G', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis G', 'Mobilite', 'Travail', 'Droit du travail', 'Impots'],
-    },
-    {
-        'name': 'Jeune adulte',
-        'description': "18 à 30 ans.",
-        'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': 18, 'max_age': 30,
-        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
-        'relevant_tags': ['Formation', 'Jeune', 'Cours de langue', 'Apprentissage', 'Universite', 'CV candidature', 'Recherche emploi'],
-    },
-    {
-        'name': 'Senior',
-        'description': "60 ans et plus.",
-        'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': 60, 'max_age': None,
-        'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
-        'relevant_tags': ['Senior', 'Sante', 'Mobilite', 'Transport medical', 'Aide sociale', 'Handicap'],
     },
     {
         'name': 'Femmes',
         'description': "Ressources spécifiquement destinées aux femmes migrantes.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Femmes', 'Sante mentale', 'Aide juridique'],
     },
@@ -257,7 +241,7 @@ AUDIENCES = [
         'name': 'Avec permis de conduire',
         'description': "Personnes titulaires d'un permis de conduire.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': True, 'min_computer_skills': '', 'min_education_level': '',
         'relevant_tags': ['Permis de conduire', 'Mobilite', 'Transports publics'],
     },
@@ -265,7 +249,7 @@ AUDIENCES = [
         'name': 'Compétences numériques de base',
         'description': "Personnes sachant utiliser internet et les services en ligne.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': 'basic', 'min_education_level': '',
         'relevant_tags': ['En ligne', 'E-learning', 'Formulaire'],
     },
@@ -273,7 +257,7 @@ AUDIENCES = [
         'name': 'Compétences numériques avancées',
         'description': "Personnes à l'aise avec les outils numériques et bureautiques.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': 'advanced', 'min_education_level': '',
         'relevant_tags': ['En ligne', 'E-learning', 'CV candidature', 'Universite'],
     },
@@ -281,7 +265,7 @@ AUDIENCES = [
         'name': 'Formation supérieure',
         'description': "Personnes avec un diplôme universitaire ou équivalent.",
         'statuses': '', 'has_children': None,
-        'arrived_over_year': None, 'min_age': None, 'max_age': None,
+        'arrived_over_year': None,
         'has_driving_license': None, 'min_computer_skills': '', 'min_education_level': 'bachelor',
         'relevant_tags': ['Reconnaissance diplome', 'Universite', 'Formation', 'CV candidature'],
     },
@@ -3053,7 +3037,6 @@ PATHWAYS = [
         'title': "Certifier son niveau de français — le test fide",
         'category': 'Education',
         'description': "Faites reconnaître officiellement votre niveau de français. Le test fide est accepté pour le renouvellement de permis et la naturalisation.",
-        'icon': 'LanguageIcon',
         'order': 0,
         'steps': [
             {
@@ -3195,7 +3178,6 @@ PATHWAYS = [
         'title': "S'inscrire au chômage à Neuchâtel — ONE",
         'category': 'Work',
         'description': "Activez vos droits aux indemnités chômage dès que vous perdez votre emploi. Chaque jour de retard peut vous faire perdre des indemnités.",
-        'icon': 'BriefcaseIcon',
         'order': 1,
         'steps': [
             {
@@ -3336,7 +3318,6 @@ PATHWAYS = [
         'title': "Faire reconnaître son diplôme étranger en Suisse",
         'category': 'Education',
         'description': "Votre diplôme obtenu à l'étranger peut être reconnu en Suisse. Une attestation officielle facilite votre recherche d'emploi et est obligatoire pour certaines professions.",
-        'icon': 'AcademicCapIcon',
         'order': 2,
         'steps': [
             {
@@ -3483,7 +3464,6 @@ PATHWAYS = [
         'title': "S'assurer avec la LAMal — assurance maladie obligatoire",
         'category': 'Health',
         'description': "Toute personne qui habite en Suisse doit avoir une assurance maladie. Vous avez 3 mois après l'arrivée pour choisir votre caisse.",
-        'icon': 'HeartIcon',
         'order': 3,
         'steps': [
             {
@@ -3832,14 +3812,12 @@ class Command(BaseCommand):
                 title=pw_data['title'],
                 defaults={
                     'description': pw_data['description'],
-                    'icon': pw_data['icon'],
                     'order': pw_data['order'],
                     'category': pw_category,
                 },
             )
             if not pw_created:
                 pw.description = pw_data['description']
-                pw.icon = pw_data['icon']
                 pw.order = pw_data['order']
                 pw.category = pw_category
                 pw.save()

@@ -11,7 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'id', 'language', 'other_languages', 'status', 'has_children',
-            'arrived_over_year_ago', 'birth_date',
+            'arrived_over_year_ago',
             'has_driving_license', 'computer_skills', 'education_level',
             'created_at',
         ]
@@ -177,7 +177,7 @@ class GuideBriefSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Guide
-        fields = ['id', 'title', 'description', 'icon', 'step_count', 'order']
+        fields = ['id', 'title', 'description', 'step_count', 'order']
 
 
 class GuideSerializer(serializers.ModelSerializer):
@@ -211,6 +211,6 @@ class GuideSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guide
         fields = [
-            'id', 'title', 'description', 'icon', 'step_count', 'order', 'category',
+            'id', 'title', 'description', 'step_count', 'order', 'category',
             'languages', 'tags', 'tag_ids', 'audience_ids', 'steps',
         ]

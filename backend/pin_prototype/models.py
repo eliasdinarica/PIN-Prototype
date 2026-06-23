@@ -78,7 +78,6 @@ class Profile(models.Model):
     status = models.CharField(max_length=5, choices=STATUS_CHOICES, default='other')
     has_children = models.BooleanField(null=True, blank=True)
     arrived_over_year_ago = models.BooleanField(null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
     has_driving_license = models.BooleanField(null=True, blank=True)
     computer_skills = models.CharField(max_length=10, choices=COMPUTER_SKILLS_CHOICES, blank=True, default='none')
     education_level = models.CharField(max_length=15, choices=EDUCATION_LEVEL_CHOICES, blank=True, default='primary')
@@ -94,8 +93,6 @@ class Audience(models.Model):
     statuses = models.CharField(max_length=50, blank=True, help_text="Comma-separated permit codes, e.g. N,F,S. Empty = any.")
     has_children = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
     arrived_over_year = models.BooleanField(null=True, blank=True, help_text="True/False to filter, leave blank for any.")
-    min_age = models.IntegerField(null=True, blank=True)
-    max_age = models.IntegerField(null=True, blank=True)
     has_driving_license = models.BooleanField(null=True, blank=True, help_text="If set, profile must match.")
     min_computer_skills = models.CharField(max_length=10, blank=True, choices=[('basic', 'Basic'), ('advanced', 'Advanced')], help_text="Minimum computer skill level. Empty = any.")
     min_education_level = models.CharField(max_length=15, blank=True, choices=[('primary', 'Primary'), ('secondary', 'Secondary'), ('vocational', 'Vocational'), ('bachelor', 'Bachelor'), ('master_plus', 'Master+')], help_text="Minimum education level. Empty = any.")
@@ -217,10 +214,6 @@ class Resource(PreviewableMixin, ClusterableModel):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    @property
-    def author_name(self):
-        return self.author.name if self.author else 'COSM'
-
     def get_preview_template(self, request, mode_name):
         return 'pin_prototype/resource_preview.html'
 
@@ -310,7 +303,6 @@ class Guide(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name='guides')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    icon = models.CharField(max_length=50)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 

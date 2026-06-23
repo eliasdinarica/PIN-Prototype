@@ -27,10 +27,6 @@
     "arrivedOverYear": {
       "label": "Sei in Svizzera da più di un anno?"
     },
-    "birthDate": {
-      "label": "Quando sei nato/a?",
-      "sublabel": "La tua data di nascita ci aiuta a personalizzare le risorse per te."
-    },
     "intro": {
       "eyebrow": "Benvenuto",
       "title": "Ti faremo alcune domande.",
@@ -45,8 +41,7 @@
       "status": "Permesso",
       "hasChildren": "Figli",
       "originSector": "Settore",
-      "arrivedOverYear": "Arrivo in CH",
-      "birthDate": "Data di nascita"
+      "arrivedOverYear": "Arrivo in CH"
     },
     "yes": "Sì",
     "no": "No",

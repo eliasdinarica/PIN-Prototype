@@ -1,0 +1,159 @@
+digraph data_model {
+    rankdir=LR;
+    graph [fontname="Helvetica", fontsize=11, splines=true, nodesep=0.5, ranksep=1.1, bgcolor="white"];
+    node  [shape=plaintext, fontname="Helvetica", fontsize=10];
+    edge  [fontname="Helvetica", fontsize=9, color="#555555"];
+
+    /* ---------- Profil et ciblage ---------- */
+
+    Profile [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eef3fb">
+        <tr><td bgcolor="#3b6ea5"><font color="white"><b>Profile</b></font></td></tr>
+        <tr><td align="left">language</td></tr>
+        <tr><td align="left">other_languages</td></tr>
+        <tr><td align="left">status</td></tr>
+        <tr><td align="left">has_children</td></tr>
+        <tr><td align="left">arrived_over_year_ago</td></tr>
+        <tr><td align="left">has_driving_license</td></tr>
+        <tr><td align="left">computer_skills</td></tr>
+        <tr><td align="left">education_level</td></tr>
+        </table>>];
+
+    Audience [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eef3fb">
+        <tr><td bgcolor="#3b6ea5"><font color="white"><b>Audience</b></font></td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">statuses</td></tr>
+        <tr><td align="left">has_children</td></tr>
+        <tr><td align="left">arrived_over_year</td></tr>
+        <tr><td align="left">has_driving_license</td></tr>
+        <tr><td align="left">min_computer_skills</td></tr>
+        <tr><td align="left">min_education_level</td></tr>
+        </table>>];
+
+    Tag [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eef3fb">
+        <tr><td bgcolor="#3b6ea5"><font color="white"><b>Tag</b></font></td></tr>
+        <tr><td align="left">label</td></tr>
+        </table>>];
+
+    /* ---------- Taxonomie ---------- */
+
+    Category [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eafbef">
+        <tr><td bgcolor="#2e8b57"><font color="white"><b>Category</b></font></td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">description</td></tr>
+        <tr><td align="left">icon</td></tr>
+        <tr><td align="left">priority</td></tr>
+        </table>>];
+
+    Subcategory [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eafbef">
+        <tr><td bgcolor="#2e8b57"><font color="white"><b>Subcategory</b></font></td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">order</td></tr>
+        </table>>];
+
+    /* ---------- Contenu ---------- */
+
+    Resource [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbf3e6">
+        <tr><td bgcolor="#c87f0a"><font color="white"><b>Resource</b></font></td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">description</td></tr>
+        <tr><td align="left">why_interesting</td></tr>
+        <tr><td align="left">how_to</td></tr>
+        <tr><td align="left">location</td></tr>
+        <tr><td align="left">status</td></tr>
+        <tr><td align="left">created_at</td></tr>
+        </table>>];
+
+    ResourceTranslation [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbf3e6">
+        <tr><td bgcolor="#c87f0a"><font color="white"><b>ResourceTranslation</b></font></td></tr>
+        <tr><td align="left">language</td></tr>
+        <tr><td align="left">name / description</td></tr>
+        <tr><td align="left">why_interesting</td></tr>
+        <tr><td align="left">how_to / location</td></tr>
+        </table>>];
+
+    ResourcePlace [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbf3e6">
+        <tr><td bgcolor="#c87f0a"><font color="white"><b>ResourcePlace</b></font></td></tr>
+        <tr><td align="left">name / city / address</td></tr>
+        <tr><td align="left">phone / email</td></tr>
+        <tr><td align="left">latitude / longitude</td></tr>
+        </table>>];
+
+    Attachment [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbf3e6">
+        <tr><td bgcolor="#c87f0a"><font color="white"><b>Attachment</b></font></td></tr>
+        <tr><td align="left">file / label</td></tr>
+        <tr><td align="left">order</td></tr>
+        </table>>];
+
+    Contributor [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbf3e6">
+        <tr><td bgcolor="#c87f0a"><font color="white"><b>Contributor</b></font></td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">is_default</td></tr>
+        </table>>];
+
+    /* ---------- Guides ---------- */
+
+    Guide [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#f6eafb">
+        <tr><td bgcolor="#8e44ad"><font color="white"><b>Guide</b></font></td></tr>
+        <tr><td align="left">title</td></tr>
+        <tr><td align="left">description</td></tr>
+        <tr><td align="left">order</td></tr>
+        <tr><td align="left">is_active</td></tr>
+        </table>>];
+
+    GuideStep [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#f6eafb">
+        <tr><td bgcolor="#8e44ad"><font color="white"><b>GuideStep</b></font></td></tr>
+        <tr><td align="left">order</td></tr>
+        <tr><td align="left">step_label</td></tr>
+        </table>>];
+
+    /* ---------- Retours ---------- */
+
+    ResourceFeedback [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#fbeaea">
+        <tr><td bgcolor="#b03a3a"><font color="white"><b>ResourceFeedback</b></font></td></tr>
+        <tr><td align="left">is_useful</td></tr>
+        <tr><td align="left">created_at</td></tr>
+        </table>>];
+
+    User [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4" bgcolor="#eeeeee">
+        <tr><td bgcolor="#777777"><font color="white"><b>User</b></font></td></tr>
+        <tr><td align="left">(auth)</td></tr>
+        </table>>];
+
+    /* ---------- Relations (FK = trait plein, M2M = pointillé) ---------- */
+
+    Subcategory       -> Category   [label="category", arrowhead=normal];
+    Resource          -> Category   [label="category"];
+    Resource          -> Subcategory[label="subcategory"];
+    Resource          -> Contributor[label="author"];
+    ResourcePlace     -> Resource   [label="resource"];
+    Attachment        -> Resource   [label="resource"];
+    ResourceTranslation -> Resource [label="resource (unique lang)"];
+    GuideStep         -> Guide      [label="guide"];
+    GuideStep         -> Resource   [label="resource"];
+    Guide             -> Category   [label="category"];
+    ResourceFeedback  -> Profile    [label="profile"];
+    ResourceFeedback  -> Resource   [label="resource (unique pair)"];
+
+    edge [style=dashed, color="#999999", arrowhead=none];
+    Category  -> Audience [label="audiences"];
+    Resource  -> Audience [label="audiences"];
+    Resource  -> Tag      [label="tags"];
+    Guide     -> Audience [label="audiences"];
+    Guide     -> Tag      [label="tags"];
+    Audience  -> Tag      [label="relevant_tags"];
+    Contributor -> User   [label="editors"];
+}

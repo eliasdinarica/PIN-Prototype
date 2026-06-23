@@ -42,10 +42,6 @@
     "arrivedOverYear": {
       "label": "Have you been in Switzerland for more than 1 year?"
     },
-    "birthDate": {
-      "label": "When were you born?",
-      "sublabel": "Your date of birth helps us tailor resources for you."
-    },
     "intro": {
       "eyebrow": "Welcome",
       "title": "We will ask you a few questions to help create your profile.",
@@ -62,8 +58,7 @@
       "hasDrivingLicense": "Driving licence",
       "computerSkills": "Digital skills",
       "educationLevel": "Education",
-      "arrivedOverYear": "Time in CH",
-      "birthDate": "Birth date"
+      "arrivedOverYear": "Time in CH"
     },
     "yes": "Yes",
     "no": "No",

@@ -27,10 +27,6 @@
     "arrivedOverYear": {
       "label": "¿Llevas más de un año en Suiza?"
     },
-    "birthDate": {
-      "label": "¿Cuándo naciste?",
-      "sublabel": "Tu fecha de nacimiento nos ayuda a personalizar los recursos para ti."
-    },
     "intro": {
       "eyebrow": "Bienvenido",
       "title": "Vamos a hacerte algunas preguntas.",
@@ -45,8 +41,7 @@
       "status": "Permiso",
       "hasChildren": "Hijos",
       "originSector": "Sector",
-      "arrivedOverYear": "Tiempo en CH",
-      "birthDate": "Fecha de nac."
+      "arrivedOverYear": "Tiempo en CH"
     },
     "yes": "Sí",
     "no": "No",

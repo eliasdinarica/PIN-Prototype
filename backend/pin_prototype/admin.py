@@ -11,7 +11,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Audience)
 class AudienceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'statuses', 'has_children', 'arrived_over_year', 'min_age', 'max_age', 'has_driving_license', 'min_computer_skills', 'min_education_level']
+    list_display = ['id', 'name', 'statuses', 'has_children', 'arrived_over_year', 'has_driving_license', 'min_computer_skills', 'min_education_level']
     search_fields = ['name']
     filter_horizontal = ['relevant_tags']
 
