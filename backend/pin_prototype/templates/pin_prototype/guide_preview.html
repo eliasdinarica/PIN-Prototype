@@ -1,0 +1,28 @@
+{% extends 'pin_prototype/preview_base.html' %}
+
+{% block intro_meta %}
+  <span class="intro-meta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75 3.75 4.5v12.75L9 19.5m0-12.75 6 2.25m-6-2.25v12.75m6-10.5 5.25-2.25v12.75L15 19.5m0-12.75v12.75"/></svg>
+    {{ step_count }} étapes
+  </span>
+{% endblock %}
+
+{% block phone_body %}
+  {% for step in steps %}
+    <div class="step">
+      <div class="step-rail">
+        <div class="step-num">{{ step.num }}</div>
+        {% if not forloop.last %}<div class="step-line"></div>{% endif %}
+      </div>
+      <div class="step-main">
+        <div class="step-head">
+          <div class="step-title">{{ step.title }}</div>
+          {% if step.description %}<div class="step-desc">{{ step.description }}</div>{% endif %}
+        </div>
+        {% include 'pin_prototype/_section_cards.html' with sections=step.sections %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="empty">No steps yet.</p>
+  {% endfor %}
+{% endblock %}

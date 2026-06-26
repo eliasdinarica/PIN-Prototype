@@ -1,7 +1,12 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
+import {
+  ArrowLeftIcon, ArrowRightIcon, CheckIcon, QuestionMarkCircleIcon, ChevronDownIcon,
+  HeartIcon, AcademicCapIcon, WrenchScrewdriverIcon, ShoppingBagIcon, SunIcon,
+  BuildingOffice2Icon, ComputerDesktopIcon, PaintBrushIcon, BuildingOfficeIcon,
+  BuildingStorefrontIcon, TruckIcon, EllipsisHorizontalIcon,
+} from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   initialAnswers: { type: Object, default: () => ({}) },
@@ -19,31 +24,34 @@ const MAIN_LANGUAGE_OPTIONS = [
   { value: 'ru', label: 'Русский' },
 ]
 
-// Languages a person can additionally speak (broader list, not the UI language).
-const LANGUAGE_OPTIONS = [
-  { value: 'en', label: 'English' },
-  { value: 'fr', label: 'Français' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'it', label: 'Italiano' },
-  { value: 'es', label: 'Español' },
-  { value: 'pt', label: 'Português' },
-  { value: 'uk', label: 'Українська' },
-  { value: 'ru', label: 'Русский' },
-]
-
 const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 
-function normalizeOtherLanguages(value) {
-  if (!value || value === '') return []
-  if (typeof value === 'string') return value.split(',').filter(Boolean).map(lang => ({ lang: lang.trim(), level: null }))
-  if (!Array.isArray(value) || value.length === 0) return []
-  return typeof value[0] === 'string' ? value.map(lang => ({ lang, level: null })) : value
-}
+// Field studied/worked in back home — each with a small icon. Shown as a
+// collapsible list inside the education question.
+const SECTOR_OPTIONS = [
+  { value: 'healthcare', icon: HeartIcon },
+  { value: 'education', icon: AcademicCapIcon },
+  { value: 'engineering', icon: WrenchScrewdriverIcon },
+  { value: 'trade', icon: ShoppingBagIcon },
+  { value: 'agriculture', icon: SunIcon },
+  { value: 'construction', icon: BuildingOffice2Icon },
+  { value: 'it', icon: ComputerDesktopIcon },
+  { value: 'arts', icon: PaintBrushIcon },
+  { value: 'administration', icon: BuildingOfficeIcon },
+  { value: 'catering', icon: BuildingStorefrontIcon },
+  { value: 'transport', icon: TruckIcon },
+  { value: 'other', icon: EllipsisHorizontalIcon },
+]
 
-const answers = ref({
-  ...props.initialAnswers,
-  otherLanguages: normalizeOtherLanguages(props.initialAnswers.otherLanguages),
-})
+const answers = ref({ ...props.initialAnswers })
+
+// Sector picker (inside the education question) is collapsed by default.
+const sectorOpen = ref(false)
+const selectedSector = computed(() => SECTOR_OPTIONS.find(s => s.value === answers.value.originSector))
+function selectSector(value) {
+  answers.value.originSector = value
+  sectorOpen.value = false
+}
 
 const questions = computed(() => [
   {
@@ -64,13 +72,24 @@ const questions = computed(() => [
     options: MAIN_LANGUAGE_OPTIONS,
   },
   {
-    id: 'otherLanguages',
-    type: 'language-with-levels',
+    id: 'frenchLevel',
+    type: 'choice',
     required: false,
-    shortLabel: t('profile.timeline.otherLanguages'),
-    label: t('profile.otherLanguages.label'),
-    sublabel: t('profile.otherLanguages.sublabel'),
-    options: LANGUAGE_OPTIONS.filter(opt => opt.value !== answers.value.language),
+    shortLabel: t('profile.timeline.frenchLevel'),
+    label: t('profile.frenchLevel.label'),
+    sublabel: t('profile.frenchLevel.sublabel'),
+    options: [
+      { value: 'none', label: t('profile.frenchLevel.none') },
+      ...CEFR_LEVELS.map(l => ({ value: l, label: l })),
+    ],
+  },
+  {
+    id: 'birthDate',
+    type: 'date',
+    required: false,
+    shortLabel: t('profile.timeline.birthDate'),
+    label: t('profile.birthDate.label'),
+    sublabel: t('profile.birthDate.sublabel'),
   },
   {
     id: 'status',
@@ -118,8 +137,6 @@ const questions = computed(() => [
     label: t('profile.educationLevel.label'),
     sublabel: t('profile.educationLevel.sublabel'),
     options: [
-      { value: 'primary', label: t('profile.educationLevel.primary') },
-      { value: 'secondary', label: t('profile.educationLevel.secondary') },
       { value: 'vocational', label: t('profile.educationLevel.vocational') },
       { value: 'bachelor', label: t('profile.educationLevel.bachelor') },
       { value: 'master_plus', label: t('profile.educationLevel.master_plus') },
@@ -170,8 +187,7 @@ function getStepVisualState(index) {
   if (q.type === 'intro') return 'answered'
   const a = answers.value[q.id]
   if (q.type === 'boolean' && (a === true || a === false)) return 'answered'
-  if (q.type === 'language-with-levels' && Array.isArray(a) && a.length > 0) return 'answered'
-  if (q.type !== 'boolean' && q.type !== 'language-with-levels' && a !== undefined && a !== null && a !== '') return 'answered'
+  if (q.type !== 'boolean' && a !== undefined && a !== null && a !== '') return 'answered'
   return 'skipped'
 }
 
@@ -204,33 +220,6 @@ function toggle(value) {
 function goNext() {
   if (canAdvance.value) advance()
 }
-
-function toggleLanguage(langValue) {
-  const current = answers.value[question.value.id] || []
-  const idx = current.findIndex(item => item.lang === langValue)
-  answers.value[question.value.id] = idx === -1
-    ? [...current, { lang: langValue, level: null }]
-    : current.filter((_, i) => i !== idx)
-}
-
-function isLanguageSelected(langValue) {
-  return (answers.value[question.value.id] || []).some(item => item.lang === langValue)
-}
-
-function getLanguageLevel(langValue) {
-  return (answers.value[question.value.id] || []).find(item => item.lang === langValue)?.level ?? null
-}
-
-function setLanguageLevel(langValue, level) {
-  answers.value[question.value.id] = (answers.value[question.value.id] || []).map(item =>
-    item.lang === langValue ? { ...item, level: item.level === level ? null : level } : item
-  )
-}
-
-function languageLabel(langValue) {
-  return LANGUAGE_OPTIONS.find(opt => opt.value === langValue)?.label ?? langValue
-}
-
 
 function isSelected(value) {
   const a = answers.value[question.value.id]
@@ -356,68 +345,60 @@ watch(currentStep, async (newVal) => {
                 
               </ul>
 
-              <!-- Language with levels -->
-              <div v-if="question.type === 'language-with-levels'" class="flex flex-col gap-4">
+              <!-- Choice / Multi-select -->
+              <div v-else-if="question.type === 'choice' || question.type === 'multi-select'">
                 <div class="grid grid-cols-2 gap-3">
                   <button
                     v-for="opt in question.options"
                     :key="opt.value"
                     class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
-                    :class="isLanguageSelected(opt.value)
+                    :class="isSelected(opt.value)
                       ? 'border-white bg-surface-600 text-white'
                       : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
-                    @click="toggleLanguage(opt.value)"
+                    @click="question.type === 'choice' ? select(opt.value) : toggle(opt.value)"
                   >
                     {{ opt.label }}
                   </button>
                 </div>
-                <div v-if="(answers[question.id] || []).length" class="flex flex-col gap-2">
-                  <p class="text-xs text-surface-300 uppercase tracking-wider font-semibold">{{ t('profile.otherLanguages.levelHint') }}</p>
-                  <div
-                    v-for="item in (answers[question.id] || [])"
-                    :key="item.lang"
-                    class="flex items-center gap-2"
+
+                <!-- Sector picker (education question only): collapsible list with icons -->
+                <div v-if="question.id === 'educationLevel'" class="mt-5">
+                  <p class="text-sm text-surface-300 mb-2">{{ t('profile.originSector.label') }}</p>
+                  <button
+                    class="flex items-center justify-between w-full border-2 border-surface-400 bg-surface-600 rounded-xl px-4 py-3 cursor-pointer transition-colors duration-150 hover:border-surface-200"
+                    @click="sectorOpen = !sectorOpen"
                   >
-                    <span class="text-sm text-surface-200 w-24 shrink-0">{{ languageLabel(item.lang) }}</span>
-                    <div class="flex gap-1 flex-wrap">
-                      <button
-                        v-for="level in CEFR_LEVELS"
-                        :key="level"
-                        class="px-2 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-150"
-                        :class="getLanguageLevel(item.lang) === level
-                          ? 'bg-surface-600 border-white text-white'
-                          : 'bg-surface-400 border-surface-400 text-surface-300 hover:border-surface-200 hover:text-white'"
-                        @click="setLanguageLevel(item.lang, level)"
-                      >
-                        {{ level }}
-                      </button>
-                      <button
-                        class="px-2 py-1 rounded-lg text-xs font-semibold border cursor-pointer transition-all duration-150"
-                        :class="getLanguageLevel(item.lang) === null
-                          ? 'bg-surface-600 border-white text-white'
-                          : 'bg-surface-400 border-surface-400 text-surface-300 hover:border-surface-200 hover:text-white'"
-                        @click="setLanguageLevel(item.lang, null)"
-                      >
-                        {{ t('profile.cefrUnknown') }}
-                      </button>
-                    </div>
+                    <span class="flex items-center gap-2 text-sm font-medium" :class="selectedSector ? 'text-white' : 'text-surface-300'">
+                      <component :is="selectedSector.icon" v-if="selectedSector" class="w-5 h-5 shrink-0" />
+                      {{ selectedSector ? t('profile.sectors.' + selectedSector.value) : t('profile.originSector.placeholder') }}
+                    </span>
+                    <ChevronDownIcon class="w-4 h-4 text-surface-300 shrink-0 transition-transform duration-200" :class="sectorOpen ? 'rotate-180' : ''" />
+                  </button>
+                  <div v-if="sectorOpen" class="grid grid-cols-2 gap-2 mt-2">
+                    <button
+                      v-for="s in SECTOR_OPTIONS"
+                      :key="s.value"
+                      class="flex items-center gap-2 py-2.5 px-3 border-2 rounded-lg text-xs font-medium cursor-pointer transition-all duration-150 text-left"
+                      :class="answers.originSector === s.value
+                        ? 'border-white bg-surface-600 text-white'
+                        : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
+                      @click="selectSector(s.value)"
+                    >
+                      <component :is="s.icon" class="w-4 h-4 shrink-0" />
+                      <span class="truncate">{{ t('profile.sectors.' + s.value) }}</span>
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <!-- Choice / Multi-select -->
-              <div v-else-if="question.type === 'choice' || question.type === 'multi-select'" class="grid grid-cols-2 gap-3">
-                <button
-                  v-for="opt in question.options"
-                  :key="opt.value"
-                  class="py-3.5 px-4 border-2 rounded-xl text-sm font-medium cursor-pointer transition-all duration-150 text-left"
-                  :class="isSelected(opt.value)
-                    ? 'border-white bg-surface-600 text-white'
-                    : 'border-surface-400 bg-surface-400 text-surface-600 hover:border-surface-200 hover:text-white'"
-                  @click="question.type === 'choice' ? select(opt.value) : toggle(opt.value)"
-                >
-                  {{ opt.label }}
-                </button>
+              <!-- Date -->
+              <div v-else-if="question.type === 'date'">
+                <input
+                  type="date"
+                  class="w-full border-2 border-surface-400 bg-surface-600 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:border-surface-200 transition-colors duration-150"
+                  :value="answers[question.id] || ''"
+                  @input="answers[question.id] = $event.target.value"
+                />
               </div>
 
               <!-- Boolean -->

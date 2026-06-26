@@ -5,12 +5,15 @@
       "label": "What is your preferred language?",
       "sublabel": "Resources will be displayed in the language you choose."
     },
-    "otherLanguages": {
-      "label": "What other languages do you speak?",
-      "sublabel": "Choose all that apply. You can add your level for each language.",
-      "levelHint": "Level (optional)"
+    "frenchLevel": {
+      "label": "What is your level of French?",
+      "sublabel": "A1 is beginner, C2 is fluent.",
+      "none": "I do not speak French yet"
     },
-    "cefrUnknown": "?",
+    "birthDate": {
+      "label": "When were you born?",
+      "sublabel": "Your age helps us suggest resources for people in a similar situation."
+    },
     "status": {
       "label": "What is your permit type?",
       "sublabel": "This is your Swiss residence permit. It is the card you got when you arrived.",
@@ -31,13 +34,15 @@
       "advanced": "I am comfortable (office tools, online services)"
     },
     "educationLevel": {
-      "label": "What is your education level?",
-      "sublabel": "Your education from your home country.",
-      "primary": "Primary school or less",
-      "secondary": "Secondary school (up to age 15–16)",
+      "label": "What is your level of higher education?",
+      "sublabel": "Your studies from your home country.",
       "vocational": "Vocational training (apprenticeship…)",
       "bachelor": "University / Bachelor",
       "master_plus": "Master or Doctorate"
+    },
+    "originSector": {
+      "label": "In which field did you study or work?",
+      "placeholder": "Choose a field"
     },
     "arrivedOverYear": {
       "label": "Have you been in Switzerland for more than 1 year?"
@@ -52,7 +57,8 @@
     "timeline": {
       "intro": "Introduction",
       "language": "Language",
-      "otherLanguages": "Other languages",
+      "frenchLevel": "French level",
+      "birthDate": "Birth date",
       "status": "Permit",
       "hasChildren": "Family",
       "hasDrivingLicense": "Driving licence",
@@ -188,10 +194,9 @@
     "tapToDismiss": "Tap anywhere to dismiss"
   },
   "community": {
-    "bySystem": "Recommended for you",
-    "byLanguage": "Recommended · {code} community",
-    "byStatus": "Recommended · permit {code}",
-    "bySimilarity": "Similar to resources you liked"
+    "bySystem": "Recommended to your profile by the admins",
+    "bySimilar": "Useful to profiles similar to yours",
+    "byAffinity": "Based on what you saved and liked"
   },
   "resource": {
     "writtenBy": "Written by {name}"
@@ -201,7 +206,9 @@
     "save": "Save",
     "saved": "Saved",
     "share": "Share",
-    "copied": "Link copied!"
+    "copied": "Link copied!",
+    "listen": "Listen",
+    "stopListen": "Stop"
   },
   "feedback": {
     "useful": "Is this resource useful?",

@@ -3,14 +3,16 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   MapIcon, ChevronDownIcon, ShareIcon, BookmarkIcon,
-  SparklesIcon, UsersIcon, ShieldCheckIcon,
+  SparklesIcon, UsersIcon, ShieldCheckIcon, SpeakerWaveIcon, StopCircleIcon,
 } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import { useSaved } from '@/composables/useSaved'
+import { useSpeech } from '@/composables/useSpeech'
 
 const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
+const { supported: speechSupported, speakingId, toggle: toggleSpeech } = useSpeech()
 
 const props = defineProps({
   guide: { type: Object, required: true },
@@ -31,6 +33,10 @@ const currentLang = ref('fr')
 const translated = ref(null)
 const langOpen = ref(false)
 const content = computed(() => translated.value || props.guide)
+
+// Speech id + text for the guide's opening section (title + description).
+const introId = computed(() => `g${props.guide.id}-intro`)
+const introText = computed(() => [content.value.title, content.value.description].filter(Boolean).join('. '))
 
 async function selectLang(lang) {
   langOpen.value = false
@@ -58,31 +64,31 @@ async function share() {
     <!-- Collapsed row -->
     <button
       v-if="!expanded"
-      class="flex items-center w-full py-4 text-left cursor-pointer bg-transparent border-none gap-4 group"
+      class="flex flex-col w-full py-4 text-left cursor-pointer bg-transparent border-none gap-1.5 group"
       @click="$emit('toggle', guide.id)"
     >
-      <div class="flex-1 min-w-0">
-        <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
-        <h3 class="font-semibold text-lg leading-snug text-surface-800 group-hover:text-brand-500 transition-colors">
-          {{ guide.title }}
-        </h3>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="flex flex-col items-end gap-0.5">
-          <span v-if="guide.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
-            <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
-          </span>
-          <span v-if="guide.community_by_language" class="flex items-center gap-1 text-xs text-cyan-600">
-            <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.byLanguage', { code: guide.community_by_language.toUpperCase() }) }}
-          </span>
-          <span v-if="guide.community_by_status" class="flex items-center gap-1 text-xs text-amber-600">
-            <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byStatus', { code: guide.community_by_status }) }}
-          </span>
+      <div class="flex items-center w-full gap-3">
+        <div class="flex-1 min-w-0">
+          <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
+          <h3 class="font-semibold text-lg leading-snug text-surface-800 group-hover:text-brand-500 transition-colors">
+            {{ guide.title }}
+          </h3>
         </div>
-        <span class="flex items-center gap-1 text-xs text-brand-500 bg-brand-50 px-2 py-0.5 rounded-full">
+        <span class="flex items-center gap-1 text-xs text-brand-500 bg-brand-50 px-2 py-0.5 rounded-full shrink-0">
           <MapIcon class="w-3 h-3 shrink-0" />{{ t('nav.sections.pathways') }}
         </span>
         <ChevronDownIcon class="w-5 h-5 text-surface-400 shrink-0" />
+      </div>
+      <div
+        v-if="guide.recommended_by_system || guide.recommended_by_similar"
+        class="flex flex-wrap justify-end gap-x-3 gap-y-0.5"
+      >
+        <span v-if="guide.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
+          <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
+        </span>
+        <span v-if="guide.recommended_by_similar" class="flex items-center gap-1 text-xs text-cyan-600">
+          <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.bySimilar') }}
+        </span>
       </div>
     </button>
 
@@ -104,11 +110,8 @@ async function share() {
               <span v-if="guide.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
                 <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
               </span>
-              <span v-if="guide.community_by_language" class="flex items-center gap-1 text-xs text-cyan-600">
-                <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.byLanguage', { code: guide.community_by_language.toUpperCase() }) }}
-              </span>
-              <span v-if="guide.community_by_status" class="flex items-center gap-1 text-xs text-amber-600">
-                <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byStatus', { code: guide.community_by_status }) }}
+              <span v-if="guide.recommended_by_similar" class="flex items-center gap-1 text-xs text-cyan-600">
+                <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.bySimilar') }}
               </span>
             </div>
           </div>
@@ -132,6 +135,15 @@ async function share() {
             >
               <ShareIcon class="w-5 h-5" />
               {{ copied ? t('actions.copied') : t('actions.share') }}
+            </button>
+            <button
+              v-if="speechSupported && introText"
+              class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer bg-transparent border-none"
+              :class="speakingId === introId ? 'text-brand-600' : 'text-surface-500 hover:text-brand-600'"
+              @click.stop="toggleSpeech(introId, introText, currentLang)"
+            >
+              <component :is="speakingId === introId ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+              {{ speakingId === introId ? t('actions.stopListen') : t('actions.listen') }}
             </button>
           </div>
           <div class="relative">
@@ -188,6 +200,8 @@ async function share() {
             <ArticleRenderer
               v-if="step.resource.sections?.length"
               :sections="step.resource.sections"
+              :lang="currentLang"
+              :prefix="`g${guide.id}-s${step.id}-`"
             />
           </div>
         </div>

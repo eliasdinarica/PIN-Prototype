@@ -2,16 +2,21 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ShareIcon, BookmarkIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { ShareIcon, BookmarkIcon, ChevronDownIcon, SpeakerWaveIcon, StopCircleIcon } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import ResourceLocation from '@/components/ResourceLocation.vue'
 import { useSaved } from '@/composables/useSaved'
+import { useSpeech } from '@/composables/useSpeech'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
+const { supported: speechSupported, speakingId, toggle: toggleSpeech } = useSpeech()
+
+const introId = computed(() => `r${route.params.id}-intro`)
+const introText = computed(() => [resource.value?.name, resource.value?.description].filter(Boolean).join('. '))
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const resource = ref(null)
@@ -118,6 +123,15 @@ onMounted(async () => {
                   <ShareIcon class="w-5 h-5" />
                   {{ copied ? t('actions.copied') : t('actions.share') }}
                 </button>
+                <button
+                  v-if="speechSupported && introText"
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer bg-transparent border-none"
+                  :class="speakingId === introId ? 'text-brand-600' : 'text-surface-500 hover:text-brand-600'"
+                  @click="toggleSpeech(introId, introText, currentLang)"
+                >
+                  <component :is="speakingId === introId ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+                  {{ speakingId === introId ? t('actions.stopListen') : t('actions.listen') }}
+                </button>
               </div>
               <div class="relative">
                 <button
@@ -154,10 +168,12 @@ onMounted(async () => {
           <ArticleRenderer
             v-if="displaySections.length"
             :sections="displaySections"
+            :lang="currentLang"
+            :prefix="`r${route.params.id}-`"
           />
 
           <!-- Location: structured places + map -->
-          <ResourceLocation v-if="resource.places?.length" :places="resource.places" />
+          <ResourceLocation v-if="resource.places?.length" :places="resource.places" :lang="currentLang" />
         </div>
       </template>
 

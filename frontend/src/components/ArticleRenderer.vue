@@ -1,13 +1,28 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { SpeakerWaveIcon, StopCircleIcon } from '@heroicons/vue/24/outline'
+import { useSpeech, stripHtml } from '@/composables/useSpeech'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
+const { supported: speechSupported, speakingId, toggle: toggleSpeech } = useSpeech()
 
 const props = defineProps({
-  // Fixed sections: [{ key: 'why'|'how'|'location', html: '...' }]
+  // Sections: [{ key, title, html }]. Standard keys (why/how/location) get a
+  // UI-translated title; any other key falls back to its own `title`.
   sections: { type: Array, default: () => [] },
+  // Language the content is shown in, used to pick the right speech voice.
+  lang: { type: String, default: 'fr' },
+  // Prefix to keep speech button ids unique across resources on the page.
+  prefix: { type: String, default: '' },
 })
+
+function itemId(key, i) {
+  return `${props.prefix}${key}-${i}`
+}
+function itemText(item) {
+  return [item.title, stripHtml(item.html)].filter(Boolean).join('. ')
+}
 
 // Collapsed by default — user opens each item via the "+".
 const open = ref({})
@@ -75,7 +90,11 @@ function parseSection(html) {
 const parsedSections = computed(() =>
   props.sections.map(s => ({
     key: s.key,
-    title: t(`article.${s.key}`),
+    // Localise the standard section titles to the CONTENT language (props.lang),
+    // not the app UI locale, so they match the body language being shown.
+    title: te(`article.${s.key}`, props.lang)
+      ? t(`article.${s.key}`, {}, { locale: props.lang })
+      : (s.title || ''),
     ...parseSection(s.html),
   }))
 )
@@ -92,14 +111,30 @@ const parsedSections = computed(() =>
       <!-- Collapsible item rows -->
       <div v-if="s.items.length" class="ar-items">
         <div v-for="(item, i) in s.items" :key="i" class="ar-item">
-          <button
-            class="ar-item-head"
-            :aria-expanded="!!open[`${s.key}-${i}`]"
-            @click="toggle(`${s.key}-${i}`)"
-          >
-            <span class="ar-item-title">{{ item.title }}</span>
-            <span class="ar-plus">{{ open[`${s.key}-${i}`] ? '–' : '+' }}</span>
-          </button>
+          <div class="ar-item-head">
+            <button
+              class="ar-item-toggle"
+              :aria-expanded="!!open[`${s.key}-${i}`]"
+              @click="toggle(`${s.key}-${i}`)"
+            >
+              <span class="ar-item-title">{{ item.title }}</span>
+            </button>
+            <button
+              v-if="speechSupported"
+              class="ar-audio"
+              :class="{ 'ar-audio-on': speakingId === itemId(s.key, i) }"
+              :title="t(speakingId === itemId(s.key, i) ? 'actions.stopListen' : 'actions.listen')"
+              @click.stop="toggleSpeech(itemId(s.key, i), itemText(item), lang)"
+            >
+              <component :is="speakingId === itemId(s.key, i) ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+            </button>
+            <button
+              class="ar-plus-btn"
+              @click="toggle(`${s.key}-${i}`)"
+            >
+              <span class="ar-plus">{{ open[`${s.key}-${i}`] ? '–' : '+' }}</span>
+            </button>
+          </div>
           <div
             v-if="open[`${s.key}-${i}`]"
             class="ar-rt ar-item-body"
@@ -132,13 +167,30 @@ const parsedSections = computed(() =>
 .ar-item:last-child { border-bottom: 1px solid rgb(229 231 235); }
 .ar-item-head {
   width: 100%;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.ar-item-toggle {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center;
   padding: 0.95rem 0.25rem;
   background: none; border: none; cursor: pointer;
   text-align: left;
 }
 .ar-item-title { font-size: 0.95rem; font-weight: 500; color: rgb(31 41 55); line-height: 1.4; }
-.ar-plus { font-size: 1.4rem; line-height: 1; color: rgb(148 163 184); flex-shrink: 0; width: 1.25rem; text-align: center; }
+.ar-audio {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.4rem; border: none; background: none; cursor: pointer;
+  color: rgb(100 116 139); border-radius: 0.5rem;
+}
+.ar-audio:hover { color: rgb(37 99 235); background: rgb(241 245 249); }
+.ar-audio-on { color: rgb(37 99 235); }
+.ar-plus-btn {
+  flex-shrink: 0;
+  padding: 0.95rem 0.25rem;
+  background: none; border: none; cursor: pointer;
+}
+.ar-plus { font-size: 1.4rem; line-height: 1; color: rgb(148 163 184); flex-shrink: 0; width: 1.25rem; text-align: center; display: block; }
 .ar-item-body { padding: 0 0.25rem 1rem; color: rgb(63 63 70); }
 
 /* richtext typography */

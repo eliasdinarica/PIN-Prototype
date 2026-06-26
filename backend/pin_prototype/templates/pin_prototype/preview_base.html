@@ -1,0 +1,97 @@
+{% load wagtailcore_tags %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview — {{ title }}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #e5e7eb;
+    display: flex; justify-content: center; padding: 1.5rem 1rem;
+    color: #1e293b;
+  }
+  .phone {
+    width: 412px; max-width: 100%;
+    background: #eef1f5;
+    border-radius: 1.75rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,.18);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .phone-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+  /* Intro bubble — white card like the app's first card */
+  .intro-card { background: #fff; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 1.25rem 1.3rem; }
+  .eyebrow { font-size: 0.72rem; font-weight: 600; color: #ef4444; margin-bottom: 0.25rem; }
+  .intro-title { font-size: 1.4rem; font-weight: 700; color: #0f172a; line-height: 1.25; }
+  .intro-meta { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: #ef4444; margin-top: 0.4rem; }
+  .intro-meta svg { width: 0.95rem; height: 0.95rem; }
+  .intro-author { font-size: 0.75rem; color: #94a3b8; margin-top: 0.3rem; }
+  .intro-desc { font-size: 0.95rem; color: #334155; line-height: 1.6; margin-top: 0.9rem; }
+
+  /* Section cards */
+  .sec-card { background: #fff; border-radius: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 1.1rem 1.2rem 0.4rem; }
+  .sec-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; line-height: 1.2; margin-bottom: 0.75rem; }
+  .sec-card .rt:first-child { margin-top: 0; }
+
+  /* Collapsible rows (native <details>) — mimic the app's "+" rows */
+  .row { border-top: 1px solid #e5e7eb; }
+  .row:last-child { border-bottom: 1px solid #e5e7eb; }
+  .row > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding: 0.85rem 0.15rem;
+    font-size: 0.95rem; font-weight: 500; color: #1f2937;
+  }
+  .row > summary::-webkit-details-marker { display: none; }
+  .row > summary::after { content: '+'; font-size: 1.35rem; line-height: 1; color: #94a3b8; width: 1.25rem; text-align: center; flex-shrink: 0; }
+  .row[open] > summary::after { content: '\2013'; }
+  .row-body { padding: 0 0.15rem 0.9rem; }
+
+  /* Richtext typography */
+  .rt { color: #3f3f46; }
+  .rt h1 { font-size: 1.15rem; font-weight: 700; color: #18181b; margin: 0.9rem 0 0.45rem; }
+  .rt h2 { font-size: 1.05rem; font-weight: 700; color: #18181b; margin: 0.85rem 0 0.4rem; }
+  .rt h3 { font-size: 0.95rem; font-weight: 700; color: #27272a; margin: 0.75rem 0 0.35rem; }
+  .rt p  { font-size: 0.92rem; line-height: 1.65; margin: 0 0 0.7rem; }
+  .rt ul, .rt ol { margin: 0 0 0.7rem 1.25rem; line-height: 1.65; font-size: 0.92rem; }
+  .rt ul { list-style: disc; } .rt ol { list-style: decimal; }
+  .rt li { margin-bottom: 0.25rem; }
+  .rt a  { color: #2563eb; text-decoration: underline; }
+  .rt strong, .rt b { font-weight: 600; }
+  .rt blockquote { border-left: 3px solid #d4d4d8; padding: 0.25rem 0.75rem; color: #52525b; font-style: italic; margin: 0.7rem 0; }
+  .rt hr { border: none; height: 1px; background: #d4d4d8; margin: 0.9rem 0; }
+  .rt img { max-width: 100%; border-radius: 0.5rem; display: block; margin: 0.5rem 0; }
+  .rt .responsive-object { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 0.5rem; margin: 0.5rem 0; }
+  .rt .responsive-object iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+  /* Guide step timeline */
+  .step { display: flex; gap: 0.75rem; }
+  .step-rail { display: flex; flex-direction: column; align-items: center; }
+  .step-num { width: 1.85rem; height: 1.85rem; border-radius: 9999px; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .step-line { width: 2px; flex: 1; background: #cbd5e1; margin-top: 0.4rem; }
+  .step-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.6rem; padding-bottom: 0.4rem; }
+  .step-head { padding: 0.1rem 0.15rem; }
+  .step-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; line-height: 1.25; }
+  .step-desc { font-size: 0.88rem; color: #64748b; line-height: 1.55; margin-top: 0.2rem; }
+  .empty { color: #64748b; font-size: 0.9rem; padding: 1rem 0.25rem; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="phone-body">
+    <div class="intro-card">
+      {% block intro %}
+        {% if category %}<p class="eyebrow">{{ category }}</p>{% endif %}
+        <h1 class="intro-title">{{ title }}</h1>
+        {% block intro_meta %}{% endblock %}
+        {% if description %}<p class="intro-desc">{{ description }}</p>{% endif %}
+      {% endblock %}
+    </div>
+    {% block phone_body %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

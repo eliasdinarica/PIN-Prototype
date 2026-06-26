@@ -116,7 +116,7 @@ const guideItems = computed(() => guides.value.map(g => ({ ...g, _kind: 'guide' 
 
 // A recommended item (guide or resource) bubbles to the top regardless of type.
 function isRecommended(it) {
-  return !!(it.recommended_by_system || it.community_by_language || it.community_by_status)
+  return !!(it.recommended_by_system || it.recommended_by_similar || it.recommended_by_affinity)
 }
 // Stable sort keeps the backend's per-type ranking, but puts recommended first.
 function recommendedFirst(items) {
@@ -186,8 +186,14 @@ async function handleFeedbackChange({ resourceId, feedbackId, isUseful }) {
 
 onMounted(async () => {
   const profileId = localStorage.getItem('profileId')
+  // Send saved resource ids so the backend can boost similar ones (affinity).
+  const savedResIds = savedIds.value.filter(x => /^\d+$/.test(String(x)))
+  const params = new URLSearchParams()
+  if (profileId) params.set('profile', profileId)
+  if (savedResIds.length) params.set('saved', savedResIds.join(','))
+  const qs = params.toString()
   const [searchRes, fbRes] = await Promise.all([
-    fetch(`${API}/api/search/${profileId ? `?profile=${profileId}` : ''}`),
+    fetch(`${API}/api/search/${qs ? `?${qs}` : ''}`),
     profileId ? fetch(`${API}/api/feedback/?profile=${profileId}`) : Promise.resolve(null),
   ])
   const data = await searchRes.json()

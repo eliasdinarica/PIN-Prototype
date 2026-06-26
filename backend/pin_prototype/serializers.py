@@ -3,17 +3,20 @@ import re
 from django.conf import settings
 from rest_framework import serializers
 from wagtail.rich_text import expand_db_html
-from .models import Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback, Attachment, Guide, GuideStep
+from .models import (
+    Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback,
+    Attachment, Guide, GuideStep, ResourceTranslation, resource_section_dicts,
+)
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'id', 'language', 'other_languages', 'status', 'has_children',
-            'arrived_over_year_ago',
+            'id', 'language', 'french_level', 'status', 'has_children',
+            'arrived_over_year_ago', 'birth_date',
             'has_driving_license', 'computer_skills', 'education_level',
-            'created_at',
+            'origin_sector', 'created_at',
         ]
         read_only_fields = ['id', 'created_at']
 
@@ -62,17 +65,28 @@ def _absolutize_urls(html):
 BASE_LANG = 'fr'  # Language the resource content is authored in.
 
 
-def render_section_values(why, how, location):
-    """Build the fixed-section list from raw field values."""
+def render_section_dicts(dicts):
+    """Turn plain section dicts {kind, heading, content} into the API shape
+    [{key, title, html}] the frontend renders. The three standard kinds keep a
+    stable key so the UI shows its own translated title; custom sections carry
+    their heading as title."""
     result = []
-    for key, value in (('why', why), ('how', how), ('location', location)):
-        if value and str(value).strip():
-            result.append({'key': key, 'html': _absolutize_urls(expand_db_html(str(value)))})
+    for i, d in enumerate(dicts or []):
+        html = d.get('content') or ''
+        if not str(html).strip():
+            continue
+        kind = d.get('kind') or 'custom'
+        key = kind if kind in ('why', 'how', 'location') else f'custom-{i}'
+        result.append({
+            'key': key,
+            'title': d.get('heading') or '',
+            'html': _absolutize_urls(expand_db_html(str(html))),
+        })
     return result
 
 
 def render_sections(obj):
-    return render_section_values(obj.why_interesting, obj.how_to, obj.location)
+    return render_section_dicts(resource_section_dicts(obj))
 
 
 class ResourceSerializer(serializers.ModelSerializer):
@@ -99,7 +113,11 @@ class ResourceSerializer(serializers.ModelSerializer):
         lang = params.get('lang') if request else None
         if not lang or lang == BASE_LANG:
             return None
-        return next((t for t in obj.translations.all() if t.language == lang), None)
+        return next(
+            (t for t in obj.translations.all()
+             if t.language == lang and t.status == ResourceTranslation.STATUS_APPROVED),
+            None,
+        )
 
     def get_name(self, obj):
         tr = self._translation(obj)
@@ -113,17 +131,18 @@ class ResourceSerializer(serializers.ModelSerializer):
         try:
             tr = self._translation(obj)
             if tr:
-                return render_section_values(
-                    tr.why_interesting or obj.why_interesting,
-                    tr.how_to or obj.how_to,
-                    tr.location or obj.location,
-                )
+                secs = render_section_dicts(resource_section_dicts(tr))
+                if secs:
+                    return secs
             return render_sections(obj)
         except Exception:
             return []
 
     def get_languages(self, obj):
-        return [BASE_LANG] + sorted({t.language for t in obj.translations.all()})
+        return [BASE_LANG] + sorted({
+            t.language for t in obj.translations.all()
+            if t.status == ResourceTranslation.STATUS_APPROVED
+        })
 
     def get_author(self, obj):
         return obj.author.name if obj.author_id else 'COSM'
@@ -166,7 +185,7 @@ class GuideStepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GuideStep
-        fields = ['id', 'order', 'step_label', 'resource']
+        fields = ['id', 'step_label', 'resource']
 
 
 class GuideBriefSerializer(serializers.ModelSerializer):
@@ -205,7 +224,8 @@ class GuideSerializer(serializers.ModelSerializer):
         langs = set()
         for step in obj.steps.all():
             for tr in step.resource.translations.all():
-                langs.add(tr.language)
+                if tr.status == ResourceTranslation.STATUS_APPROVED:
+                    langs.add(tr.language)
         return [BASE_LANG] + sorted(langs)
 
     class Meta:

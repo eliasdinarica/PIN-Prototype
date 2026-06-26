@@ -1,0 +1,14 @@
+{% comment %}Renders a list of preview sections: title + intro + collapsible items.
+Expects `sections` = [{title, intro, items:[{title, html}]}].{% endcomment %}
+{% for s in sections %}
+  <div class="sec-card">
+    <div class="sec-title">{{ s.title }}</div>
+    {% if s.intro %}<div class="rt">{{ s.intro|safe }}</div>{% endif %}
+    {% for item in s.items %}
+      <details class="row">
+        <summary>{{ item.title }}</summary>
+        <div class="rt row-body">{{ item.html|safe }}</div>
+      </details>
+    {% endfor %}
+  </div>
+{% endfor %}

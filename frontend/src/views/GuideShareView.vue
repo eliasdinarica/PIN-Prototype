@@ -1,16 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ShareIcon, BookmarkIcon, ChevronDownIcon, MapIcon } from '@heroicons/vue/24/outline'
+import { ShareIcon, BookmarkIcon, ChevronDownIcon, MapIcon, SpeakerWaveIcon, StopCircleIcon } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import { useSaved } from '@/composables/useSaved'
+import { useSpeech } from '@/composables/useSpeech'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
+const { supported: speechSupported, speakingId, toggle: toggleSpeech } = useSpeech()
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const guide = ref(null)
@@ -23,6 +25,9 @@ const currentLang = ref('fr')
 const langOpen = ref(false)
 
 const savedKey = `g:${route.params.id}`
+
+const introId = computed(() => `g${route.params.id}-intro`)
+const introText = computed(() => [guide.value?.title, guide.value?.description].filter(Boolean).join('. '))
 
 async function selectLang(lang) {
   langOpen.value = false
@@ -112,6 +117,15 @@ onMounted(async () => {
                   <ShareIcon class="w-5 h-5" />
                   {{ copied ? t('actions.copied') : t('actions.share') }}
                 </button>
+                <button
+                  v-if="speechSupported && introText"
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer bg-transparent border-none"
+                  :class="speakingId === introId ? 'text-brand-600' : 'text-surface-500 hover:text-brand-600'"
+                  @click="toggleSpeech(introId, introText, currentLang)"
+                >
+                  <component :is="speakingId === introId ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+                  {{ speakingId === introId ? t('actions.stopListen') : t('actions.listen') }}
+                </button>
               </div>
               <div class="relative">
                 <button
@@ -167,6 +181,8 @@ onMounted(async () => {
                 <ArticleRenderer
                   v-if="step.resource.sections?.length"
                   :sections="step.resource.sections"
+                  :lang="currentLang"
+                  :prefix="`g${route.params.id}-s${step.id}-`"
                 />
               </div>
             </div>

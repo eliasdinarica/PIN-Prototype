@@ -5,12 +5,15 @@
       "label": "Quelle est votre langue ?",
       "sublabel": "Les ressources seront affichées dans la langue que vous choisissez."
     },
-    "otherLanguages": {
-      "label": "Quelles autres langues parlez-vous ?",
-      "sublabel": "Choisissez toutes celles qui s'appliquent. Vous pouvez indiquer votre niveau.",
-      "levelHint": "Niveau (facultatif)"
+    "frenchLevel": {
+      "label": "Quel est votre niveau de français ?",
+      "sublabel": "A1 c'est débutant, C2 c'est très bien.",
+      "none": "Je ne parle pas encore français"
     },
-    "cefrUnknown": "?",
+    "birthDate": {
+      "label": "Quelle est votre date de naissance ?",
+      "sublabel": "Votre âge nous aide à proposer des ressources pour des personnes dans une situation proche."
+    },
     "status": {
       "label": "Quel est votre type de permis ?",
       "sublabel": "C'est votre permis de séjour suisse. C'est la carte reçue à votre arrivée.",
@@ -31,13 +34,15 @@
       "advanced": "Je suis à l'aise (bureautique, outils en ligne)"
     },
     "educationLevel": {
-      "label": "Quel est votre niveau de formation ?",
-      "sublabel": "Votre formation dans votre pays d'origine.",
-      "primary": "École primaire ou moins",
-      "secondary": "École obligatoire (jusqu'à 15-16 ans)",
+      "label": "Quel est votre niveau d'études supérieures ?",
+      "sublabel": "Vos études dans votre pays d'origine.",
       "vocational": "Formation professionnelle (CFC, CAP…)",
       "bachelor": "Université / Bachelor",
       "master_plus": "Master ou Doctorat"
+    },
+    "originSector": {
+      "label": "Dans quel domaine avez-vous étudié ou travaillé ?",
+      "placeholder": "Choisir un domaine"
     },
     "arrivedOverYear": {
       "label": "Êtes-vous en Suisse depuis plus d'un an ?"
@@ -52,7 +57,8 @@
     "timeline": {
       "intro": "Introduction",
       "language": "Langue",
-      "otherLanguages": "Autres langues",
+      "frenchLevel": "Français",
+      "birthDate": "Date de naiss.",
       "status": "Permis",
       "hasChildren": "Enfants",
       "hasDrivingLicense": "Permis auto",
@@ -90,7 +96,7 @@
   },
   "nav": {
     "editProfile": "Modifier le profil",
-    "questionnaire": "Bilan",
+    "questionnaire": "Questionnaire",
     "surveyHint": "Quelques questions pour de meilleures recommandations",
     "sections": {
       "resources": "Ressources",
@@ -189,10 +195,9 @@
     "tapToDismiss": "Touchez n'importe où pour fermer"
   },
   "community": {
-    "bySystem": "Recommandé pour vous",
-    "byLanguage": "Recommandé · communauté {code}",
-    "byStatus": "Recommandé · permis {code}",
-    "bySimilarity": "Similaire à des ressources que vous avez aimées"
+    "bySystem": "Recommandé à votre profil par les administrateurs",
+    "bySimilar": "Utile à des profils similaires au vôtre",
+    "byAffinity": "Basé sur vos ressources enregistrées et aimées"
   },
   "resource": {
     "writtenBy": "Écrit par {name}"
@@ -202,7 +207,9 @@
     "save": "Enregistrer",
     "saved": "Enregistré",
     "share": "Partager",
-    "copied": "Lien copié !"
+    "copied": "Lien copié !",
+    "listen": "Écouter",
+    "stopListen": "Arrêter"
   },
   "feedback": {
     "useful": "Cette ressource est-elle utile ?",

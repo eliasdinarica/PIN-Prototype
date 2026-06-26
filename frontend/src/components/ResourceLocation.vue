@@ -11,6 +11,8 @@ const { t } = useI18n()
 
 const props = defineProps({
   places: { type: Array, default: () => [] },
+  // Content language, so the heading matches the body shown (not the UI locale).
+  lang: { type: String, default: 'fr' },
 })
 
 const copiedKey = ref(null)
@@ -35,7 +37,7 @@ const hasMap = () => props.places.some(p => p.lat != null && p.lng != null)
 
 <template>
   <div class="bg-white rounded-2xl shadow-sm border border-surface-100 p-6">
-    <h2 class="text-2xl font-bold text-surface-800 leading-tight mb-4">{{ t('article.location') }}</h2>
+    <h2 class="text-2xl font-bold text-surface-800 leading-tight mb-4">{{ t('article.location', {}, { locale: lang }) }}</h2>
 
     <div class="grid gap-4" :class="hasMap() ? 'lg:grid-cols-2' : ''">
 

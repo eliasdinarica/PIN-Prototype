@@ -1,4 +1,5 @@
-from django.db.models import Count, Prefetch
+from datetime import date as date_cls
+from django.db.models import Prefetch
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -59,31 +60,100 @@ def _matched_tag_ids(profile):
     return tag_ids
 
 
-COMMUNITY_MIN_LIKES = 2
+COMMUNITY_MIN_LIKES = 2          # how many similar profiles must like a resource
+SIMILARITY_THRESHOLD = 0.5       # min share of shared attributes that must match
+AFFINITY_TAG_WEIGHT = 0.5        # ranking boost per tag shared with saved/liked
 
 
-def _cohort_likes_by_language(profile):
-    """Returns resource_ids liked by >= COMMUNITY_MIN_LIKES profiles sharing the same language."""
-    qs = (
-        ResourceFeedback.objects
-        .filter(is_useful=True, profile__language=profile.language)
-        .exclude(profile_id=profile.pk)
-        .values('resource_id')
-        .annotate(n=Count('resource_id'))
+def _compute_age(birth_date):
+    if not birth_date:
+        return None
+    today = date_cls.today()
+    return today.year - birth_date.year - (
+        (today.month, today.day) < (birth_date.month, birth_date.day)
     )
-    return {row['resource_id'] for row in qs if row['n'] >= COMMUNITY_MIN_LIKES}
 
 
-def _cohort_likes_by_status(profile):
-    """Returns resource_ids liked by >= COMMUNITY_MIN_LIKES profiles sharing the same status."""
-    qs = (
+def _age_bracket(birth_date):
+    age = _compute_age(birth_date)
+    if age is None:
+        return None
+    for hi, label in ((26, '18-25'), (36, '26-35'), (51, '36-50'), (66, '51-65')):
+        if age < hi:
+            return label
+    return '65+'
+
+
+def _profile_attrs(profile):
+    """Comparable attributes of a profile. Unanswered fields are omitted so they
+    neither match nor penalise the similarity."""
+    attrs = {}
+    if profile.language:
+        attrs['language'] = profile.language
+    if profile.status and profile.status != 'other':
+        attrs['status'] = profile.status
+    if profile.french_level:
+        attrs['french_level'] = profile.french_level
+    if profile.has_children is not None:
+        attrs['has_children'] = profile.has_children
+    if profile.arrived_over_year_ago is not None:
+        attrs['arrived_over_year_ago'] = profile.arrived_over_year_ago
+    if profile.computer_skills:
+        attrs['computer_skills'] = profile.computer_skills
+    if profile.education_level:
+        attrs['education_level'] = profile.education_level
+    if profile.origin_sector:
+        attrs['origin_sector'] = profile.origin_sector
+    bracket = _age_bracket(profile.birth_date)
+    if bracket:
+        attrs['age_bracket'] = bracket
+    return attrs
+
+
+def _similarity(a, b):
+    """Share of the attributes present in both profiles that hold the same value."""
+    common = a.keys() & b.keys()
+    if not common:
+        return 0.0
+    matches = sum(1 for k in common if a[k] == b[k])
+    return matches / len(common)
+
+
+def _similar_liked(profile):
+    """Resource ids liked by >= COMMUNITY_MIN_LIKES profiles whose overall
+    similarity to this one exceeds SIMILARITY_THRESHOLD. Replaces the former
+    per-criterion cohorts (same language / same status) with a single, richer
+    notion of 'people whose situation resembles yours'."""
+    me = _profile_attrs(profile)
+    if not me:
+        return set()
+    feedbacks = (
         ResourceFeedback.objects
-        .filter(is_useful=True, profile__status=profile.status)
+        .filter(is_useful=True)
         .exclude(profile_id=profile.pk)
-        .values('resource_id')
-        .annotate(n=Count('resource_id'))
+        .select_related('profile')
     )
-    return {row['resource_id'] for row in qs if row['n'] >= COMMUNITY_MIN_LIKES}
+    sim_cache = {}
+    counts = {}
+    for fb in feedbacks:
+        sim = sim_cache.get(fb.profile_id)
+        if sim is None:
+            sim = _similarity(me, _profile_attrs(fb.profile))
+            sim_cache[fb.profile_id] = sim
+        if sim >= SIMILARITY_THRESHOLD:
+            counts[fb.resource_id] = counts.get(fb.resource_id, 0) + 1
+    return {rid for rid, n in counts.items() if n >= COMMUNITY_MIN_LIKES}
+
+
+def _affinity_tags(source_ids):
+    """Tag ids drawn from the resources a person saved or liked. Used to surface
+    other resources sharing those tags (content-based personal signal)."""
+    if not source_ids:
+        return set()
+    tags = set()
+    for r in Resource.objects.filter(id__in=source_ids).prefetch_related('tags'):
+        tags.update(t.id for t in r.tags.all())
+    return tags
 
 
 class ProfileViewSet(ModelViewSet):
@@ -164,22 +234,21 @@ class CategoryViewSet(ModelViewSet):
                     return audience_matches + tag_overlap * 0.5, tag_overlap >= 2
 
                 scored = sorted([(r, score(r)) for r in data['resources']], key=lambda x: -x[1][0])
-                lang_likes = _cohort_likes_by_language(profile)
-                stat_likes = _cohort_likes_by_status(profile)
+                similar_likes = _similar_liked(profile)
                 data['resources'] = [
                     {
                         **r,
                         'is_recommended': s > 0,
                         'recommended_by_system': rec,
-                        'community_by_language': profile.language if r['id'] in lang_likes else None,
-                        'community_by_status': profile.status if r['id'] in stat_likes else None,
+                        'recommended_by_similar': r['id'] in similar_likes,
+                        'recommended_by_affinity': False,
                     }
                     for r, (s, rec) in scored
                 ]
             except Profile.DoesNotExist:
-                data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
+                data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'recommended_by_similar': False, 'recommended_by_affinity': False} for r in data['resources']]
         else:
-            data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'community_by_language': None, 'community_by_status': None} for r in data['resources']]
+            data['resources'] = [{**r, 'is_recommended': False, 'recommended_by_system': False, 'recommended_by_similar': False, 'recommended_by_affinity': False} for r in data['resources']]
 
         # Guides shown under this category (co-located with resources).
         guides = (
@@ -210,8 +279,7 @@ def top_resources(request):
     if not tag_ids:
         return Response([])
 
-    lang_likes = _cohort_likes_by_language(profile)
-    stat_likes = _cohort_likes_by_status(profile)
+    similar_likes = _similar_liked(profile)
     results = []
     for cat in Category.objects.prefetch_related(
         'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory', 'resources__places',
@@ -236,21 +304,24 @@ def top_resources(request):
                 'score': score,
                 'category': {'id': cat.id, 'name': cat.name},
                 'recommended_by_system': tag_overlap >= 2,
-                'community_by_language': profile.language if resource.id in lang_likes else None,
-                'community_by_status': profile.status if resource.id in stat_likes else None,
+                'recommended_by_similar': resource.id in similar_likes,
             })
 
     results.sort(key=lambda x: -x['score'])
     return Response(results[:limit])
 
 
-def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences, lang_likes, stat_likes):
+def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences,
+                     similar_likes, affinity_tags, affinity_exclude):
     """Annotate serialized items (resources or guides) with recommendation flags
-    and sort them so system- and community-recommended ones bubble up.
+    and sort them so recommended ones bubble up. Three independent signals:
 
-    Guides and resources share the same tag/audience mechanism. Community
-    feedback only exists per resource, so guides are called with empty
-    lang_likes/stat_likes sets and get system recommendation only."""
+    - system: the resource's audience matches the profile and shares tags (COSM).
+    - similar: liked by enough profiles whose situation resembles this one.
+    - affinity: shares tags with what the person saved or liked (content-based).
+
+    Guides carry no feedback and are not saved as resources, so they are called
+    with empty similar/affinity sets and receive the system signal only."""
     def score(it):
         it_tag_ids = frozenset(t['id'] for t in it.get('tags', []))
         aid_list = it.get('audience_ids', [])
@@ -266,12 +337,19 @@ def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences, lang_like
 
     for it in items:
         s, rec = score(it)
-        community_lang = profile.language if it['id'] in lang_likes else None
-        community_status = profile.status if it['id'] in stat_likes else None
+        similar = it['id'] in similar_likes
+        affinity = 0.0
+        if affinity_tags and it['id'] not in affinity_exclude:
+            it_tag_ids = frozenset(t['id'] for t in it.get('tags', []))
+            overlap = len(it_tag_ids & affinity_tags)
+            # Require >= 2 shared tags so a single generic tag (e.g. "Travail")
+            # doesn't flag half the catalogue. Keeps the signal granular.
+            if overlap >= 2:
+                affinity = overlap * AFFINITY_TAG_WEIGHT
         it['recommended_by_system'] = rec
-        it['community_by_language'] = community_lang
-        it['community_by_status'] = community_status
-        it['_score'] = s + (1 if (community_lang or community_status) else 0)
+        it['recommended_by_similar'] = similar
+        it['recommended_by_affinity'] = affinity > 0
+        it['_score'] = s + (1 if similar else 0) + affinity
     items.sort(key=lambda it: (-it['_score'], it.get(name_key, '')))
     for it in items:
         it.pop('_score', None)
@@ -313,20 +391,30 @@ def search_data(request):
     )
     gdata = GuideSerializer(guides, many=True, context={'request': request}).data
 
-    # Default ranking: surface resources and guides recommended by the system
-    # (COSM) and by the community first, based on the visitor's profile. Guides
-    # and resources share the same tag/audience mechanism; community feedback is
-    # resource-only, so guides receive system recommendation alone.
+    # Default ranking: surface the resources and guides most relevant to the
+    # visitor first. Three signals combine — editorial match (COSM audiences and
+    # tags), similar profiles' likes, and the visitor's own saved/liked resources.
     profile_id = request.query_params.get('profile')
     if profile_id:
         try:
             profile = Profile.objects.get(pk=profile_id)
             tag_ids = _matched_tag_ids(profile)
             all_audiences = {a.id: a for a in Audience.objects.all()}
-            lang_likes = _cohort_likes_by_language(profile)
-            stat_likes = _cohort_likes_by_status(profile)
-            _rank_by_profile(rdata, 'name', profile, tag_ids, all_audiences, lang_likes, stat_likes)
-            _rank_by_profile(gdata, 'title', profile, tag_ids, all_audiences, set(), set())
+            similar_likes = _similar_liked(profile)
+            # Personal affinity from what the visitor liked (server-side) and
+            # saved (sent by the client as ?saved=1,2,3).
+            liked_ids = set(
+                ResourceFeedback.objects
+                .filter(profile=profile, is_useful=True)
+                .values_list('resource_id', flat=True)
+            )
+            saved_ids = {int(s) for s in request.query_params.get('saved', '').split(',') if s.isdigit()}
+            affinity_source = liked_ids | saved_ids
+            affinity_tags = _affinity_tags(affinity_source)
+            _rank_by_profile(rdata, 'name', profile, tag_ids, all_audiences,
+                             similar_likes, affinity_tags, affinity_source)
+            _rank_by_profile(gdata, 'title', profile, tag_ids, all_audiences,
+                             set(), set(), set())
         except Profile.DoesNotExist:
             pass
 

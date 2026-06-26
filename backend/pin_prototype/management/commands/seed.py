@@ -7,11 +7,16 @@ Usage:
 """
 
 import re
+from datetime import date
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
-from pin_prototype.models import Audience, Category, Subcategory, Tag, Resource, Guide, GuideStep, Contributor, ResourcePlace
+from pin_prototype.models import (
+    Audience, Category, Subcategory, Tag, Resource, Guide, GuideStep,
+    Contributor, ResourcePlace, Profile, ResourceFeedback, ResourceTranslation,
+    section_stream_blocks,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers — construction des corps d'articles (format Wagtail StreamField)
@@ -3617,6 +3622,8 @@ class Command(BaseCommand):
 
     def handle(self, *_args, **options):
         if options['reset']:
+            ResourceFeedback.objects.all().delete()
+            Profile.objects.all().delete()
             GuideStep.objects.all().delete()
             Guide.objects.all().delete()
             Resource.objects.all().delete()
@@ -3771,6 +3778,10 @@ class Command(BaseCommand):
                 res.subcategory = subcat_map.get(subcat_name)
                 res.save(update_fields=['subcategory'])
 
+                res.body = section_stream_blocks(
+                    section_values['why_interesting'], section_values['how_to'], section_values['location'])
+                res.save(update_fields=['body'])
+
                 add_places(res, extracted)
 
                 self.stdout.write(f'      {"+" if res_created else "~"} {res.name}')
@@ -3800,6 +3811,8 @@ class Command(BaseCommand):
         if demo_places:
             demo.location = ''
         demo.save(update_fields=['author', 'status', 'location'])
+        demo.body = section_stream_blocks(demo.why_interesting, demo.how_to, demo.location)
+        demo.save(update_fields=['body'])
         add_places(demo, demo_places)
         self.stdout.write(f'  {"+" if demo_created else "~"} Démo en attente: {demo.name}')
 
@@ -3847,12 +3860,15 @@ class Command(BaseCommand):
                 res.author = cosm
                 res.status = Resource.STATUS_APPROVED
                 res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
+                res.body = section_stream_blocks(
+                    section_values['why_interesting'], section_values['how_to'], section_values['location'])
+                res.save(update_fields=['body'])
                 add_places(res, extracted)
                 self.stdout.write(f'      {"+" if res_created else "~"} Resource: {res.name}')
 
                 ps, _ = GuideStep.objects.get_or_create(
                     guide=pw,
-                    order=step_data['order'],
+                    sort_order=step_data['order'],
                     defaults={'resource': res, 'step_label': step_data.get('step_label', '')},
                 )
                 if not _:
@@ -3860,6 +3876,140 @@ class Command(BaseCommand):
                     ps.step_label = step_data.get('step_label', '')
                     ps.save()
 
-        self.stdout.write('\nSeed termine.')
+        # -- Traductions RU (démo de la file de validation) --
+        # Vraies traductions russes pour quelques fiches : 2 approuvées (visibles
+        # dans l'app) et 2 en attente (dans la file « Translations to validate »).
+        # Les autres langues/fiches passent par `python manage.py translate_resources`.
+        self.stdout.write('\nCréation des traductions RU (démo)...')
+        RU_TRANSLATIONS = [
+            {
+                'fr': "Je dois m'assurer contre la maladie",
+                'status': ResourceTranslation.STATUS_APPROVED,
+                'name': "Мне нужно оформить медицинскую страховку",
+                'description': "В Швейцарии страховка обязательна для всех. Оформите её в течение 3 месяцев после приезда.",
+                'why': para("В Швейцарии базовая медицинская страховка называется LAMal. Она обязательна для всех.")
+                       + ul("У вас есть 3 месяца после приезда, чтобы оформить её",
+                            "Все кассы обязаны вас принять — они не могут отказать"),
+                'how': h3("Как выбрать и оформить") + ol(
+                    "Сравните тарифы на comparis.ch (укажите кантон NE и ваш возраст)",
+                    "Выберите франшизу",
+                    "Свяжитесь напрямую с выбранной кассой",
+                    "Затем попросите снижение взноса, если доход небольшой",
+                ),
+            },
+            {
+                'fr': "Je cherche un médecin de famille",
+                'status': ResourceTranslation.STATUS_APPROVED,
+                'name': "Я ищу семейного врача",
+                'description': "Я хочу найти терапевта, который принимает новых пациентов в кантоне Невшатель.",
+                'why': para("В Швейцарии семейный врач — это первый контакт по любым вопросам здоровья. Он направляет к специалистам при необходимости."),
+                'how': h3("Как искать") + ol(
+                    "Ищите на doctorfmh.ch — официальный реестр врачей",
+                    "Записывайтесь онлайн на onedoc.ch",
+                    "Звоните в кабинеты рядом с домом",
+                ),
+            },
+            {
+                'fr': "Je cherche du travail, par où commencer ?",
+                'status': ResourceTranslation.STATUS_PENDING,
+                'name': "Я ищу работу, с чего начать?",
+                'description': "ONE помогает искать работу. Если вы платили взносы в Швейцарии, вы можете получать пособие во время поиска.",
+                'why': para("ORP (Региональное бюро по трудоустройству) в Невшателе называется ONE. Это государственная служба, которая помогает безработным найти работу.")
+                       + para("Если вы работали в Швейцарии и платили взносы по безработице, вы можете получать пособие — деньги каждый месяц во время поиска."),
+                'how': h3("Кто может зарегистрироваться") + ul(
+                    "Вы работали в Швейцарии и платили взносы по безработице",
+                    "У вас есть действующий вид на жительство (B, C или иногда L)",
+                ) + h3("Шаги") + ol(
+                    "Зарегистрируйтесь в первый же день без работы — не ждите",
+                    "Онлайн на arbeit.swiss (круглосуточно)",
+                    "ONE свяжется с вами в течение 24–48 часов",
+                ),
+            },
+            {
+                'fr': "Je veux payer moins cher mon assurance maladie",
+                'status': ResourceTranslation.STATUS_PENDING,
+                'name': "Я хочу платить меньше за медицинскую страховку",
+                'description': "Если доход небольшой, государство может оплатить часть страховки. Эта помощь называется subside.",
+                'why': para("Subside — это помощь кантона. Она уменьшает или покрывает ваш страховой взнос, если у вас небольшой доход."),
+                'how': h3("Как подать заявку") + ol(
+                    "Обратитесь в GSR вашей коммуны",
+                    "Принесите справки о доходах и составе семьи",
+                    "GSR передаёт ваше дело в OCAB",
+                ),
+            },
+        ]
+        n_tr = n_pending = 0
+        for t in RU_TRANSLATIONS:
+            res = Resource.objects.filter(name=t['fr']).first()
+            if not res:
+                continue
+            ResourceTranslation.objects.update_or_create(
+                resource=res, language='ru',
+                defaults={
+                    'name': t['name'],
+                    'description': t['description'],
+                    'body': section_stream_blocks(t.get('why', ''), t.get('how', ''), t.get('location', '')),
+                    'status': t['status'],
+                },
+            )
+            n_tr += 1
+            n_pending += t['status'] == ResourceTranslation.STATUS_PENDING
+        self.stdout.write(f'  + {n_tr} traductions RU ({n_pending} en attente de validation)')
+
+        # -- Profils de démonstration + likes communautaires --
+        # Crée de faux profils qui jugent des ressources utiles, afin que les
+        # mentions « recommandé par des profils similaires » apparaissent
+        # naturellement, par langue et par statut, sans intervention manuelle.
+        # Idempotent : ignoré si des avis existent déjà (vrais ou semés).
+        if ResourceFeedback.objects.count() == 0:
+            self.stdout.write('\nProfils de démonstration et likes communautaires...')
+            standalone = list(
+                Resource.objects
+                .filter(status=Resource.STATUS_APPROVED, category__isnull=False)
+                .order_by('name')
+            )
+            # n profils partageant (langue, statut), aimant une tranche de ressources.
+            # Le seuil de cohorte étant COMMUNITY_MIN_LIKES = 2, chaque tranche est
+            # aimée par au moins 2 profils pour déclencher la mention.
+            # Each cohort is a small group of coherent personas (same situation)
+            # liking the same slice of resources. A real visitor whose profile
+            # resembles one of these personas will see those resources flagged
+            # « recommandé par des profils similaires ».
+            COHORTS = [
+                {'n': 3, 'slice': (0, 3), 'profile': dict(
+                    language='uk', status='S', french_level='A2', has_children=True,
+                    arrived_over_year_ago=False, computer_skills='basic',
+                    education_level='bachelor', origin_sector='healthcare',
+                    birth_date=date(1990, 4, 12))},
+                {'n': 3, 'slice': (2, 5), 'profile': dict(
+                    language='ru', status='F', french_level='B1', has_children=True,
+                    arrived_over_year_ago=True, computer_skills='basic',
+                    education_level='vocational', origin_sector='trade',
+                    birth_date=date(1975, 9, 3))},
+                {'n': 2, 'slice': (5, 7), 'profile': dict(
+                    language='fr', status='C', french_level='C1', has_children=False,
+                    arrived_over_year_ago=True, computer_skills='advanced',
+                    education_level='master_plus', origin_sector='it',
+                    birth_date=date(2000, 1, 20))},
+                {'n': 3, 'slice': (7, 10), 'profile': dict(
+                    language='en', status='N', french_level='none', has_children=False,
+                    arrived_over_year_ago=False, computer_skills='basic',
+                    education_level='vocational', origin_sector='construction',
+                    birth_date=date(1995, 6, 15))},
+            ]
+            n_profiles = n_likes = 0
+            for c in COHORTS:
+                liked = standalone[c['slice'][0]:c['slice'][1]]
+                if not liked:
+                    continue
+                for _ in range(c['n']):
+                    p = Profile.objects.create(**c['profile'])
+                    n_profiles += 1
+                    for res in liked:
+                        ResourceFeedback.objects.create(profile=p, resource=res, is_useful=True)
+                        n_likes += 1
+            self.stdout.write(f'  + {n_profiles} profils, {n_likes} avis utiles')
+        else:
+            self.stdout.write('\nLikes communautaires ignorés (des avis existent déjà).')
 
         self.stdout.write(self.style.SUCCESS('\nSeed terminé.'))

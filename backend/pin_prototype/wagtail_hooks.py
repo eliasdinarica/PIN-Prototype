@@ -3,11 +3,12 @@ from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets.bulk_actions.snippet_bulk_action import SnippetBulkAction
 from wagtail.admin.panels import (
     FieldPanel, InlinePanel, TabbedInterface, ObjectList,
     MultiFieldPanel, FieldRowPanel, HelpPanel,
 )
-from .models import Resource, Guide, Contributor, Audience, Category, Tag
+from .models import Resource, Guide, Contributor, Audience, Category, Tag, ResourceTranslation
 
 
 class ResourceSnippetViewSet(SnippetViewSet):
@@ -19,12 +20,15 @@ class ResourceSnippetViewSet(SnippetViewSet):
     search_fields = ['name', 'description']
     list_filter = ['status', 'author', 'category']
 
+    def get_queryset(self, request):
+        # Hide guide-step resources (no category) — they are edited inside their
+        # guide, not as standalone fiches.
+        return Resource.objects.filter(category__isnull=False)
+
     content_panels = [
         FieldPanel('name'),
         FieldPanel('description'),
-        FieldPanel('why_interesting'),
-        FieldPanel('how_to'),
-        FieldPanel('location'),
+        FieldPanel('body'),
         InlinePanel('places', label='Map locations', heading='Map locations'),
     ]
 
@@ -41,6 +45,36 @@ class ResourceSnippetViewSet(SnippetViewSet):
         ObjectList(content_panels, heading='Content'),
         ObjectList(meta_panels, heading='Settings'),
     ])
+
+
+class ResourceTranslationSnippetViewSet(SnippetViewSet):
+    model = ResourceTranslation
+    icon = 'globe'
+    menu_label = 'Translations'
+    menu_order = 120
+    list_display = ['resource', 'language', 'status', 'updated_at']
+    list_filter = ['status', 'language']
+    search_fields = ['resource__name', 'name']
+
+    def get_queryset(self, request):
+        # Only standalone-fiche translations are validated here; guide-step
+        # translations are handled with their guide.
+        return ResourceTranslation.objects.filter(resource__category__isnull=False)
+
+    panels = [
+        HelpPanel(content=(
+            '<p>Machine translations produced by the translation script. Review '
+            'the text, then set the status to <b>Approved</b> so it appears in '
+            'the app. Pending translations are not shown to users (they fall back '
+            'to the French content).</p>'
+        )),
+        FieldPanel('resource', read_only=True),
+        FieldPanel('language', read_only=True),
+        FieldPanel('status'),
+        FieldPanel('name'),
+        FieldPanel('description'),
+        FieldPanel('body'),
+    ]
 
 
 class ContributorSnippetViewSet(SnippetViewSet):
@@ -68,8 +102,9 @@ class GuideSnippetViewSet(SnippetViewSet):
 
     panels = [
         FieldPanel('title'),
-        FieldPanel('category'),
         FieldPanel('description'),
+        InlinePanel('steps', label='Step', heading='Guide steps'),
+        FieldPanel('category'),
         FieldPanel('order'),
         FieldPanel('is_active'),
         FieldPanel('audiences'),
@@ -161,6 +196,7 @@ class TagSnippetViewSet(SnippetViewSet):
 
 
 register_snippet(ResourceSnippetViewSet)
+register_snippet(ResourceTranslationSnippetViewSet)
 register_snippet(ContributorSnippetViewSet)
 register_snippet(GuideSnippetViewSet)
 register_snippet(AudienceSnippetViewSet)
@@ -216,3 +252,38 @@ def _resource_after_edit(request, instance):
 def register_validate_menu_item():
     url = reverse('wagtailsnippets_pin_prototype_resource:list') + '?status=pending'
     return MenuItem('To validate', url, icon_name='check', order=110)
+
+
+@hooks.register('register_admin_menu_item')
+def register_validate_translations_menu_item():
+    url = reverse('wagtailsnippets_pin_prototype_resourcetranslation:list') + '?status=pending'
+    return MenuItem('Translations to validate', url, icon_name='globe', order=121)
+
+
+# --- One-click validation of translations ---------------------------------
+
+class ApproveTranslationBulkAction(SnippetBulkAction):
+    """Adds an "Approve" button to the translations list: select the reviewed
+    translations and approve them in one click (vs. editing the status field)."""
+    display_name = 'Approve'
+    action_type = 'approve'
+    aria_label = 'Approve selected translations'
+    template_name = 'pin_prototype/bulk_actions/confirm_approve.html'
+    models = [ResourceTranslation]
+    action_priority = 10
+
+    @classmethod
+    def execute_action(cls, objects, **kwargs):
+        approved = 0
+        for obj in objects:
+            if obj.status != ResourceTranslation.STATUS_APPROVED:
+                obj.status = ResourceTranslation.STATUS_APPROVED
+                obj.save(update_fields=['status'])
+                approved += 1
+        return approved, 0
+
+    def get_success_message(self, num_parent_objects, num_child_objects):
+        return f'{num_parent_objects} translation(s) approved.'
+
+
+hooks.register('register_bulk_action', ApproveTranslationBulkAction)

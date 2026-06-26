@@ -22,13 +22,15 @@ onMounted(async () => {
       const profile = await profileRes.json()
       initialAnswers.value = {
         language: profile.language,
-        otherLanguages: Array.isArray(profile.other_languages) ? profile.other_languages : [],
+        frenchLevel: profile.french_level || 'none',
         status: profile.status,
         hasChildren: profile.has_children,
         arrivedOverYear: profile.arrived_over_year_ago,
+        birthDate: profile.birth_date || '',
         hasDrivingLicense: profile.has_driving_license ?? null,
         computerSkills: profile.computer_skills || 'none',
-        educationLevel: profile.education_level || 'primary',
+        educationLevel: profile.education_level || '',
+        originSector: profile.origin_sector || '',
       }
       if (profile.language) {
         locale.value = profile.language
@@ -48,13 +50,15 @@ async function handleComplete(answers) {
     const isUpdate = !!profileId.value
     const body = {
       language: answers.language || 'en',
-      other_languages: answers.otherLanguages || [],
+      french_level: answers.frenchLevel || 'none',
       status: answers.status || 'other',
       has_children: answers.hasChildren ?? null,
       arrived_over_year_ago: answers.arrivedOverYear ?? null,
+      birth_date: answers.birthDate || null,
       has_driving_license: answers.hasDrivingLicense ?? null,
       computer_skills: answers.computerSkills || 'none',
-      education_level: answers.educationLevel || 'primary',
+      education_level: answers.educationLevel || '',
+      origin_sector: answers.originSector || '',
     }
     const res = await fetch(
       isUpdate

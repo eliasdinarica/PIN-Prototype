@@ -1,0 +1,36 @@
+{% extends 'wagtailadmin/bulk_actions/confirmation/base.html' %}
+{% load i18n wagtailadmin_tags %}
+
+{% block titletag %}{% trans "Approve translations" %}{% endblock %}
+
+{% block header %}
+    {% trans "Approve translations" as approve_str %}
+    {% include "wagtailadmin/shared/header.html" with title=approve_str subtitle=model_opts.verbose_name_plural|capfirst icon=header_icon only %}
+{% endblock %}
+
+{% block items_with_access %}
+    {% if items %}
+        <p>
+            {% blocktrans trimmed count counter=items|length %}
+                Are you sure you want to approve this translation? It will appear in the app.
+            {% plural %}
+                Are you sure you want to approve these {{ counter }} translations? They will appear in the app.
+            {% endblocktrans %}
+        </p>
+        <ul>
+            {% for obj in items %}
+                <li><a href="{{ obj.edit_url }}" target="_blank" rel="noreferrer">{{ obj.item }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block form_section %}
+    {% if items %}
+        {% trans 'Yes, approve' as action_button_text %}
+        {% trans "No, go back" as no_action_button_text %}
+        {% include 'wagtailadmin/bulk_actions/confirmation/form.html' %}
+    {% else %}
+        {% include 'wagtailadmin/bulk_actions/confirmation/go_back.html' %}
+    {% endif %}
+{% endblock %}

@@ -4,14 +4,21 @@ import { useI18n } from 'vue-i18n'
 import {
   SparklesIcon, UsersIcon, ShieldCheckIcon, ArrowDownTrayIcon, DocumentTextIcon,
   ChevronDownIcon, HandThumbUpIcon, HandThumbDownIcon, ShareIcon, BookmarkIcon,
+  SpeakerWaveIcon, StopCircleIcon,
 } from '@heroicons/vue/24/outline'
 import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/vue/24/solid'
 import ArticleRenderer from '@/components/ArticleRenderer.vue'
 import ResourceLocation from '@/components/ResourceLocation.vue'
 import { useSaved } from '@/composables/useSaved'
+import { useSpeech } from '@/composables/useSpeech'
 
 const { t } = useI18n()
 const { isSaved, toggleSave } = useSaved()
+const { supported: speechSupported, speakingId, toggle: toggleSpeech } = useSpeech()
+
+// Speech id + text for the opening section (title + description).
+const introId = computed(() => `r${props.resource.id}-intro`)
+const introText = computed(() => [content.value.name, content.value.description].filter(Boolean).join('. '))
 
 const props = defineProps({
   resource: { type: Object, required: true },
@@ -82,28 +89,31 @@ function filenameFromUrl(url) {
     <!-- Collapsed row -->
     <button
       v-if="!expanded"
-      class="flex items-center w-full py-4 text-left cursor-pointer bg-transparent border-none gap-4 group"
+      class="flex flex-col w-full py-4 text-left cursor-pointer bg-transparent border-none gap-1.5 group"
       @click="$emit('toggle', resource.id)"
     >
-      <div class="flex-1 min-w-0">
-        <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
-        <h3 class="font-semibold text-lg leading-snug text-surface-800 group-hover:text-brand-500 transition-colors">
-          {{ resource.name }}
-        </h3>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="flex flex-col items-end gap-0.5">
-          <span v-if="resource.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
-            <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
-          </span>
-          <span v-if="resource.community_by_language" class="flex items-center gap-1 text-xs text-cyan-600">
-            <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.byLanguage', { code: resource.community_by_language.toUpperCase() }) }}
-          </span>
-          <span v-if="resource.community_by_status" class="flex items-center gap-1 text-xs text-amber-600">
-            <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byStatus', { code: resource.community_by_status }) }}
-          </span>
+      <div class="flex items-center w-full gap-3">
+        <div class="flex-1 min-w-0">
+          <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
+          <h3 class="font-semibold text-lg leading-snug text-surface-800 group-hover:text-brand-500 transition-colors">
+            {{ resource.name }}
+          </h3>
         </div>
         <ChevronDownIcon class="w-5 h-5 text-surface-400 shrink-0" />
+      </div>
+      <div
+        v-if="resource.recommended_by_system || resource.recommended_by_similar || resource.recommended_by_affinity"
+        class="flex flex-wrap justify-end gap-x-3 gap-y-0.5"
+      >
+        <span v-if="resource.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
+          <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
+        </span>
+        <span v-if="resource.recommended_by_similar" class="flex items-center gap-1 text-xs text-cyan-600">
+          <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.bySimilar') }}
+        </span>
+        <span v-if="resource.recommended_by_affinity" class="flex items-center gap-1 text-xs text-violet-600">
+          <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byAffinity') }}
+        </span>
       </div>
     </button>
 
@@ -126,11 +136,11 @@ function filenameFromUrl(url) {
               <span v-if="resource.recommended_by_system" class="flex items-center gap-1 text-xs text-brand-500">
                 <SparklesIcon class="w-3 h-3 shrink-0" />{{ t('community.bySystem') }}
               </span>
-              <span v-if="resource.community_by_language" class="flex items-center gap-1 text-xs text-cyan-600">
-                <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.byLanguage', { code: resource.community_by_language.toUpperCase() }) }}
+              <span v-if="resource.recommended_by_similar" class="flex items-center gap-1 text-xs text-cyan-600">
+                <UsersIcon class="w-3 h-3 shrink-0" />{{ t('community.bySimilar') }}
               </span>
-              <span v-if="resource.community_by_status" class="flex items-center gap-1 text-xs text-amber-600">
-                <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byStatus', { code: resource.community_by_status }) }}
+              <span v-if="resource.recommended_by_affinity" class="flex items-center gap-1 text-xs text-violet-600">
+                <ShieldCheckIcon class="w-3 h-3 shrink-0" />{{ t('community.byAffinity') }}
               </span>
             </div>
           </div>
@@ -154,6 +164,15 @@ function filenameFromUrl(url) {
             >
               <ShareIcon class="w-5 h-5" />
               {{ copied ? t('actions.copied') : t('actions.share') }}
+            </button>
+            <button
+              v-if="speechSupported && introText"
+              class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer bg-transparent border-none"
+              :class="speakingId === introId ? 'text-brand-600' : 'text-surface-500 hover:text-brand-600'"
+              @click.stop="toggleSpeech(introId, introText, currentLang)"
+            >
+              <component :is="speakingId === introId ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+              {{ speakingId === introId ? t('actions.stopListen') : t('actions.listen') }}
             </button>
           </div>
           <!-- Language switch -->
@@ -193,10 +212,12 @@ function filenameFromUrl(url) {
       <ArticleRenderer
         v-if="displaySections.length"
         :sections="displaySections"
+        :lang="currentLang"
+        :prefix="`r${resource.id}-`"
       />
 
       <!-- Location: structured places + map -->
-      <ResourceLocation v-if="content.places?.length" :places="content.places" />
+      <ResourceLocation v-if="content.places?.length" :places="content.places" :lang="currentLang" />
 
       <!-- Attachments -->
       <div v-if="resource.attachments?.length" class="bg-white rounded-2xl px-6 py-5 shadow-sm">

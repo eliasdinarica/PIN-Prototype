@@ -4,8 +4,8 @@ from .models import Profile, Audience, Category, Subcategory, Resource, Tag, Res
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'language', 'status', 'has_children', 'arrived_over_year_ago', 'has_driving_license', 'computer_skills', 'education_level', 'created_at']
-    list_filter = ['language', 'status', 'has_children', 'arrived_over_year_ago', 'has_driving_license', 'computer_skills', 'education_level']
+    list_display = ['id', 'language', 'french_level', 'status', 'has_children', 'arrived_over_year_ago', 'has_driving_license', 'computer_skills', 'education_level', 'origin_sector', 'created_at']
+    list_filter = ['language', 'french_level', 'status', 'has_children', 'arrived_over_year_ago', 'has_driving_license', 'computer_skills', 'education_level', 'origin_sector']
     readonly_fields = ['created_at']
 
 
