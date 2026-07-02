@@ -5,10 +5,13 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from pin_prototype.ai import chat_completion
-from pin_prototype.models import Resource, ResourceTranslation, resource_section_dicts
+from pin_prototype.models import (
+    Resource, ResourceTranslation, Guide, GuideTranslation, resource_section_dicts,
+)
 
-# Target languages supported by the script. Kept simple: Russian only for now.
-LANGUAGES = {'ru': 'Russian'}
+# Target languages for CONTENT translation. Ukrainian only — Russian stays
+# available as a UI language but resources/guides are not translated to Russian.
+LANGUAGES = {'uk': 'Ukrainian'}
 
 # Sidecar file remembering the source hash translated for each (resource, lang).
 # Lets periodic runs translate only what changed — no data-model change needed.
@@ -74,7 +77,7 @@ class Command(BaseCommand):
     help = 'Translate approved resources into another language using the AI.'
 
     def add_arguments(self, parser):
-        parser.add_argument('--lang', default='ru', help='Target language code (default: ru).')
+        parser.add_argument('--lang', default='uk', help='Target language code (default: uk).')
         parser.add_argument('--limit', type=int, default=0, help='Only translate the first N resources (0 = all).')
         parser.add_argument('--force', action='store_true', help='Re-translate even if a translation already exists.')
 
@@ -159,3 +162,33 @@ class Command(BaseCommand):
 
         save_state(state)
         self.stdout.write(self.style.SUCCESS(f'\nTranslated {done}/{len(todo)} resources to {language_name}.'))
+
+        # Guides: translate the guide-level title/description (the steps are
+        # already covered via their resources). Auto-approved, like the steps.
+        g_done = 0
+        for guide in Guide.objects.filter(is_active=True).order_by('id'):
+            if not force and GuideTranslation.objects.filter(guide=guide, language=lang).exists():
+                continue
+            flat = {'title': guide.title or '', 'description': guide.description or ''}
+            if not any(flat.values()):
+                continue
+            try:
+                raw = chat_completion([
+                    {'role': 'system', 'content': system},
+                    {'role': 'user', 'content': json.dumps(flat, ensure_ascii=False)},
+                ])
+                translated = _parse_json(raw)
+            except Exception as e:
+                self.stdout.write(f'  --  guide#{guide.id} {guide.title[:40]} (error: {e})')
+                continue
+            GuideTranslation.objects.update_or_create(
+                guide=guide, language=lang,
+                defaults={
+                    'title': translated.get('title') or '',
+                    'description': translated.get('description') or '',
+                    'status': GuideTranslation.STATUS_APPROVED,
+                },
+            )
+            g_done += 1
+            self.stdout.write(f'  OK  guide#{guide.id} {guide.title[:40]}')
+        self.stdout.write(self.style.SUCCESS(f'Translated {g_done} guide(s) to {language_name}.'))

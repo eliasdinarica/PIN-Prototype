@@ -1,5 +1,5 @@
 """
-Seed command — données réelles pour le canton de Neuchâtel (NE).
+Seed command, données réelles pour le canton de Neuchâtel (NE).
 
 Usage:
     python manage.py seed            # additif (get_or_create)
@@ -19,7 +19,7 @@ from pin_prototype.models import (
 )
 
 # ---------------------------------------------------------------------------
-# Helpers — construction des corps d'articles (format Wagtail StreamField)
+# Helpers, construction des corps d'articles (format Wagtail StreamField)
 # ---------------------------------------------------------------------------
 
 def para(text):
@@ -298,7 +298,7 @@ CATEGORIES = [
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Résident long terme'],
                 'why_interesting': (
                     para("L'ORP (Office Régional de Placement) s'appelle ONE à Neuchâtel. C'est le service public qui aide les personnes sans emploi à trouver un travail.")
-                    + para("Si vous avez travaillé en Suisse et cotisé à l'assurance chômage, vous pouvez aussi recevoir des indemnités — de l'argent chaque mois pendant votre recherche.")
+                    + para("Si vous avez travaillé en Suisse et cotisé à l'assurance chômage, vous pouvez aussi recevoir des indemnités, de l'argent chaque mois pendant votre recherche.")
                 ),
                 'how_to': (
                     h3("Qui peut s'inscrire")
@@ -309,9 +309,9 @@ CATEGORIES = [
                     )
                     + h3("Les étapes")
                     + ol(
-                        "Inscrivez-vous dès le premier jour sans emploi — n'attendez pas",
+                        "Inscrivez-vous dès le premier jour sans emploi, n'attendez pas",
                         "En ligne sur <a href='https://www.arbeit.swiss'>arbeit.swiss</a> (24h/24)",
-                        "L'ONE vous contacte dans les 24–48 heures pour un rendez-vous",
+                        "L'ONE vous contacte dans les 24 à 48 heures pour un rendez-vous",
                         "Inscrivez-vous aussi à une caisse de chômage",
                         "Envoyez 8 à 12 candidatures par mois et gardez une preuve de chaque envoi",
                     )
@@ -341,7 +341,7 @@ CATEGORIES = [
                 'body': body(
                     sec("À quoi ça sert",
                         para("L'ORP (Office Régional de Placement) s'appelle ONE à Neuchâtel. C'est le service public qui aide les personnes sans emploi à trouver un travail."),
-                        para("Si vous avez travaillé en Suisse et cotisé à l'assurance chômage, vous pouvez aussi recevoir des indemnités de chômage — de l'argent chaque mois pendant votre recherche."),
+                        para("Si vous avez travaillé en Suisse et cotisé à l'assurance chômage, vous pouvez aussi recevoir des indemnités de chômage, de l'argent chaque mois pendant votre recherche."),
                     ),
                     sec("Qui peut s'inscrire",
                         ul(
@@ -353,9 +353,9 @@ CATEGORIES = [
                     ),
                     sec("Comment faire",
                         ol(
-                            "Inscrivez-vous dès le premier jour sans emploi — ne pas attendre",
+                            "Inscrivez-vous dès le premier jour sans emploi, ne pas attendre",
                             "En ligne sur <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a> (disponible 24h/24)",
-                            "L'ONE vous contacte dans les 24–48 heures pour un rendez-vous",
+                            "L'ONE vous contacte dans les 24 à 48 heures pour un rendez-vous",
                             "Inscrivez-vous aussi à une caisse de chômage (CCNAC ou une caisse syndicale)",
                             "Cherchez activement : envoyez 8 à 12 candidatures par mois, gardez une preuve de chaque envoi",
                         ),
@@ -374,14 +374,14 @@ CATEGORIES = [
                         "<b>Téléphone :</b> 032 889 68 18",
                         "<b>Email :</b> one@ne.ch",
                         "<b>Sur rendez-vous uniquement</b> (pris après inscription en ligne)",
-                        "<b>Téléphone :</b> lun–ven 8h–12h / lun–jeu 13h30–17h",
+                        "<b>Téléphone :</b> lun à ven 8h à 12h / lun à jeu 13h30 à 17h",
                     ), width='half'),
                     sec("ONE La Chaux-de-Fonds", ul(
                         "<b>Adresse :</b> Espacité 1, 2302 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 889 69 00",
                         "<b>Email :</b> one@ne.ch",
                         "<b>Inscription :</b> <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a>",
-                        "<b>Caisse chômage (CCNAC) :</b> Espacité 4, CDF — 032 889 67 90",
+                        "<b>Caisse chômage (CCNAC) :</b> Espacité 4, CDF, 032 889 67 90",
                     ), width='half'),
                 ),
             },
@@ -393,7 +393,7 @@ CATEGORIES = [
                 'audiences': ['Nouveaux arrivants', "Établis depuis plus d'un an", 'Jeune adulte'],
                 'why_interesting': para("Le CV suisse a ses propres règles. Bien le présenter augmente vos chances d'être contacté par un employeur."),
                 'how_to': (
-                    h3("Le CV suisse — ce qui est différent")
+                    h3("Le CV suisse, ce qui est différent")
                     + ul(
                         "Maximum 2 pages (1 page si moins de 10 ans d'expérience)",
                         "Photo professionnelle recommandée (fond neutre)",
@@ -407,7 +407,7 @@ CATEGORIES = [
                     "<b>Aide à la rédaction :</b> votre conseiller ONE",
                 ),
                 'body': body(
-                    sec("Le CV suisse — ce qui est différent",
+                    sec("Le CV suisse, ce qui est différent",
                         ul(
                             "Maximum 2 pages (1 page si moins de 10 ans d'expérience)",
                             "Photo recommandée (professionnelle, fond neutre)",
@@ -420,7 +420,7 @@ CATEGORIES = [
                         ol(
                             "Coordonnées (nom, téléphone, email, adresse)",
                             "Photo",
-                            "Résumé professionnel (3–4 lignes)",
+                            "Résumé professionnel (3 à 4 lignes)",
                             "Expériences professionnelles (avec dates et lieu)",
                             "Formation et diplômes",
                             "Compétences et langues",
@@ -429,9 +429,9 @@ CATEGORIES = [
                     ),
                     sec("Aide gratuite à Neuchâtel",
                         ul(
-                            "<b>ONE Neuchâtel :</b> ateliers CV et simulation d'entretien — demandez à votre conseiller",
-                            "<b>COSM :</b> accompagnement à la recherche d'emploi — 032 889 74 42",
-                            "<b>CNIP :</b> bilan de compétences et réorientation — <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a>",
+                            "<b>ONE Neuchâtel :</b> ateliers CV et simulation d'entretien, demandez à votre conseiller",
+                            "<b>COSM :</b> accompagnement à la recherche d'emploi, 032 889 74 42",
+                            "<b>CNIP :</b> bilan de compétences et réorientation, <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a>",
                             "<b>Offres d'emploi :</b> <a href='https://www.jobs.ch' target='_blank'>jobs.ch</a>, <a href='https://www.indeed.ch' target='_blank'>indeed.ch</a>, <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a>",
                         ),
                     ),
@@ -477,17 +477,17 @@ CATEGORIES = [
                 'audiences': ["Établis depuis plus d'un an", 'Résident long terme'],
                 'body': body(
                     sec("Avant de commencer",
-                        para("En Suisse, travailler à son compte est possible avec un permis B ou C. Avec un permis N ou F, c'est plus compliqué — renseignez-vous d'abord auprès du SMIG (Service des migrations de Neuchâtel)."),
+                        para("En Suisse, travailler à son compte est possible avec un permis B ou C. Avec un permis N ou F, c'est plus compliqué, renseignez-vous d'abord auprès du SMIG (Service des migrations de Neuchâtel)."),
                     ),
                     sec("Les étapes principales",
                         ol(
                             "Choisir votre forme juridique : raison individuelle (la plus simple), Sàrl ou SA",
-                            "S'annoncer à la Caisse cantonale neuchâteloise de compensation (CCNC) — obligatoire",
+                            "S'annoncer à la Caisse cantonale neuchâteloise de compensation (CCNC), obligatoire",
                             "Inscrire votre entreprise au Registre du Commerce si chiffre d'affaires > CHF 100 000/an",
                             "S'immatriculer à la TVA si chiffre d'affaires > CHF 100 000/an",
                         ),
                     ),
-                    sec("CCNC — Caisse cantonale", ul(
+                    sec("CCNC, Caisse cantonale", ul(
                         "<b>Adresse :</b> Faubourg de l'Hôpital 28, 2001 Neuchâtel",
                         "<b>Téléphone :</b> 032 889 65 01",
                         "<b>Email :</b> ccnc@ne.ch",
@@ -510,31 +510,31 @@ CATEGORIES = [
                 'body': body(
                     sec("Le contrat de travail",
                         ul(
-                            "Tout contrat peut être oral — mais exigez toujours un contrat écrit",
+                            "Tout contrat peut être oral, mais exigez toujours un contrat écrit",
                             "Le contrat doit mentionner : salaire, durée de travail, délai de congé",
                             "Les conventions collectives de travail (CCT) fixent des minimums dans chaque branche",
-                            "En Suisse, il n'y a pas de salaire minimum légal national — sauf dans les cantons et branches qui en ont un",
+                            "En Suisse, il n'y a pas de salaire minimum légal national, sauf dans les cantons et branches qui en ont un",
                         ),
                     ),
                     sec("Congés et absences",
                         ul(
                             "<b>Vacances :</b> minimum 4 semaines par an (5 semaines si moins de 20 ans)",
-                            "<b>Jours fériés officiels NE :</b> 1er janvier, Vendredi saint, 1er août, Noël — vérifiez la liste complète sur ne.ch",
+                            "<b>Jours fériés officiels NE :</b> 1er janvier, Vendredi saint, 1er août, Noël, vérifiez la liste complète sur ne.ch",
                             "<b>Maladie :</b> vous avez droit au salaire pendant votre arrêt maladie (selon l'ancienneté)",
                             "<b>Accident :</b> couvert par l'assurance accidents obligatoire (LAA) de votre employeur",
                         ),
                     ),
                     sec("En cas de licenciement",
                         ul(
-                            "Délai de congé minimum : 1 mois (1re année), 2 mois (2e–9e année), 3 mois ensuite",
+                            "Délai de congé minimum : 1 mois (1re année), 2 mois (2e à 9e année), 3 mois ensuite",
                             "Licenciement immédiat sans cause valable = droit à une indemnité",
                             "Licenciement abusif : recours possible devant le tribunal",
                         ),
                     ),
                     sec("Aide à Neuchâtel", ul(
-                        "<b>Unia Neuchâtel :</b> syndicat — conseil juridique gratuit pour les membres — <a href='https://www.unia.ch' target='_blank'>unia.ch</a>",
-                        "<b>Syna :</b> syndicat chrétien-social — <a href='https://www.syna.ch' target='_blank'>syna.ch</a>",
-                        "<b>FER (Fédération patronale) :</b> pour vérifier les CCT de votre branche — <a href='https://www.fer-ne.ch' target='_blank'>fer-ne.ch</a>",
+                        "<b>Unia Neuchâtel :</b> syndicat, conseil juridique gratuit pour les membres, <a href='https://www.unia.ch' target='_blank'>unia.ch</a>",
+                        "<b>Syna :</b> syndicat chrétien-social, <a href='https://www.syna.ch' target='_blank'>syna.ch</a>",
+                        "<b>FER (Fédération patronale) :</b> pour vérifier les CCT de votre branche, <a href='https://www.fer-ne.ch' target='_blank'>fer-ne.ch</a>",
                         "<b>Guide officiel :</b> <a href='https://www.ch.ch/fr/travail/' target='_blank'>ch.ch/travail</a>",
                     ), width='full'),
                 ),
@@ -549,24 +549,24 @@ CATEGORIES = [
                     sec("Comment ça fonctionne",
                         para("Une agence d'intérim vous place chez des entreprises pour des missions courtes ou longues. C'est un bon moyen de démarrer en Suisse, de construire une expérience locale et d'être ensuite recruté directement."),
                         ul(
-                            "Vous êtes employé par l'agence — elle paie votre salaire et vos cotisations",
+                            "Vous êtes employé par l'agence, elle paie votre salaire et vos cotisations",
                             "Vous travaillez chez une entreprise cliente",
                             "Les missions durent de quelques jours à plusieurs mois",
                             "Vous avez les mêmes droits qu'un employé ordinaire (LAA, LAMal, etc.)",
                         ),
                     ),
                     sec("Agences présentes à Neuchâtel", ul(
-                        "<b>Adecco :</b> <a href='https://www.adecco.ch' target='_blank'>adecco.ch</a> — bureau à Neuchâtel et La Chaux-de-Fonds",
+                        "<b>Adecco :</b> <a href='https://www.adecco.ch' target='_blank'>adecco.ch</a>, bureau à Neuchâtel et La Chaux-de-Fonds",
                         "<b>Manpower :</b> <a href='https://www.manpower.ch' target='_blank'>manpower.ch</a>",
                         "<b>Randstad :</b> <a href='https://www.randstad.ch' target='_blank'>randstad.ch</a>",
-                        "<b>Kelly Services :</b> spécialisé IT et industrie — <a href='https://www.kellyservices.ch' target='_blank'>kellyservices.ch</a>",
-                        "<b>Temporis :</b> réseau de franchises locales — <a href='https://www.temporis.ch' target='_blank'>temporis.ch</a>",
+                        "<b>Kelly Services :</b> spécialisé IT et industrie, <a href='https://www.kellyservices.ch' target='_blank'>kellyservices.ch</a>",
+                        "<b>Temporis :</b> réseau de franchises locales, <a href='https://www.temporis.ch' target='_blank'>temporis.ch</a>",
                     ), width='half'),
                     sec("Conseils", ul(
                         "Inscrivez-vous dans plusieurs agences en même temps",
                         "Apportez : CV, permis de séjour, certificats de travail",
                         "Précisez votre disponibilité, vos langues et votre secteur",
-                        "Les agences sont gratuites pour les candidats — méfiez-vous si on vous demande de l'argent",
+                        "Les agences sont gratuites pour les candidats, méfiez-vous si on vous demande de l'argent",
                     ), width='half'),
                 ),
             },
@@ -579,24 +579,24 @@ CATEGORIES = [
                 'body': body(
                     sec("Le salaire en Suisse",
                         ul(
-                            "Il n'y a pas de salaire minimum national légal — mais de nombreux secteurs ont des minimums fixés par des <b>conventions collectives de travail (CCT)</b>",
+                            "Il n'y a pas de salaire minimum national légal, mais de nombreux secteurs ont des minimums fixés par des <b>conventions collectives de travail (CCT)</b>",
                             "Le salaire est souvent mensuel, versé fin de mois ou le 25",
                             "Votre fiche de salaire doit détailler : salaire brut, cotisations AVS/AI/AC, impôt à la source, salaire net",
-                            "<b>13e salaire :</b> fréquent en Suisse — versé en décembre ou moitié juillet / moitié décembre",
+                            "<b>13e salaire :</b> fréquent en Suisse, versé en décembre ou moitié juillet / moitié décembre",
                         ),
                     ),
                     sec("Trouver la CCT de votre secteur",
                         ul(
-                            "<b>Hôtellerie-restauration (GAV) :</b> <a href='https://www.l-gav.ch' target='_blank'>l-gav.ch</a> — salaire min. env. CHF 3 600/mois",
-                            "<b>Nettoyage :</b> CCT nettoyage — env. CHF 3 700/mois",
-                            "<b>Construction :</b> CCT construction — renseignez-vous à Unia",
+                            "<b>Hôtellerie-restauration (GAV) :</b> <a href='https://www.l-gav.ch' target='_blank'>l-gav.ch</a>, salaire min. env. CHF 3 600/mois",
+                            "<b>Nettoyage :</b> CCT nettoyage, env. CHF 3 700/mois",
+                            "<b>Construction :</b> CCT construction, renseignez-vous à Unia",
                             "<b>Toutes les CCT :</b> <a href='https://www.seco.admin.ch/cct' target='_blank'>seco.admin.ch/cct</a>",
                         ),
                     ),
                     sec("Si vous pensez être sous-payé", ul(
-                        "<b>Unia Neuchâtel :</b> syndicat — consultation gratuite — <a href='https://www.unia.ch' target='_blank'>unia.ch</a>",
-                        "<b>Syna :</b> autre syndicat — <a href='https://www.syna.ch' target='_blank'>syna.ch</a>",
-                        "<b>Inspection du travail NE :</b> peut contrôler le respect des CCT — <a href='https://www.ne.ch/inspection-travail' target='_blank'>ne.ch/inspection-travail</a>",
+                        "<b>Unia Neuchâtel :</b> syndicat, consultation gratuite, <a href='https://www.unia.ch' target='_blank'>unia.ch</a>",
+                        "<b>Syna :</b> autre syndicat, <a href='https://www.syna.ch' target='_blank'>syna.ch</a>",
+                        "<b>Inspection du travail NE :</b> peut contrôler le respect des CCT, <a href='https://www.ne.ch/inspection-travail' target='_blank'>ne.ch/inspection-travail</a>",
                         "Signalez de manière anonyme si vous avez peur des représailles",
                     ), width='full'),
                 ),
@@ -614,18 +614,18 @@ CATEGORIES = [
                             "Tests d'aptitudes et de personnalité",
                             "Entretiens individuels avec un conseiller",
                             "Information sur les formations et les métiers",
-                            "<b>Neuchâtel :</b> Rue de la Maladière 28 — 032 889 65 50",
-                            "<b>La Chaux-de-Fonds :</b> Rue du Commerce 7 — 032 889 64 46",
+                            "<b>Neuchâtel :</b> Rue de la Maladière 28, 032 889 65 50",
+                            "<b>La Chaux-de-Fonds :</b> Rue du Commerce 7, 032 889 64 46",
                         ),
                     ),
                     sec("Autres ressources", ul(
-                        "<b>Berufsberatung.ch :</b> base de données de tous les métiers suisses, salaires, formations — <a href='https://www.berufsberatung.ch/fr' target='_blank'>berufsberatung.ch</a>",
-                        "<b>CNIP :</b> bilan de compétences pour adultes avec expérience à l'étranger — 032 889 69 25",
+                        "<b>Berufsberatung.ch :</b> base de données de tous les métiers suisses, salaires, formations, <a href='https://www.berufsberatung.ch/fr' target='_blank'>berufsberatung.ch</a>",
+                        "<b>CNIP :</b> bilan de compétences pour adultes avec expérience à l'étranger, 032 889 69 25",
                         "<b>ONE (ORP) :</b> votre conseiller ONE peut vous orienter si vous êtes inscrit au chômage",
                     ), width='half'),
                     sec("Tester un métier avant de se lancer", ul(
                         "Demandez à votre ONE un stage d'observation (<i>Schnupperlehre</i>) en entreprise",
-                        "Durée : 1 à 5 jours — gratuit — permet de découvrir un métier concrètement",
+                        "Durée : 1 à 5 jours, gratuit, permet de découvrir un métier concrètement",
                         "Le CNIP peut aussi organiser des périodes en entreprise dans le cadre d'une réorientation",
                     ), width='half'),
                 ),
@@ -638,15 +638,15 @@ CATEGORIES = [
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Compétences numériques de base'],
                 'body': body(
                     sec("Pourquoi LinkedIn est important en Suisse",
-                        para("En Suisse, beaucoup de postes ne sont jamais publiés sur des sites d'emploi — ils sont pourvus par le réseau. LinkedIn est le réseau professionnel le plus utilisé. Un profil complet augmente vraiment vos chances."),
+                        para("En Suisse, beaucoup de postes ne sont jamais publiés sur des sites d'emploi, ils sont pourvus par le réseau. LinkedIn est le réseau professionnel le plus utilisé. Un profil complet augmente vraiment vos chances."),
                     ),
                     sec("Créer votre profil",
                         ul(
-                            "<b>Photo :</b> professionnelle, fond neutre — obligatoire (profils sans photo sont moins consultés)",
+                            "<b>Photo :</b> professionnelle, fond neutre, obligatoire (profils sans photo sont moins consultés)",
                             "<b>Titre :</b> votre métier ou ce que vous cherchez (ex: 'Infirmière | Cherche poste canton NE')",
-                            "<b>Résumé :</b> 3–5 lignes sur votre parcours et ce que vous apportez",
-                            "<b>Expériences :</b> même à l'étranger — décrivez vos tâches en français",
-                            "<b>Compétences :</b> ajoutez-en au moins 10 — vos connexions peuvent les valider",
+                            "<b>Résumé :</b> 3 à 5 lignes sur votre parcours et ce que vous apportez",
+                            "<b>Expériences :</b> même à l'étranger, décrivez vos tâches en français",
+                            "<b>Compétences :</b> ajoutez-en au moins 10, vos connexions peuvent les valider",
                         ),
                     ),
                     sec("Utiliser votre réseau", ul(
@@ -656,10 +656,10 @@ CATEGORIES = [
                         "Demandez des recommandations à vos anciens employeurs ou bénévoles",
                     ), width='half'),
                     sec("Plateformes d'emploi complémentaires", ul(
-                        "<a href='https://www.jobs.ch' target='_blank'>jobs.ch</a> — le plus utilisé en Suisse",
+                        "<a href='https://www.jobs.ch' target='_blank'>jobs.ch</a>, le plus utilisé en Suisse",
                         "<a href='https://www.indeed.ch' target='_blank'>indeed.ch</a>",
-                        "<a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a> — portail officiel du SECO",
-                        "<a href='https://www.jobup.ch' target='_blank'>jobup.ch</a> — spécialiste Suisse romande",
+                        "<a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a>, portail officiel du SECO",
+                        "<a href='https://www.jobup.ch' target='_blank'>jobup.ch</a>, spécialiste Suisse romande",
                     ), width='half'),
                 ),
             },
@@ -674,21 +674,21 @@ CATEGORIES = [
                         para("Le travail saisonnier est une bonne façon de commencer en Suisse. Il ne demande pas toujours de diplôme, et vous permet de construire une expérience locale et un réseau."),
                     ),
                     sec("Principales saisons et secteurs", ul(
-                        "<b>Vendanges (septembre–octobre) :</b> Neuchâtel, Valais, Vaud — pas toujours besoin d'expérience",
+                        "<b>Vendanges (septembre à octobre) :</b> Neuchâtel, Valais, Vaud, pas toujours besoin d'expérience",
                         "<b>Hôtellerie et restauration :</b> toute l'année, surtout été et hiver (stations de ski)",
                         "<b>Agriculture (été) :</b> récolte de fruits et légumes, travaux maraîchers",
-                        "<b>Bâtiment :</b> printemps–automne, souvent via agences d'intérim",
+                        "<b>Bâtiment :</b> printemps à automne, souvent via agences d'intérim",
                     )),
                     sec("Comment chercher", ul(
-                        "<b>Agrijob :</b> plateforme dédiée à l'agriculture — <a href='https://www.agrijob.ch' target='_blank'>agrijob.ch</a>",
-                        "<b>Gastrojob :</b> hôtellerie et restauration — <a href='https://www.gastrojob.ch' target='_blank'>gastrojob.ch</a>",
-                        "<b>Saisonnier.ch :</b> offres saisonnières toutes régions — <a href='https://www.saisonnier.ch' target='_blank'>saisonnier.ch</a>",
-                        "<b>ONE Neuchâtel :</b> votre conseiller peut vous signaler des offres locales — 032 889 68 18",
-                        "<b>Agences d'intérim :</b> Adecco, Manpower — souvent des missions courtes dans l'industrie",
+                        "<b>Agrijob :</b> plateforme dédiée à l'agriculture, <a href='https://www.agrijob.ch' target='_blank'>agrijob.ch</a>",
+                        "<b>Gastrojob :</b> hôtellerie et restauration, <a href='https://www.gastrojob.ch' target='_blank'>gastrojob.ch</a>",
+                        "<b>Saisonnier.ch :</b> offres saisonnières toutes régions, <a href='https://www.saisonnier.ch' target='_blank'>saisonnier.ch</a>",
+                        "<b>ONE Neuchâtel :</b> votre conseiller peut vous signaler des offres locales, 032 889 68 18",
+                        "<b>Agences d'intérim :</b> Adecco, Manpower, souvent des missions courtes dans l'industrie",
                     ), width='half'),
                     sec("Conditions importantes", ul(
                         "Vérifiez que votre permis autorise le travail (permis N : possible après 3 mois sous conditions)",
-                        "Le contrat de travail doit être signé avant de commencer — même pour une semaine",
+                        "Le contrat de travail doit être signé avant de commencer, même pour une semaine",
                         "Droit au salaire minimum de la CCT du secteur (restauration : env. CHF 3 600/mois)",
                         "Vous avez les mêmes droits qu'un autre travailleur : assurances, jours de repos, etc.",
                     ), width='half'),
@@ -705,10 +705,10 @@ CATEGORIES = [
                         para("Même sans permis de travail complet, vous pouvez faire du bénévolat. C'est un excellent moyen de construire un réseau, de pratiquer le français et de montrer votre motivation à un futur employeur."),
                     ),
                     sec("Trouver une mission bénévole", ul(
-                        "<b>Benevol Neuchâtel :</b> plateforme officielle — <a href='https://www.benevolat-ne.ch' target='_blank'>benevolat-ne.ch</a>",
-                        "<b>Croix-Rouge NE :</b> bénévoles toujours recherchés — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
-                        "<b>Caritas NE :</b> ateliers de français, aide alimentaire — 032 886 80 70",
-                        "<b>Maisons de quartier Neuchâtel :</b> activités variées — demandez au COSM",
+                        "<b>Benevol Neuchâtel :</b> plateforme officielle, <a href='https://www.benevolat-ne.ch' target='_blank'>benevolat-ne.ch</a>",
+                        "<b>Croix-Rouge NE :</b> bénévoles toujours recherchés, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>Caritas NE :</b> ateliers de français, aide alimentaire, 032 886 80 70",
+                        "<b>Maisons de quartier Neuchâtel :</b> activités variées, demandez au COSM",
                     ), width='half'),
                     sec("Ce que vous pouvez mettre sur votre CV", ul(
                         "Le nom de l'organisation",
@@ -743,7 +743,7 @@ CATEGORIES = [
                             "Vous avez <b>3 mois</b> dès votre arrivée pour vous inscrire",
                             "Si vous vous inscrivez dans ce délai, la couverture commence le jour de votre arrivée",
                             "Si vous dépassez ce délai, vous payez une pénalité",
-                            "Toutes les caisses doivent vous accepter — elles ne peuvent pas refuser",
+                            "Toutes les caisses doivent vous accepter, elles ne peuvent pas refuser",
                             "La couverture de base est identique dans toutes les caisses",
                         ),
                     ),
@@ -768,8 +768,8 @@ CATEGORIES = [
                     ),
                     sec("Prime moyenne à Neuchâtel (2025)",
                         ul(
-                            "<b>Adulte :</b> environ CHF 370–430/mois selon la caisse et la franchise",
-                            "<b>Enfant :</b> environ CHF 90–130/mois",
+                            "<b>Adulte :</b> environ CHF 370 à 430/mois selon la caisse et la franchise",
+                            "<b>Enfant :</b> environ CHF 90 à 130/mois",
                             "Une réduction de prime est possible si vos revenus sont modestes (voir ressource dédiée)",
                             "<b>Info officielle :</b> <a href='https://www.ne.ch/assurance-maladie' target='_blank'>ne.ch/assurance-maladie</a>",
                         ),
@@ -800,12 +800,12 @@ CATEGORIES = [
                         "<b>Adresse :</b> Rue Saint-Maurice 4, 2000 Neuchâtel",
                         "<b>Téléphone :</b> 032 717 74 10",
                         "<b>Email :</b> gsr.neuchatel@ne.ch",
-                        "<b>Téléphone :</b> lun–ven 8h30–12h",
+                        "<b>Téléphone :</b> lun à ven 8h30 à 12h",
                     ), width='half'),
                     sec("GSR La Chaux-de-Fonds", ul(
                         "<b>Adresse :</b> Rue du Collège 11, 2300 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 967 67 31",
-                        "<b>OCAB (suivi dossier) :</b> Rue de Tivoli 28, 2002 Neuchâtel — 032 889 66 30",
+                        "<b>OCAB (suivi dossier) :</b> Rue de Tivoli 28, 2002 Neuchâtel, 032 889 66 30",
                         "<b>Info :</b> <a href='https://www.ne.ch/subsides-lamal' target='_blank'>ne.ch/subsides-lamal</a>",
                     ), width='half'),
                 ),
@@ -819,26 +819,26 @@ CATEGORIES = [
                 'body': body(
                     sec("Pourquoi c'est important",
                         para("En Suisse, le médecin de famille est votre premier contact pour toute question de santé. Il vous oriente vers des spécialistes si nécessaire."),
-                        para("Trouver un médecin peut prendre du temps — commencez dès votre arrivée."),
+                        para("Trouver un médecin peut prendre du temps, commencez dès votre arrivée."),
                     ),
                     sec("Comment chercher",
                         ol(
-                            "Cherchez sur <a href='https://doctorfmh.ch/fr/' target='_blank'>doctorfmh.ch</a> — le registre officiel de tous les médecins suisses",
+                            "Cherchez sur <a href='https://doctorfmh.ch/fr/' target='_blank'>doctorfmh.ch</a>, le registre officiel de tous les médecins suisses",
                             "Prenez rendez-vous en ligne sur <a href='https://www.onedoc.ch' target='_blank'>onedoc.ch</a>",
                             "Appelez directement les cabinets proches de chez vous",
                             "Demandez à votre entourage ou au COSM",
                         ),
                     ),
                     sec("Si vous ne trouvez pas de médecin", ul(
-                        "<b>HNE — Hôpital Neuchâtelois :</b> consultations sans médecin attitré possible aux urgences",
-                        "<b>Urgences HNE Neuchâtel :</b> Rue de la Maladière 45, 2000 Neuchâtel — 032 713 31 31",
-                        "<b>Urgences HNE La Chaux-de-Fonds :</b> Rue de Chasseral 20 — 032 967 28 28",
+                        "<b>HNE, Hôpital Neuchâtelois :</b> consultations sans médecin attitré possible aux urgences",
+                        "<b>Urgences HNE Neuchâtel :</b> Rue de la Maladière 45, 2000 Neuchâtel, 032 713 31 31",
+                        "<b>Urgences HNE La Chaux-de-Fonds :</b> Rue de Chasseral 20, 032 967 28 28",
                         "Votre pharmacie peut aussi vous orienter vers un médecin disponible",
                     ), width='half'),
                     sec("Annuaires utiles", ul(
-                        "<a href='https://doctorfmh.ch/fr/' target='_blank'>doctorfmh.ch</a> — registre FMH officiel",
-                        "<a href='https://www.onedoc.ch' target='_blank'>onedoc.ch</a> — prise de RDV en ligne",
-                        "<a href='https://www.comparis.ch/gesundheit/arzt' target='_blank'>comparis.ch</a> — par caisse maladie",
+                        "<a href='https://doctorfmh.ch/fr/' target='_blank'>doctorfmh.ch</a>, registre FMH officiel",
+                        "<a href='https://www.onedoc.ch' target='_blank'>onedoc.ch</a>, prise de RDV en ligne",
+                        "<a href='https://www.comparis.ch/gesundheit/arzt' target='_blank'>comparis.ch</a>, par caisse maladie",
                         "<b>Médecins parlant d'autres langues :</b> demandez au COSM un interprète médical",
                     ), width='half'),
                 ),
@@ -852,24 +852,24 @@ CATEGORIES = [
                 'body': body(
                     sec("Numéros d'urgence",
                         ul(
-                            "<b>144</b> — Ambulance. Gratuit, 24h/24",
-                            "<b>117</b> — Police. Gratuit, 24h/24",
-                            "<b>118</b> — Pompiers. Gratuit, 24h/24",
-                            "<b>112</b> — Numéro européen d'urgence",
-                            "<b>145</b> — Toxicocentre (empoisonnement). Gratuit, 24h/24",
-                            "<b>143</b> — La Main Tendue (soutien psychologique). Gratuit, 24h/24",
+                            "<b>144</b>, Ambulance. Gratuit, 24h/24",
+                            "<b>117</b>, Police. Gratuit, 24h/24",
+                            "<b>118</b>, Pompiers. Gratuit, 24h/24",
+                            "<b>112</b>, Numéro européen d'urgence",
+                            "<b>145</b>, Toxicocentre (empoisonnement). Gratuit, 24h/24",
+                            "<b>143</b>, La Main Tendue (soutien psychologique). Gratuit, 24h/24",
                         ),
                     ),
                     sec("Hôpitaux à Neuchâtel (HNE)", ul(
-                        "<b>Neuchâtel :</b> Rue de la Maladière 45 — 032 713 31 31",
-                        "<b>La Chaux-de-Fonds :</b> Rue de Chasseral 20 — 032 967 28 28",
-                        "<b>Pourtalès (Neuchâtel) :</b> Rue de la Maladière 45 — urgences 032 713 31 31",
+                        "<b>Neuchâtel :</b> Rue de la Maladière 45, 032 713 31 31",
+                        "<b>La Chaux-de-Fonds :</b> Rue de Chasseral 20, 032 967 28 28",
+                        "<b>Pourtalès (Neuchâtel) :</b> Rue de la Maladière 45, urgences 032 713 31 31",
                         "<b>Site HNE :</b> <a href='https://www.h-ne.ch' target='_blank'>h-ne.ch</a>",
                     ), width='half'),
                     sec("Garde médicale de nuit", ul(
                         "<b>Médecin de garde :</b> appelez le 032 713 31 31 (HNE) pour savoir qui est de garde",
                         "<b>Pharmacies de garde :</b> <a href='https://www.pharmaguard.ch' target='_blank'>pharmaguard.ch</a>",
-                        "Votre caisse maladie a un numéro de conseil médical gratuit (24h/24) — vérifiez votre carte d'assuré",
+                        "Votre caisse maladie a un numéro de conseil médical gratuit (24h/24), vérifiez votre carte d'assuré",
                     ), width='half'),
                 ),
             },
@@ -881,19 +881,19 @@ CATEGORIES = [
                 'audiences': ["Demandeur d'asile", 'Nouveaux arrivants'],
                 'body': body(
                     sec("Vous n'êtes pas seul",
-                        para("Arriver dans un nouveau pays est difficile. Stress, tristesse, anxiété — c'est normal. Des professionnels peuvent vous aider, souvent gratuitement et avec un interprète."),
+                        para("Arriver dans un nouveau pays est difficile. Stress, tristesse, anxiété, c'est normal. Des professionnels peuvent vous aider, souvent gratuitement et avec un interprète."),
                     ),
                     sec("Où trouver de l'aide à Neuchâtel", ul(
-                        "<b>HNE — Psychiatrie :</b> consultations sur rendez-vous via médecin traitant — <a href='https://www.h-ne.ch' target='_blank'>h-ne.ch</a>",
-                        "<b>COSM :</b> peut vous orienter vers un soutien psychosocial et fournir un interprète — 032 889 74 42",
-                        "<b>CSP Neuchâtel :</b> accompagnement social pour réfugiés — 032 886 91 00",
-                        "<b>Caritas Neuchâtel :</b> soutien et groupes de parole — <a href='https://caritas-regio.ch/neuchatel' target='_blank'>caritas-regio.ch</a>",
+                        "<b>HNE, Psychiatrie :</b> consultations sur rendez-vous via médecin traitant, <a href='https://www.h-ne.ch' target='_blank'>h-ne.ch</a>",
+                        "<b>COSM :</b> peut vous orienter vers un soutien psychosocial et fournir un interprète, 032 889 74 42",
+                        "<b>CSP Neuchâtel :</b> accompagnement social pour réfugiés, 032 886 91 00",
+                        "<b>Caritas Neuchâtel :</b> soutien et groupes de parole, <a href='https://caritas-regio.ch/neuchatel' target='_blank'>caritas-regio.ch</a>",
                     ), width='half'),
                     sec("Lignes d'écoute", ul(
-                        "<b>La Main Tendue :</b> 143 — écoute anonyme, gratuit, 24h/24, en français",
-                        "<b>Pro Juventute (jeunes) :</b> 147 — gratuit, 24h/24",
-                        "<b>Centre LAVI NE :</b> 032 889 51 00 — victimes de violence",
-                        "<b>Dargebotene Hand :</b> 143 — plusieurs langues disponibles",
+                        "<b>La Main Tendue :</b> 143, écoute anonyme, gratuit, 24h/24, en français",
+                        "<b>Pro Juventute (jeunes) :</b> 147, gratuit, 24h/24",
+                        "<b>Centre LAVI NE :</b> 032 889 51 00, victimes de violence",
+                        "<b>Dargebotene Hand :</b> 143, plusieurs langues disponibles",
                     ), width='half'),
                 ),
             },
@@ -921,14 +921,14 @@ CATEGORIES = [
                         ),
                     ),
                     sec("À Neuchâtel", ul(
-                        "<b>Maternité HNE :</b> Rue de la Maladière 45, 2000 Neuchâtel — 032 713 31 31",
+                        "<b>Maternité HNE :</b> Rue de la Maladière 45, 2000 Neuchâtel, 032 713 31 31",
                         "<b>Sages-femmes indépendantes :</b> <a href='https://www.sage-femme.ch' target='_blank'>sage-femme.ch</a>",
                         "<b>PMI / Consultation de nourrissons :</b> renseignez-vous à votre commune",
-                        "<b>RECIF (soutien femmes) :</b> Rue de la Cassarde 22, Neuchâtel — <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
+                        "<b>RECIF (soutien femmes) :</b> Rue de la Cassarde 22, Neuchâtel, <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
                     ), width='half'),
                     sec("Infos pratiques", ul(
                         "<b>Congé paternité :</b> 2 semaines (depuis 2021), à prendre dans les 6 mois",
-                        "<b>Allocation naissance :</b> certaines communes accordent une prime — renseignez-vous",
+                        "<b>Allocation naissance :</b> certaines communes accordent une prime, renseignez-vous",
                         "<b>Guide officiel :</b> <a href='https://www.ch.ch/maternite' target='_blank'>ch.ch/maternite</a>",
                     ), width='half'),
                 ),
@@ -944,22 +944,22 @@ CATEGORIES = [
                         para("En Suisse, les soins dentaires ne sont presque pas remboursés par l'assurance maladie de base. Vous devez payer vous-même, sauf cas exceptionnels (accident, maladie grave)."),
                         ul(
                             "<b>Exception :</b> les soins liés à un accident ou à une maladie grave sont pris en charge",
-                            "<b>Enfants :</b> certaines communes proposent une aide — renseignez-vous à votre commune",
-                            "Vous pouvez souscrire une assurance complémentaire dentaire (env. CHF 20–50/mois)",
+                            "<b>Enfants :</b> certaines communes proposent une aide, renseignez-vous à votre commune",
+                            "Vous pouvez souscrire une assurance complémentaire dentaire (env. CHF 20 à 50/mois)",
                         ),
                     ),
                     sec("Trouver un dentiste à Neuchâtel",
                         ul(
-                            "Cherchez sur <a href='https://www.sso.ch/fr/trouvez-un-dentiste' target='_blank'>sso.ch</a> — annuaire officiel de la Société suisse d'odontologie",
+                            "Cherchez sur <a href='https://www.sso.ch/fr/trouvez-un-dentiste' target='_blank'>sso.ch</a>, annuaire officiel de la Société suisse d'odontologie",
                             "Demandez à votre entourage ou au COSM",
-                            "<b>HNE :</b> urgences dentaires en dehors des heures de bureau — 032 713 31 31",
+                            "<b>HNE :</b> urgences dentaires en dehors des heures de bureau, 032 713 31 31",
                         ),
                     ),
                     sec("Si vous n'avez pas les moyens", ul(
                         "<b>ASLOCA / CSP :</b> peuvent orienter vers des dentistes pratiquant des tarifs sociaux",
                         "<b>Cliniques dentaires des Hautes Écoles :</b> tarifs réduits (HE-Arc Santé à NE)",
                         "<b>GSR :</b> peut parfois aider à financer des soins urgents dans le cadre de l'aide sociale",
-                        "<b>Caritas NE :</b> 032 886 80 70 — renseignez-vous sur les aides disponibles",
+                        "<b>Caritas NE :</b> 032 886 80 70, renseignez-vous sur les aides disponibles",
                     ), width='full'),
                 ),
             },
@@ -972,21 +972,21 @@ CATEGORIES = [
                 'body': body(
                     sec("Options rapides sans rendez-vous",
                         ul(
-                            "<b>Urgences HNE Neuchâtel :</b> Rue de la Maladière 45 — 032 713 31 31 — pour les cas urgents uniquement",
+                            "<b>Urgences HNE Neuchâtel :</b> Rue de la Maladière 45, 032 713 31 31, pour les cas urgents uniquement",
                             "<b>Permanence médicale :</b> demandez à votre caisse maladie s'il existe une permanence agréée proche de chez vous",
                             "<b>Pharmacie :</b> le pharmacien peut traiter de nombreux problèmes courants (rhume, douleurs légères, pansements) sans RDV",
                         ),
                     ),
                     sec("Consultation téléphonique ou vidéo", ul(
-                        "<b>Medi24 :</b> service médical 24h/24 inclus dans certaines caisses maladie — vérifiez votre carte d'assuré",
-                        "<b>Medgate :</b> même principe — inclus dans certains modèles d'assurance (Telmed, HMO)",
+                        "<b>Medi24 :</b> service médical 24h/24 inclus dans certaines caisses maladie, vérifiez votre carte d'assuré",
+                        "<b>Medgate :</b> même principe, inclus dans certains modèles d'assurance (Telmed, HMO)",
                         "Ces services peuvent vous prescrire des ordonnances et décider si une visite est nécessaire",
                         "Appelez votre caisse maladie pour savoir quel service vous avez inclus",
                     ), width='half'),
                     sec("Quand aller aux urgences", ul(
                         "<b>Appelez le 144</b> si c'est une urgence vitale (douleur thoracique, accident, perte de connaissance)",
-                        "Les urgences hospitalières ne sont pas faites pour les rhumes ou fièvres légères — préférez la permanence ou le télémédecin",
-                        "<b>145</b> — Toxicocentre en cas d'ingestion d'un produit dangereux",
+                        "Les urgences hospitalières ne sont pas faites pour les rhumes ou fièvres légères, préférez la permanence ou le télémédecin",
+                        "<b>145</b>, Toxicocentre en cas d'ingestion d'un produit dangereux",
                     ), width='half'),
                 ),
             },
@@ -1000,17 +1000,17 @@ CATEGORIES = [
                     sec("Vaccins recommandés en Suisse",
                         para("La Suisse a un calendrier vaccinal officiel. Certains vaccins sont recommandés pour tout le monde, d'autres seulement pour les enfants ou les groupes à risque."),
                         ul(
-                            "<b>Rougeole, oreillons, rubéole (ROR) :</b> très important — obligatoire pour entrer dans certaines structures",
+                            "<b>Rougeole, oreillons, rubéole (ROR) :</b> très important, obligatoire pour entrer dans certaines structures",
                             "<b>Tétanos, diphtérie, coqueluche :</b> rappel tous les 10 ans",
                             "<b>Hépatite B :</b> recommandé pour les adolescents et certains adultes",
                             "<b>Grippe :</b> recommandée chaque automne pour les personnes à risque",
-                            "<b>COVID-19 :</b> vaccinations disponibles — renseignez-vous sur les recommandations actuelles",
+                            "<b>COVID-19 :</b> vaccinations disponibles, renseignez-vous sur les recommandations actuelles",
                         ),
                     ),
                     sec("Où se faire vacciner à Neuchâtel", ul(
                         "<b>Votre médecin de famille :</b> la première option",
-                        "<b>Pharmacies :</b> certaines vaccinent directement — appelez pour vérifier",
-                        "<b>HNE :</b> 032 713 31 31 — consultations vaccinales",
+                        "<b>Pharmacies :</b> certaines vaccinent directement, appelez pour vérifier",
+                        "<b>HNE :</b> 032 713 31 31, consultations vaccinales",
                         "<b>Calendrier officiel :</b> <a href='https://www.ofsp.admin.ch/vaccination' target='_blank'>ofsp.admin.ch/vaccination</a>",
                     ), width='half'),
                     sec("Remboursement", ul(
@@ -1029,20 +1029,20 @@ CATEGORIES = [
                 'body': body(
                     sec("Services disponibles à Neuchâtel",
                         ul(
-                            "<b>Centre de planning familial NE :</b> consultations gratuites ou à tarif réduit — contraception, grossesse, IST",
-                            "<b>Adresse :</b> Rue des Parcs 11, 2000 Neuchâtel — 032 722 95 20",
-                            "<b>HNE Gynécologie :</b> consultation sur rendez-vous — 032 713 31 31",
-                            "<b>Sages-femmes indépendantes :</b> suivi grossesse, contraception — <a href='https://www.sage-femme.ch' target='_blank'>sage-femme.ch</a>",
+                            "<b>Centre de planning familial NE :</b> consultations gratuites ou à tarif réduit, contraception, grossesse, IST",
+                            "<b>Adresse :</b> Rue des Parcs 11, 2000 Neuchâtel, 032 722 95 20",
+                            "<b>HNE Gynécologie :</b> consultation sur rendez-vous, 032 713 31 31",
+                            "<b>Sages-femmes indépendantes :</b> suivi grossesse, contraception, <a href='https://www.sage-femme.ch' target='_blank'>sage-femme.ch</a>",
                         ),
                     ),
                     sec("Contraception", ul(
                         "La contraception est remboursée par la LAMal jusqu'à 18 ans",
-                        "Après 18 ans : à votre charge (pilule env. CHF 15–30/mois)",
+                        "Après 18 ans : à votre charge (pilule env. CHF 15 à 30/mois)",
                         "Préservatifs disponibles dans toutes les pharmacies",
                         "<b>Contraception d'urgence :</b> disponible en pharmacie sans ordonnance",
                     ), width='half'),
                     sec("Dépistage IST", ul(
-                        "<b>Checkpoint NE :</b> dépistage VIH et IST — <a href='https://www.checkpoint-ne.ch' target='_blank'>checkpoint-ne.ch</a>",
+                        "<b>Checkpoint NE :</b> dépistage VIH et IST, <a href='https://www.checkpoint-ne.ch' target='_blank'>checkpoint-ne.ch</a>",
                         "Dépistage souvent gratuit ou à prix réduit",
                         "<b>Aide Suisse contre le Sida :</b> <a href='https://www.aids.ch' target='_blank'>aids.ch</a>",
                         "Résultats confidentiels",
@@ -1072,9 +1072,9 @@ CATEGORIES = [
                         ),
                     ),
                     sec("Contacts à Neuchâtel", ul(
-                        "<b>Office AI NE :</b> Rue Chandigarh 2, 2000 Neuchâtel — 032 889 65 00 — <a href='https://www.iv-ne.ch' target='_blank'>iv-ne.ch</a>",
-                        "<b>Pro Infirmis NE :</b> conseil et accompagnement pour les personnes en situation de handicap — <a href='https://www.proinfirmis.ch' target='_blank'>proinfirmis.ch</a>",
-                        "<b>Inclusion Handicap :</b> défense des droits — <a href='https://www.inclusion-handicap.ch' target='_blank'>inclusion-handicap.ch</a>",
+                        "<b>Office AI NE :</b> Rue Chandigarh 2, 2000 Neuchâtel, 032 889 65 00, <a href='https://www.iv-ne.ch' target='_blank'>iv-ne.ch</a>",
+                        "<b>Pro Infirmis NE :</b> conseil et accompagnement pour les personnes en situation de handicap, <a href='https://www.proinfirmis.ch' target='_blank'>proinfirmis.ch</a>",
+                        "<b>Inclusion Handicap :</b> défense des droits, <a href='https://www.inclusion-handicap.ch' target='_blank'>inclusion-handicap.ch</a>",
                     ), width='full'),
                 ),
             },
@@ -1089,18 +1089,18 @@ CATEGORIES = [
                         para("Les addictions peuvent toucher tout le monde. Des professionnels discrets et non-jugeants peuvent vous aider, gratuitement et en toute confidentialité."),
                     ),
                     sec("Addiction Neuchâtel", ul(
-                        "<b>Adresse Neuchâtel :</b> Rue de la Chapelle 4, 2000 Neuchâtel — 032 725 64 00",
-                        "<b>Adresse La Chaux-de-Fonds :</b> Rue du Commerce 10 — 032 913 49 00",
+                        "<b>Adresse Neuchâtel :</b> Rue de la Chapelle 4, 2000 Neuchâtel, 032 725 64 00",
+                        "<b>Adresse La Chaux-de-Fonds :</b> Rue du Commerce 10, 032 913 49 00",
                         "<b>Email :</b> addiction-ne@ne.ch",
                         "<b>Site :</b> <a href='https://www.addiction-ne.ch' target='_blank'>addiction-ne.ch</a>",
                         "Consultation gratuite, sans rendez-vous pour les urgences",
                         "Aide pour alcool, drogues, jeux, écrans",
                     ), width='half'),
                     sec("Lignes d'urgence et autres aides", ul(
-                        "<b>Ligne nationale alcool :</b> 0800 040 080 — gratuit, 24h/24",
-                        "<b>Narcotics Anonymous :</b> groupes de parole à Neuchâtel — <a href='https://www.na-switzerland.org' target='_blank'>na-switzerland.org</a>",
+                        "<b>Ligne nationale alcool :</b> 0800 040 080, gratuit, 24h/24",
+                        "<b>Narcotics Anonymous :</b> groupes de parole à Neuchâtel, <a href='https://www.na-switzerland.org' target='_blank'>na-switzerland.org</a>",
                         "<b>Alcooliques Anonymes :</b> <a href='https://www.alcooliquesanonymes.ch' target='_blank'>alcooliquesanonymes.ch</a>",
-                        "<b>La Main Tendue :</b> 143 — écoute 24h/24",
+                        "<b>La Main Tendue :</b> 143, écoute 24h/24",
                     ), width='half'),
                 ),
             },
@@ -1125,7 +1125,7 @@ CATEGORIES = [
                 'body': body(
                     sec("Qu'est-ce que c'est",
                         para("L'aide sociale est un soutien financier de l'État. Elle couvre les besoins de base : nourriture, logement, santé."),
-                        para("À Neuchâtel, c'est le GSR (Guichet Social Régional) de votre commune qui traite les demandes. Ce même guichet gère aussi les subsides LAMal et les bourses d'études — un seul endroit pour plusieurs aides."),
+                        para("À Neuchâtel, c'est le GSR (Guichet Social Régional) de votre commune qui traite les demandes. Ce même guichet gère aussi les subsides LAMal et les bourses d'études, un seul endroit pour plusieurs aides."),
                     ),
                     sec("Qui peut en bénéficier",
                         ul(
@@ -1139,13 +1139,13 @@ CATEGORIES = [
                         "<b>Adresse :</b> Rue Saint-Maurice 4, 2000 Neuchâtel",
                         "<b>Téléphone :</b> 032 717 74 10",
                         "<b>Email :</b> gsr.neuchatel@ne.ch",
-                        "<b>Permanence téléphonique :</b> lun–ven 8h30–12h",
+                        "<b>Permanence téléphonique :</b> lun à ven 8h30 à 12h",
                         "<b>Documents :</b> pièce d'identité, permis de séjour, relevés bancaires, contrat de bail, justificatifs de revenus",
                     ), width='half'),
                     sec("GSR La Chaux-de-Fonds", ul(
                         "<b>Adresse :</b> Rue du Collège 11, 2300 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 967 67 31",
-                        "<b>Heures :</b> 9h–12h / 14h–17h",
+                        "<b>Heures :</b> 9h à 12h / 14h à 17h",
                         "<b>Autres GSR :</b> <a href='https://www.ne.ch/gsr' target='_blank'>ne.ch/gsr</a> (liste complète par commune)",
                     ), width='half'),
                 ),
@@ -1170,10 +1170,10 @@ CATEGORIES = [
                     ),
                     sec("Options selon votre situation",
                         ul(
-                            "<b>Permis B ou C :</b> toutes les banques acceptent — comparez sur <a href='https://www.comparis.ch' target='_blank'>comparis.ch</a>",
-                            "<b>Permis N ou F :</b> les grandes banques refusent souvent — utilisez une néobanque",
-                            "<b>Néobanques :</b> <a href='https://www.neon-free.ch' target='_blank'>Neon</a>, <a href='https://www.yuh.com' target='_blank'>Yuh</a>, <a href='https://www.revolut.com' target='_blank'>Revolut</a> — inscription 100% en ligne",
-                            "<b>Banque Cantonale Neuchâteloise (BCN) :</b> présente dans tout le canton — <a href='https://www.bcn.ch' target='_blank'>bcn.ch</a>",
+                            "<b>Permis B ou C :</b> toutes les banques acceptent, comparez sur <a href='https://www.comparis.ch' target='_blank'>comparis.ch</a>",
+                            "<b>Permis N ou F :</b> les grandes banques refusent souvent, utilisez une néobanque",
+                            "<b>Néobanques :</b> <a href='https://www.neon-free.ch' target='_blank'>Neon</a>, <a href='https://www.yuh.com' target='_blank'>Yuh</a>, <a href='https://www.revolut.com' target='_blank'>Revolut</a>, inscription 100% en ligne",
+                            "<b>Banque Cantonale Neuchâteloise (BCN) :</b> présente dans tout le canton, <a href='https://www.bcn.ch' target='_blank'>bcn.ch</a>",
                             "<b>PostFinance :</b> accepte souvent des situations variées",
                         ),
                     ),
@@ -1191,7 +1191,7 @@ CATEGORIES = [
                             "Avoir travaillé et cotisé au moins 12 mois en Suisse durant les 2 dernières années",
                             "Être disponible immédiatement pour travailler",
                             "Chercher activement un emploi",
-                            "Avoir un permis de séjour valide (B, C — permis G pour frontaliers sous conditions)",
+                            "Avoir un permis de séjour valide (B, C, permis G pour frontaliers sous conditions)",
                         ),
                     ),
                     sec("Combien recevez-vous",
@@ -1207,16 +1207,16 @@ CATEGORIES = [
                             "Envoyer chaque mois un relevé de vos recherches d'emploi",
                         ),
                     ),
-                    sec("CCNAC — Caisse neuchâteloise", ul(
+                    sec("CCNAC, Caisse neuchâteloise", ul(
                         "<b>Adresse :</b> Espacité 4, 2300 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 889 67 90",
                         "<b>Email :</b> ccnac@ne.ch",
                         "<b>Site :</b> <a href='https://ccnac.ch' target='_blank'>ccnac.ch</a>",
-                        "<b>Heures :</b> lun–ven 8h30–11h / 13h30–16h",
+                        "<b>Heures :</b> lun à ven 8h30 à 11h / 13h30 à 16h",
                     ), width='half'),
                     sec("Plus d'informations", ul(
                         "<b>Guide officiel :</b> <a href='https://www.ch.ch/fr/assurances/assurance-chomage/' target='_blank'>ch.ch/chomage</a>",
-                        "Vous pouvez aussi utiliser une caisse syndicale : Unia, Syna — présentes à Neuchâtel",
+                        "Vous pouvez aussi utiliser une caisse syndicale : Unia, Syna, présentes à Neuchâtel",
                     ), width='half'),
                 ),
             },
@@ -1264,7 +1264,7 @@ CATEGORIES = [
                 'body': body(
                     sec("Les 3 piliers",
                         ul(
-                            "<b>1er pilier (AVS/AI) :</b> obligatoire pour tous — cotisation automatique sur le salaire (5,3 %). Donne droit à une rente vieillesse.",
+                            "<b>1er pilier (AVS/AI) :</b> obligatoire pour tous, cotisation automatique sur le salaire (5,3 %). Donne droit à une rente vieillesse.",
                             "<b>2e pilier (LPP / caisse de pension) :</b> obligatoire si vous gagnez plus de CHF 22 050/an. Votre employeur cotise autant que vous.",
                             "<b>3e pilier :</b> épargne volontaire, défiscalisée. Recommandé si vous restez longtemps en Suisse.",
                         ),
@@ -1280,7 +1280,7 @@ CATEGORIES = [
                         "<b>Âge de la retraite :</b> 65 ans (hommes et femmes depuis 2025)",
                         "<b>Rente AVS :</b> entre CHF 1 225 et CHF 2 450/mois selon cotisations",
                         "<b>Si la rente est insuffisante :</b> demandez les prestations complémentaires (PC)",
-                        "<b>CCNC Neuchâtel :</b> 032 889 65 01 — pour toutes questions AVS",
+                        "<b>CCNC Neuchâtel :</b> 032 889 65 01, pour toutes questions AVS",
                     ), width='half'),
                     sec("Si vous quittez la Suisse", ul(
                         "Vous pouvez récupérer votre 2e pilier si vous quittez définitivement la Suisse",
@@ -1304,20 +1304,20 @@ CATEGORIES = [
                         ul(
                             "Rappels, puis poursuites officielles (actes de défaut de biens)",
                             "Votre salaire peut être saisi partiellement",
-                            "Les poursuites apparaissent dans l'extrait du registre — cela nuit à votre dossier de location",
+                            "Les poursuites apparaissent dans l'extrait du registre, cela nuit à votre dossier de location",
                         ),
                     ),
                     sec("Aide à Neuchâtel", ul(
-                        "<b>Budget Conseil NE :</b> consultation gratuite en gestion des dettes — 032 721 30 30 — <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>",
-                        "<b>CSP Neuchâtel :</b> accompagnement social et conseil juridique — 032 886 91 00",
-                        "<b>Caritas NE :</b> aide d'urgence et conseil budget — 032 886 80 70",
+                        "<b>Budget Conseil NE :</b> consultation gratuite en gestion des dettes, 032 721 30 30, <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>",
+                        "<b>CSP Neuchâtel :</b> accompagnement social et conseil juridique, 032 886 91 00",
+                        "<b>Caritas NE :</b> aide d'urgence et conseil budget, 032 886 80 70",
                         "<b>GSR :</b> peut orienter vers les bons services",
                     ), width='half'),
                     sec("Démarches utiles", ul(
                         "Faites une liste de toutes vos dettes (montant, créancier, échéance)",
                         "Contactez vos créanciers pour négocier un plan de paiement",
-                        "Ne signez rien sous pression — consultez d'abord un conseiller",
-                        "<b>Extrait des poursuites gratuit :</b> Office des poursuites de Neuchâtel — 032 889 67 00",
+                        "Ne signez rien sous pression, consultez d'abord un conseiller",
+                        "<b>Extrait des poursuites gratuit :</b> Office des poursuites de Neuchâtel, 032 889 67 00",
                     ), width='half'),
                 ),
             },
@@ -1329,7 +1329,7 @@ CATEGORIES = [
                 'audiences': ['Senior', 'Résident long terme'],
                 'body': body(
                     sec("Qu'est-ce que les PC",
-                        para("Les prestations complémentaires (PC) sont une aide de l'État pour les personnes dont la rente AVS ou AI est trop faible pour vivre. Elles ne sont pas une aide sociale ordinaire — c'est un droit légal."),
+                        para("Les prestations complémentaires (PC) sont une aide de l'État pour les personnes dont la rente AVS ou AI est trop faible pour vivre. Elles ne sont pas une aide sociale ordinaire, c'est un droit légal."),
                     ),
                     sec("Qui peut en bénéficier",
                         ul(
@@ -1343,7 +1343,7 @@ CATEGORIES = [
                         "<b>Téléphone :</b> 032 889 65 01",
                         "<b>Email :</b> ccnc@ne.ch",
                         "<b>Documents :</b> relevé de rente, extrait de compte bancaire, bail, primes d'assurance maladie",
-                        "<b>Délai :</b> demandez dès que possible — les PC ne sont pas rétroactives",
+                        "<b>Délai :</b> demandez dès que possible, les PC ne sont pas rétroactives",
                     ), width='half'),
                     sec("Ce qui est couvert", ul(
                         "Complément pour atteindre le minimum vital",
@@ -1363,22 +1363,22 @@ CATEGORIES = [
                     sec("Les bases d'un budget suisse",
                         ul(
                             "<b>Loyer :</b> ne devrait pas dépasser 30 % de votre revenu",
-                            "<b>Assurance maladie :</b> environ CHF 370–430/mois pour un adulte",
-                            "<b>Nourriture :</b> environ CHF 400–600/mois pour une personne",
+                            "<b>Assurance maladie :</b> environ CHF 370 à 430/mois pour un adulte",
+                            "<b>Nourriture :</b> environ CHF 400 à 600/mois pour une personne",
                             "<b>Transports :</b> demi-tarif CFF recommandé (CHF 185/an) si vous vous déplacez souvent",
-                            "<b>Épargne :</b> visez 10 % si possible — pour les imprévus",
+                            "<b>Épargne :</b> visez 10 % si possible, pour les imprévus",
                         ),
                     ),
                     sec("Outils gratuits", ul(
-                        "<b>Budget Conseil NE :</b> conseil personnalisé gratuit — <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a> — 032 721 30 30",
+                        "<b>Budget Conseil NE :</b> conseil personnalisé gratuit, <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>, 032 721 30 30",
                         "<b>Calculateur de budget :</b> <a href='https://www.comparis.ch/budget' target='_blank'>comparis.ch/budget</a>",
                         "<b>Guide budget famille :</b> <a href='https://www.ksa.ch' target='_blank'>ksa.ch</a> (Conseils suisses aux familles)",
                     ), width='half'),
                     sec("Pièges courants à éviter", ul(
-                        "Achats à tempérament / leasing voiture — intérêts très élevés",
+                        "Achats à tempérament / leasing voiture, intérêts très élevés",
                         "Loteries et jeux d'argent en ligne",
                         "Déménager sans extrait de poursuites propre rend très difficile de trouver un logement",
-                        "Chèques postaux non payés — entraînent des frais supplémentaires",
+                        "Chèques postaux non payés, entraînent des frais supplémentaires",
                     ), width='half'),
                 ),
             },
@@ -1399,20 +1399,20 @@ CATEGORIES = [
                     ),
                     sec("Que faire dès réception",
                         ol(
-                            "Lisez attentivement le document — quel créancier, quel montant, quelle date",
-                            "Si vous contestez la dette : faites opposition immédiatement (dans les 10 jours) — par écrit à l'Office des poursuites",
+                            "Lisez attentivement le document, quel créancier, quel montant, quelle date",
+                            "Si vous contestez la dette : faites opposition immédiatement (dans les 10 jours), par écrit à l'Office des poursuites",
                             "Si vous ne contestez pas : négociez un plan de paiement avec le créancier",
-                            "Ne jetez jamais ce document — gardez-le",
+                            "Ne jetez jamais ce document, gardez-le",
                         ),
                     ),
                     sec("Office des poursuites NE", ul(
-                        "<b>Neuchâtel :</b> Rue du Seyon 4 — 032 889 67 00",
-                        "<b>La Chaux-de-Fonds :</b> Espacité 4 — 032 889 67 30",
-                        "<b>Extrait des poursuites :</b> gratuit — demandez-le pour vérifier votre situation avant de chercher un logement",
+                        "<b>Neuchâtel :</b> Rue du Seyon 4, 032 889 67 00",
+                        "<b>La Chaux-de-Fonds :</b> Espacité 4, 032 889 67 30",
+                        "<b>Extrait des poursuites :</b> gratuit, demandez-le pour vérifier votre situation avant de chercher un logement",
                     ), width='half'),
                     sec("Aide gratuite", ul(
-                        "<b>Budget Conseil NE :</b> 032 721 30 30 — <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>",
-                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — aide juridique",
+                        "<b>Budget Conseil NE :</b> 032 721 30 30, <a href='https://www.budgetconseil.ch' target='_blank'>budgetconseil.ch</a>",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00, aide juridique",
                         "<b>Info nationale :</b> <a href='https://www.ch.ch/fr/dettes-et-poursuites/' target='_blank'>ch.ch/dettes-et-poursuites</a>",
                     ), width='half'),
                 ),
@@ -1428,13 +1428,13 @@ CATEGORIES = [
                         para("Des associations proposent de la nourriture à prix très réduit ou gratuite aux personnes dans le besoin."),
                     ),
                     sec("À Neuchâtel", ul(
-                        "<b>Caritas Neuchâtel :</b> épicerie sociale sur dossier — Vieux-Châtel 4, 2002 Neuchâtel — 032 886 80 70 — <a href='https://caritas-regio.ch/neuchatel' target='_blank'>caritas-regio.ch/neuchatel</a>",
-                        "<b>Armée du Salut Neuchâtel :</b> repas et aide alimentaire — <a href='https://armeedusalut.ch' target='_blank'>armeedusalut.ch</a>",
-                        "<b>Croix-Rouge Neuchâtel :</b> colis alimentaires — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>Caritas Neuchâtel :</b> épicerie sociale sur dossier, Vieux-Châtel 4, 2002 Neuchâtel, 032 886 80 70, <a href='https://caritas-regio.ch/neuchatel' target='_blank'>caritas-regio.ch/neuchatel</a>",
+                        "<b>Armée du Salut Neuchâtel :</b> repas et aide alimentaire, <a href='https://armeedusalut.ch' target='_blank'>armeedusalut.ch</a>",
+                        "<b>Croix-Rouge Neuchâtel :</b> colis alimentaires, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
                         "<b>Banque alimentaire NE :</b> renseignez-vous via votre GSR ou le COSM",
                     ), width='half'),
                     sec("À La Chaux-de-Fonds", ul(
-                        "<b>Caritas La Chaux-de-Fonds :</b> aide alimentaire — renseignez-vous via Caritas NE",
+                        "<b>Caritas La Chaux-de-Fonds :</b> aide alimentaire, renseignez-vous via Caritas NE",
                         "<b>Armée du Salut CDF :</b> repas et aide d'urgence",
                         "<b>Annuaire social :</b> demandez au GSR de La Chaux-de-Fonds (032 967 67 31) la liste des ressources locales",
                     ), width='half'),
@@ -1462,10 +1462,10 @@ CATEGORIES = [
                 'how_to': (
                     h3("Trouver un cours près de chez vous")
                     + ol(
-                        "Choisissez votre niveau (débutant A1 jusqu'à avancé) — en cas de doute, faites un bilan gratuit au COSM",
+                        "Choisissez votre niveau (débutant A1 jusqu'à avancé), en cas de doute, faites un bilan gratuit au COSM",
                         "Contactez un organisme ci-dessous (COSM, Caritas, RECIF, Croix-Rouge)",
                         "Demandez s'il reste de la place et la date de début du prochain cours",
-                        "Inscrivez-vous — beaucoup de cours sont gratuits ou coûtent quelques francs",
+                        "Inscrivez-vous, beaucoup de cours sont gratuits ou coûtent quelques francs",
                     )
                     + h3("Bon à savoir")
                     + ul(
@@ -1475,7 +1475,7 @@ CATEGORIES = [
                     )
                 ),
                 'location': (
-                    h3("COSM — Cours officiels d'intégration")
+                    h3("COSM, Cours officiels d'intégration")
                     + ul(
                         "<b>Adresse :</b> Place de la Gare 6, 2300 La Chaux-de-Fonds (+ permanences à Neuchâtel et Fleurier)",
                         "<b>Téléphone :</b> 032 889 74 42",
@@ -1484,16 +1484,16 @@ CATEGORIES = [
                     )
                     + h3("Autres organismes")
                     + ul(
-                        "<b>Caritas NE :</b> ateliers gratuits (bénévoles) — caritas.ateliers@ne.ch — 032 886 80 70",
-                        "<b>RECIF (femmes uniquement) :</b> cours A1 à B1 — <a href='https://recifne.ch'>recifne.ch</a>",
-                        "<b>Croix-Rouge NE :</b> cours de conversation — <a href='https://www.croix-rouge-ne.ch'>croix-rouge-ne.ch</a>",
+                        "<b>Caritas NE :</b> ateliers gratuits (bénévoles), caritas.ateliers@ne.ch, 032 886 80 70",
+                        "<b>RECIF (femmes uniquement) :</b> cours A1 à B1, <a href='https://recifne.ch'>recifne.ch</a>",
+                        "<b>Croix-Rouge NE :</b> cours de conversation, <a href='https://www.croix-rouge-ne.ch'>croix-rouge-ne.ch</a>",
                     )
                 ),
                 'body': body(
                     sec("Pourquoi apprendre le français",
                         para("Parler français facilite tout : trouver du travail, comprendre les courriers officiels, parler avec l'école de vos enfants. Des cours gratuits ou très peu chers existent partout dans le canton."),
                     ),
-                    sec("COSM — Cours officiels d'intégration", ul(
+                    sec("COSM, Cours officiels d'intégration", ul(
                         "<b>Adresse :</b> Place de la Gare 6, 2300 La Chaux-de-Fonds (+ permanences à Neuchâtel et Fleurier)",
                         "<b>Téléphone :</b> 032 889 74 42",
                         "<b>Email :</b> cosm@ne.ch",
@@ -1501,9 +1501,9 @@ CATEGORIES = [
                         "Cours de français, alphabétisation, informatique, intégration",
                     ), width='half'),
                     sec("Autres organismes", ul(
-                        "<b>Caritas NE :</b> ateliers gratuits (bénévoles), 10 groupes à Neuchâtel, 3 à CDF — caritas.ateliers@ne.ch — 032 886 80 70",
-                        "<b>RECIF (femmes uniquement) :</b> cours A1 à B1 — Rue de la Cassarde 22, Neuchâtel — <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
-                        "<b>Croix-Rouge NE :</b> cours de conversation — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>Caritas NE :</b> ateliers gratuits (bénévoles), 10 groupes à Neuchâtel, 3 à CDF, caritas.ateliers@ne.ch, 032 886 80 70",
+                        "<b>RECIF (femmes uniquement) :</b> cours A1 à B1, Rue de la Cassarde 22, Neuchâtel, <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
+                        "<b>Croix-Rouge NE :</b> cours de conversation, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
                     ), width='half'),
                 ),
             },
@@ -1517,24 +1517,24 @@ CATEGORIES = [
                     sec("Première étape",
                         para("Allez d'abord sur <a href='https://www.reconnaissance.swiss' target='_blank'>reconnaissance.swiss</a>. Ce site officiel vous dit quel organisme traite votre dossier selon votre profession et votre pays d'origine."),
                     ),
-                    sec("Médecins — MEBEKO", ul(
+                    sec("Médecins, MEBEKO", ul(
                         "<b>Organisme :</b> MEBEKO (Commission des professions médicales)",
                         "<b>Site :</b> <a href='https://www.bag.admin.ch' target='_blank'>bag.admin.ch</a> (chercher MEBEKO)",
-                        "<b>Coût :</b> CHF 800–1 000",
+                        "<b>Coût :</b> CHF 800 à 1 000",
                         "<b>Délai :</b> 3 à 4 mois (dossier complet)",
                         "<b>Langue requise :</b> B2 en français, allemand ou italien",
                     ), width='half'),
-                    sec("Infirmiers, physios — Croix-Rouge suisse", ul(
+                    sec("Infirmiers, physios, Croix-Rouge suisse", ul(
                         "<b>Site :</b> <a href='https://www.redcross.ch/reconnaissance' target='_blank'>redcross.ch/reconnaissance</a>",
                         "<b>Commencez par :</b> <a href='https://precheck.ch' target='_blank'>precheck.ch</a> (gratuit, obligatoire)",
-                        "<b>Coût :</b> CHF 550–1 000",
+                        "<b>Coût :</b> CHF 550 à 1 000",
                         "<b>Aide à Neuchâtel :</b> CNIP peut accompagner la démarche",
                     ), width='half'),
                     sec("Enseignants (CDIP) et autres (SEFRI)",
                         ul(
-                            "<b>Enseignants :</b> CDIP — <a href='https://www.cdip.ch' target='_blank'>cdip.ch</a>",
-                            "<b>Autres professions :</b> SEFRI — <a href='https://www.sefri.admin.ch' target='_blank'>sefri.admin.ch</a>",
-                            "<b>Aide à Neuchâtel :</b> CNIP — <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a> — 032 889 69 25",
+                            "<b>Enseignants :</b> CDIP, <a href='https://www.cdip.ch' target='_blank'>cdip.ch</a>",
+                            "<b>Autres professions :</b> SEFRI, <a href='https://www.sefri.admin.ch' target='_blank'>sefri.admin.ch</a>",
+                            "<b>Aide à Neuchâtel :</b> CNIP, <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a>, 032 889 69 25",
                         ),
                     ),
                 ),
@@ -1562,7 +1562,7 @@ CATEGORIES = [
                     sec("Contacts à Neuchâtel",
                         ul(
                             "<b>Service de la formation professionnelle NE :</b> <a href='https://www.ne.ch/formation-professionnelle' target='_blank'>ne.ch/formation-professionnelle</a>",
-                            "<b>CNIP :</b> 032 889 69 25 — <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a>",
+                            "<b>CNIP :</b> 032 889 69 25, <a href='https://www.cnip.ch' target='_blank'>cnip.ch</a>",
                             "<b>Guide national :</b> <a href='https://www.berufsberatung.ch/fr' target='_blank'>berufsberatung.ch</a>",
                         ),
                     ),
@@ -1577,21 +1577,21 @@ CATEGORIES = [
                 'body': body(
                     sec("Applications gratuites",
                         ul(
-                            "<b>Duolingo :</b> application ludique, idéale pour débuter — <a href='https://www.duolingo.com' target='_blank'>duolingo.com</a>",
-                            "<b>TV5Monde :</b> cours de français avec vidéos — <a href='https://apprendre.tv5monde.com' target='_blank'>apprendre.tv5monde.com</a>",
-                            "<b>Français Authentique :</b> YouTube — compréhension orale",
-                            "<b>RFI Savoirs :</b> exercices et actualités en français facile — <a href='https://savoirs.rfi.fr' target='_blank'>savoirs.rfi.fr</a>",
+                            "<b>Duolingo :</b> application ludique, idéale pour débuter, <a href='https://www.duolingo.com' target='_blank'>duolingo.com</a>",
+                            "<b>TV5Monde :</b> cours de français avec vidéos, <a href='https://apprendre.tv5monde.com' target='_blank'>apprendre.tv5monde.com</a>",
+                            "<b>Français Authentique :</b> YouTube, compréhension orale",
+                            "<b>RFI Savoirs :</b> exercices et actualités en français facile, <a href='https://savoirs.rfi.fr' target='_blank'>savoirs.rfi.fr</a>",
                         ),
                     ),
                     sec("Cours en ligne structurés", ul(
-                        "<b>Migros Club School :</b> cours en ligne payants mais abordables — <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a>",
+                        "<b>Migros Club School :</b> cours en ligne payants mais abordables, <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a>",
                         "<b>Coursera / edX :</b> cours FLE de grandes universités, souvent gratuits à l'écoute",
-                        "<b>Alliance Française :</b> cours de qualité, en ligne ou à Neuchâtel — <a href='https://www.alliancefrancaise.ch' target='_blank'>alliancefrancaise.ch</a>",
+                        "<b>Alliance Française :</b> cours de qualité, en ligne ou à Neuchâtel, <a href='https://www.alliancefrancaise.ch' target='_blank'>alliancefrancaise.ch</a>",
                     ), width='half'),
                     sec("Conseils pour progresser vite", ul(
-                        "Pratiquez 15–20 minutes chaque jour plutôt qu'une longue session par semaine",
+                        "Pratiquez 15 à 20 minutes chaque jour plutôt qu'une longue session par semaine",
                         "Regardez des séries françaises avec sous-titres",
-                        "Parlez avec vos voisins, collègues, commerçants — même avec des erreurs",
+                        "Parlez avec vos voisins, collègues, commerçants, même avec des erreurs",
                         "Combinez cours en présentiel (COSM, RECIF) et pratique en ligne",
                     ), width='half'),
                 ),
@@ -1614,13 +1614,13 @@ CATEGORIES = [
                     sec("Comment passer le test", ol(
                         "Inscrivez-vous sur <a href='https://www.fide-info.ch' target='_blank'>fide-info.ch</a>",
                         "Choisissez un centre de test agréé à Neuchâtel",
-                        "Payez les frais (env. CHF 100–200 selon les modules)",
-                        "Recevez votre attestation — valable pour toutes vos démarches officielles",
+                        "Payez les frais (env. CHF 100 à 200 selon les modules)",
+                        "Recevez votre attestation, valable pour toutes vos démarches officielles",
                     )),
                     sec("Centres de test à Neuchâtel", ul(
-                        "<b>COSM :</b> peut orienter vers les centres agréés — 032 889 74 42",
+                        "<b>COSM :</b> peut orienter vers les centres agréés, 032 889 74 42",
                         "<b>Liste officielle :</b> <a href='https://www.fide-info.ch/fr/test/centres-de-test' target='_blank'>fide-info.ch/centres</a>",
-                        "<b>Préparation gratuite :</b> des cours préparatoires existent — demandez au COSM ou à la RECIF",
+                        "<b>Préparation gratuite :</b> des cours préparatoires existent, demandez au COSM ou à la RECIF",
                     ), width='half'),
                     sec("Se préparer au test", ul(
                         "<b>Exercices gratuits :</b> <a href='https://www.fide-info.ch/fr/apprendre/exercices' target='_blank'>fide-info.ch/exercices</a>",
@@ -1643,20 +1643,20 @@ CATEGORIES = [
                         ul(
                             "Personnes étrangères résidant dans le canton de Neuchâtel",
                             "Niveau de français insuffisant pour l'intégration ou le marché du travail",
-                            "En général : permis N, F, S, B récent — vérifiez selon votre situation",
+                            "En général : permis N, F, S, B récent, vérifiez selon votre situation",
                         ),
                     ),
                     sec("Comment faire la demande", ol(
-                        "Prenez contact avec le COSM : 032 889 74 42 — cosm@ne.ch",
+                        "Prenez contact avec le COSM : 032 889 74 42, cosm@ne.ch",
                         "Le COSM évalue votre situation et votre niveau de français",
                         "Si éligible, vous recevez un bon ou une prise en charge directe",
                         "Inscrivez-vous dans un organisme de cours agréé",
                     )),
                     sec("Organismes agréés", ul(
-                        "<b>COSM :</b> cours propres — Place de la Gare 6, La Chaux-de-Fonds",
-                        "<b>RECIF (femmes) :</b> Rue de la Cassarde 22, Neuchâtel — <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
-                        "<b>Caritas NE :</b> ateliers gratuits — caritas.ateliers@ne.ch",
-                        "<b>Croix-Rouge NE :</b> cours de conversation — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>COSM :</b> cours propres, Place de la Gare 6, La Chaux-de-Fonds",
+                        "<b>RECIF (femmes) :</b> Rue de la Cassarde 22, Neuchâtel, <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
+                        "<b>Caritas NE :</b> ateliers gratuits, caritas.ateliers@ne.ch",
+                        "<b>Croix-Rouge NE :</b> cours de conversation, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
                         "<b>Info officielle :</b> <a href='https://www.ne.ch/integration' target='_blank'>ne.ch/integration</a>",
                     ), width='full'),
                 ),
@@ -1672,16 +1672,16 @@ CATEGORIES = [
                         para("Apprendre à lire et à écrire en tant qu'adulte est tout à fait possible. Les cours sont adaptés aux adultes, avancent à votre rythme et se passent dans un environnement bienveillant."),
                     ),
                     sec("Cours d'alphabétisation à Neuchâtel", ul(
-                        "<b>COSM :</b> cours d'alphabétisation pour adultes migrants — 032 889 74 42 — premiers cours gratuits",
-                        "<b>Caritas NE :</b> ateliers d'alphabétisation en petits groupes avec des bénévoles — 032 886 80 70 — gratuit",
-                        "<b>RECIF (femmes) :</b> alphabétisation spécifique pour les femmes — <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
-                        "<b>Croix-Rouge NE :</b> cours de base — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>COSM :</b> cours d'alphabétisation pour adultes migrants, 032 889 74 42, premiers cours gratuits",
+                        "<b>Caritas NE :</b> ateliers d'alphabétisation en petits groupes avec des bénévoles, 032 886 80 70, gratuit",
+                        "<b>RECIF (femmes) :</b> alphabétisation spécifique pour les femmes, <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
+                        "<b>Croix-Rouge NE :</b> cours de base, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
                     ), width='half'),
                     sec("Progression typique", ul(
                         "<b>Phase 1 :</b> reconnaissance des lettres et des sons (quelques mois)",
-                        "<b>Phase 2 :</b> lecture et écriture simples — lire une pancarte, remplir un formulaire",
+                        "<b>Phase 2 :</b> lecture et écriture simples, lire une pancarte, remplir un formulaire",
                         "<b>Phase 3 :</b> intégration dans un cours de français standard (A1, A2…)",
-                        "La durée varie selon chaque personne — il n'y a pas de pression",
+                        "La durée varie selon chaque personne, il n'y a pas de pression",
                     ), width='half'),
                 ),
             },
@@ -1696,15 +1696,15 @@ CATEGORIES = [
                         para("Les cours privés avancent plus vite, proposent des horaires flexibles (soir, week-end) et des formats intensifs. Ils sont adaptés aux personnes qui travaillent et veulent progresser rapidement."),
                     ),
                     sec("Options à Neuchâtel", ul(
-                        "<b>Migros Klubschule :</b> cours tous niveaux, soir et week-end — <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a> — env. CHF 200–400/semestre",
-                        "<b>Alliance Française Neuchâtel :</b> cours officiels avec certification DELF — <a href='https://www.alliancefrancaise.ch' target='_blank'>alliancefrancaise.ch</a>",
-                        "<b>Inlingua Neuchâtel :</b> cours intensifs et semi-intensifs — <a href='https://www.inlingua-neuchatel.ch' target='_blank'>inlingua-neuchatel.ch</a>",
-                        "<b>Université populaire NE :</b> cours abordables pour adultes — renseignez-vous en mairie",
+                        "<b>Migros Klubschule :</b> cours tous niveaux, soir et week-end, <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a>, env. CHF 200 à 400/semestre",
+                        "<b>Alliance Française Neuchâtel :</b> cours officiels avec certification DELF, <a href='https://www.alliancefrancaise.ch' target='_blank'>alliancefrancaise.ch</a>",
+                        "<b>Inlingua Neuchâtel :</b> cours intensifs et semi-intensifs, <a href='https://www.inlingua-neuchatel.ch' target='_blank'>inlingua-neuchatel.ch</a>",
+                        "<b>Université populaire NE :</b> cours abordables pour adultes, renseignez-vous en mairie",
                     ), width='half'),
                     sec("Certifications officielles", ul(
-                        "<b>DELF :</b> diplôme officiel français (A1–B2) — reconnu dans le monde entier — passé à l'Alliance Française",
-                        "<b>FIDE :</b> certificat suisse spécifique aux migrants — reconnu pour naturalisation et permis C",
-                        "<b>TCF :</b> test de connaissance du français — rapide, peut être passé en ligne",
+                        "<b>DELF :</b> diplôme officiel français (A1 à B2), reconnu dans le monde entier, passé à l'Alliance Française",
+                        "<b>FIDE :</b> certificat suisse spécifique aux migrants, reconnu pour naturalisation et permis C",
+                        "<b>TCF :</b> test de connaissance du français, rapide, peut être passé en ligne",
                         "Ces certifications restent valables même si vous changez de canton",
                     ), width='half'),
                 ),
@@ -1717,23 +1717,23 @@ CATEGORIES = [
                 'audiences': ["Établis depuis plus d'un an", 'Jeune adulte', 'Compétences numériques de base'],
                 'body': body(
                     sec("Plateformes gratuites ou quasi-gratuites", ul(
-                        "<b>Coursera :</b> cours de grandes universités mondiales — audit gratuit — <a href='https://www.coursera.org' target='_blank'>coursera.org</a>",
-                        "<b>edX :</b> MIT, Harvard, etc. — audit gratuit — <a href='https://www.edx.org' target='_blank'>edx.org</a>",
-                        "<b>OpenClassrooms :</b> formation professionnalisante en français — <a href='https://openclassrooms.com' target='_blank'>openclassrooms.com</a>",
+                        "<b>Coursera :</b> cours de grandes universités mondiales, audit gratuit, <a href='https://www.coursera.org' target='_blank'>coursera.org</a>",
+                        "<b>edX :</b> MIT, Harvard, etc., audit gratuit, <a href='https://www.edx.org' target='_blank'>edx.org</a>",
+                        "<b>OpenClassrooms :</b> formation professionnalisante en français, <a href='https://openclassrooms.com' target='_blank'>openclassrooms.com</a>",
                         "<b>YouTube :</b> tutoriels gratuits dans tous les domaines",
-                        "<b>Khan Academy :</b> maths, sciences, finances — <a href='https://fr.khanacademy.org' target='_blank'>fr.khanacademy.org</a>",
+                        "<b>Khan Academy :</b> maths, sciences, finances, <a href='https://fr.khanacademy.org' target='_blank'>fr.khanacademy.org</a>",
                     ), width='half'),
                     sec("Formations certifiantes suisses", ul(
-                        "<b>Migros Klubschule en ligne :</b> cours mixtes présentiel + e-learning — <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a>",
-                        "<b>SwissSkills :</b> ressources sur les métiers suisses — <a href='https://www.swissskills.ch' target='_blank'>swissskills.ch</a>",
-                        "<b>Formation continue UniNE :</b> modules en ligne — <a href='https://www.unine.ch/formcont' target='_blank'>unine.ch/formcont</a>",
-                        "<b>LinkedIn Learning :</b> si vous avez un compte LinkedIn Premium — accès via bibliothèques pour certains",
+                        "<b>Migros Klubschule en ligne :</b> cours mixtes présentiel + e-learning, <a href='https://www.klubschule.ch' target='_blank'>klubschule.ch</a>",
+                        "<b>SwissSkills :</b> ressources sur les métiers suisses, <a href='https://www.swissskills.ch' target='_blank'>swissskills.ch</a>",
+                        "<b>Formation continue UniNE :</b> modules en ligne, <a href='https://www.unine.ch/formcont' target='_blank'>unine.ch/formcont</a>",
+                        "<b>LinkedIn Learning :</b> si vous avez un compte LinkedIn Premium, accès via bibliothèques pour certains",
                     ), width='half'),
                     sec("Conseils pour réussir en e-learning",
                         ul(
-                            "Fixez-vous un horaire régulier — 30 min/jour vaut mieux que 4h le week-end",
-                            "Choisissez un cours avec un certificat — cela motive et valorise votre CV",
-                            "Rejoignez les forums et groupes du cours — vous n'êtes pas seul",
+                            "Fixez-vous un horaire régulier, 30 min/jour vaut mieux que 4h le week-end",
+                            "Choisissez un cours avec un certificat, cela motive et valorise votre CV",
+                            "Rejoignez les forums et groupes du cours, vous n'êtes pas seul",
                             "Combinez e-learning et pratique réelle (stage, bénévolat)",
                         ),
                     ),
@@ -1751,7 +1751,7 @@ CATEGORIES = [
                             "<b>Site :</b> <a href='https://www.unine.ch' target='_blank'>unine.ch</a>",
                             "<b>Domaines :</b> droit, sciences économiques, lettres, sciences naturelles, théologie",
                             "<b>Écolage :</b> environ CHF 730/semestre pour les résidents suisses",
-                            "<b>Admission :</b> maturité suisse ou équivalent reconnu — vérifiez sur unine.ch/admission",
+                            "<b>Admission :</b> maturité suisse ou équivalent reconnu, vérifiez sur unine.ch/admission",
                         ),
                     ),
                     sec("Haute École Arc (HE-Arc)", ul(
@@ -1762,7 +1762,7 @@ CATEGORIES = [
                     ), width='half'),
                     sec("Bourses et aide financière", ul(
                         "<b>Bourses cantonales NE :</b> demande au OCAB via GSR",
-                        "<b>Bourses fédérales :</b> pour les étrangers non-UE — <a href='https://www.sbfi.admin.ch/bourses' target='_blank'>sbfi.admin.ch</a>",
+                        "<b>Bourses fédérales :</b> pour les étrangers non-UE, <a href='https://www.sbfi.admin.ch/bourses' target='_blank'>sbfi.admin.ch</a>",
                         "<b>Fonds d'entraide UniNE :</b> aide ponctuelle pour étudiants en difficulté",
                         "<b>Jobroom étudiant :</b> <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a>",
                     ), width='half'),
@@ -1789,7 +1789,7 @@ CATEGORIES = [
                 'body': body(
                     sec("Ce que vous recevez (Neuchâtel, 2025)",
                         ul(
-                            "<b>Enfant de moins de 16 ans :</b> CHF 215/mois minimum (vérifiez le montant actuel — il évolue)",
+                            "<b>Enfant de moins de 16 ans :</b> CHF 215/mois minimum (vérifiez le montant actuel, il évolue)",
                             "<b>Enfant de 16 à 25 ans en formation :</b> CHF 268/mois minimum",
                             "Les montants varient selon la caisse d'allocations familiales",
                             "Vous pouvez réclamer jusqu'à 5 ans en arrière si vous ne saviez pas",
@@ -1797,7 +1797,7 @@ CATEGORIES = [
                     ),
                     sec("Comment les recevoir",
                         ul(
-                            "<b>Si vous travaillez :</b> votre employeur fait la demande à votre place — demandez-lui",
+                            "<b>Si vous travaillez :</b> votre employeur fait la demande à votre place, demandez-lui",
                             "<b>Si vous êtes indépendant :</b> demandez à la CCNC (Caisse cantonale)",
                             "<b>Si vous êtes sans emploi :</b> contactez la CCNC directement",
                         ),
@@ -1806,7 +1806,7 @@ CATEGORIES = [
                         "<b>Adresse :</b> Avenue du Premier-Mars 18, 2000 Neuchâtel",
                         "<b>Téléphone :</b> 032 727 37 05",
                         "<b>Email :</b> alfa@cian.ch",
-                        "<b>Heures :</b> lun–jeu 8h–11h45 / 13h45–17h; ven 8h–11h45",
+                        "<b>Heures :</b> lun à jeu 8h à 11h45 / 13h45 à 17h; ven 8h à 11h45",
                     ), width='half'),
                     sec("CCNC (indépendants et sans emploi)", ul(
                         "<b>Adresse :</b> Faubourg de l'Hôpital 28, 2001 Neuchâtel",
@@ -1842,7 +1842,7 @@ CATEGORIES = [
                         para("Si votre enfant ne parle pas encore le français, il sera placé dans une classe d'accueil. Il y apprend le français avant de rejoindre une classe ordinaire. Ce processus dure généralement 6 à 12 mois."),
                         ul(
                             "<b>Service de l'enseignement obligatoire NE :</b> <a href='https://www.ne.ch/enseignement' target='_blank'>ne.ch/enseignement</a>",
-                            "<b>COSM :</b> peut vous accompagner dans les démarches — 032 889 74 42",
+                            "<b>COSM :</b> peut vous accompagner dans les démarches, 032 889 74 42",
                         ),
                     ),
                 ),
@@ -1855,12 +1855,12 @@ CATEGORIES = [
                 'audiences': ['Parents'],
                 'body': body(
                     sec("L'essentiel",
-                        para("Les crèches sont très demandées. Inscrivez votre enfant le plus tôt possible — même avant sa naissance."),
+                        para("Les crèches sont très demandées. Inscrivez votre enfant le plus tôt possible, même avant sa naissance."),
                         para("Les tarifs sont calculés selon vos revenus. Une aide financière du canton peut réduire le coût."),
                     ),
                     sec("Comment trouver une place",
                         ol(
-                            "Cherchez sur le site de votre commune — elles listent souvent les structures disponibles",
+                            "Cherchez sur le site de votre commune, elles listent souvent les structures disponibles",
                             "Inscrivez votre enfant dans plusieurs structures en même temps",
                             "Demandez une subvention cantonale dès que vous avez une place confirmée",
                         ),
@@ -1869,7 +1869,7 @@ CATEGORIES = [
                         ul(
                             "<b>Structures d'accueil NE :</b> <a href='https://www.ne.ch/structures-accueil' target='_blank'>ne.ch/structures-accueil</a>",
                             "<b>Subvention garde :</b> renseignez-vous à votre GSR",
-                            "<b>Tarifs :</b> environ CHF 30–100/jour selon revenus avant subvention",
+                            "<b>Tarifs :</b> environ CHF 30 à 100/jour selon revenus avant subvention",
                         ),
                     ),
                 ),
@@ -1886,7 +1886,7 @@ CATEGORIES = [
                             "<b>Classes d'accueil :</b> pour les enfants nouvellement arrivés, avant de rejoindre une classe normale",
                             "<b>Cours d'appui :</b> certaines communes proposent du soutien gratuit après l'école",
                             "<b>COSM :</b> peut vous renseigner sur les ressources de soutien scolaire disponibles localement",
-                            "<b>Bénévoles Caritas :</b> aide aux devoirs gratuite — renseignez-vous à Caritas NE",
+                            "<b>Bénévoles Caritas :</b> aide aux devoirs gratuite, renseignez-vous à Caritas NE",
                         ),
                     ),
                     sec("Comment accéder à ces aides",
@@ -1900,54 +1900,26 @@ CATEGORIES = [
             },
 
             {
-                'name': "Je subis des violences à la maison",
-                'description': "Je peux appeler la police ou un service spécialisé. Des professionnels peuvent m'aider en toute confidentialité.",
-                'tags': ['Femmes', 'Urgence', 'Aide juridique', 'Droits', 'Sante mentale', 'Gratuit'],
-                'audiences': ['Femmes', 'Parents', 'Nouveaux arrivants'],
-                'body': body(
-                    sec("Appelez si vous êtes en danger",
-                        ul(
-                            "<b>Police :</b> 117 — intervient immédiatement",
-                            "<b>Centre LAVI NE :</b> 032 889 51 00 — soutien psychologique et juridique pour victimes de violence",
-                            "<b>La Main Tendue :</b> 143 — écoute anonyme 24h/24",
-                        ),
-                    ),
-                    sec("Aide spécialisée à Neuchâtel", ul(
-                        "<b>Centre LAVI NE :</b> Rue du Seyon 1, 2000 Neuchâtel — 032 889 51 00 — lun–ven 8h–12h / 13h30–17h",
-                        "<b>SOLIDfemmes (foyer d'accueil) :</b> hébergement d'urgence pour femmes en danger — 032 724 32 20 — disponible 24h/24",
-                        "<b>RECIF :</b> soutien et orientation pour femmes migrantes — <a href='https://recifne.ch' target='_blank'>recifne.ch</a>",
-                        "<b>CSP Neuchâtel :</b> aide juridique — 032 886 91 00",
-                    ), width='half'),
-                    sec("Ce que la police peut faire", ul(
-                        "Expulser l'auteur des violences du logement pour 10 jours",
-                        "Prononcer une interdiction de contact",
-                        "Vous accompagner en lieu sûr",
-                        "<b>Important :</b> la violence conjugale est un délit en Suisse, même dans le mariage",
-                    ), width='half'),
-                ),
-            },
-
-            {
                 'name': "Je cherche une garde pour mes enfants avant ou après l'école",
                 'description': "Les structures parascolaires gardent les enfants le matin, le midi et après l'école. Voici comment m'inscrire.",
                 'tags': ['Garde enfants', 'Enfants', 'Scolarisation', 'Budget', 'Subvention'],
                 'audiences': ['Parents'],
                 'body': body(
                     sec("Qu'est-ce que le parascolaire",
-                        para("Les structures parascolaires (UAPE — Unité d'Accueil Pour Écoliers) gardent les enfants avant l'école le matin, le midi et après l'école le soir. C'est très utile si vous travaillez."),
+                        para("Les structures parascolaires (UAPE, Unité d'Accueil Pour Écoliers) gardent les enfants avant l'école le matin, le midi et après l'école le soir. C'est très utile si vous travaillez."),
                     ),
                     sec("Comment inscrire votre enfant",
                         ol(
                             "Contactez le service scolaire de votre commune dès l'inscription à l'école",
-                            "Remplissez le formulaire d'inscription — les places sont limitées",
+                            "Remplissez le formulaire d'inscription, les places sont limitées",
                             "Les tarifs sont calculés en fonction de votre revenu",
                             "Demandez une réduction de tarif via votre GSR si vos revenus sont modestes",
                         ),
                     ),
                     sec("Liens utiles", ul(
-                        "<b>Neuchâtel ville :</b> <a href='https://www.neuchatelville.ch/parascolaire' target='_blank'>neuchatelville.ch</a> — parascolaire",
+                        "<b>Neuchâtel ville :</b> <a href='https://www.neuchatelville.ch/parascolaire' target='_blank'>neuchatelville.ch</a>, parascolaire",
                         "<b>La Chaux-de-Fonds :</b> renseignez-vous au secrétariat scolaire de votre école",
-                        "<b>Tarifs :</b> environ CHF 5–20/jour selon revenus",
+                        "<b>Tarifs :</b> environ CHF 5 à 20/jour selon revenus",
                         "<b>Aide financière :</b> via GSR selon situation",
                     ), width='full'),
                 ),
@@ -1963,14 +1935,14 @@ CATEGORIES = [
                         para("Pendant les vacances scolaires, les enfants ont besoin d'activités. Des structures proposent des camps, colonies et animations à tarif réduit ou gratuit pour les familles à revenus modestes."),
                     ),
                     sec("Activités à Neuchâtel", ul(
-                        "<b>Maisons de quartier :</b> animations vacances pour enfants — demandez à votre mairie",
-                        "<b>Jeunesse et Sports (J+S) :</b> camps sportifs subventionnés — <a href='https://www.jugendundsport.ch/fr' target='_blank'>jugendundsport.ch</a>",
-                        "<b>Camps de Pro Juventute :</b> colonie de vacances à tarif social — <a href='https://www.projuventute.ch' target='_blank'>projuventute.ch</a>",
-                        "<b>Croix-Rouge NE :</b> activités ponctuelles — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>Maisons de quartier :</b> animations vacances pour enfants, demandez à votre mairie",
+                        "<b>Jeunesse et Sports (J+S) :</b> camps sportifs subventionnés, <a href='https://www.jugendundsport.ch/fr' target='_blank'>jugendundsport.ch</a>",
+                        "<b>Camps de Pro Juventute :</b> colonie de vacances à tarif social, <a href='https://www.projuventute.ch' target='_blank'>projuventute.ch</a>",
+                        "<b>Croix-Rouge NE :</b> activités ponctuelles, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
                     ), width='half'),
                     sec("Aides financières", ul(
                         "<b>GSR :</b> peut parfois financer des camps ou colonies pour les familles à l'aide sociale",
-                        "<b>Bourses de loisirs :</b> certaines communes accordent une aide — renseignez-vous à la mairie",
+                        "<b>Bourses de loisirs :</b> certaines communes accordent une aide, renseignez-vous à la mairie",
                         "<b>Bibliothèques :</b> gratuites, proposent des animations en période de vacances",
                         "<b>Bois et parcs :</b> les espaces naturels autour de Neuchâtel sont gratuits et accessibles en transports",
                     ), width='half'),
@@ -1999,9 +1971,9 @@ CATEGORIES = [
                             "<b>À venir :</b> un congé parental étendu est en discussion au Parlement fédéral",
                         ),
                     ),
-                    sec("APG — Allocations pour perte de gain", ul(
+                    sec("APG, Allocations pour perte de gain", ul(
                         "Système qui verse les indemnités maternité et paternité",
-                        "<b>Caisse compétente :</b> CCNC Neuchâtel — 032 889 65 01",
+                        "<b>Caisse compétente :</b> CCNC Neuchâtel, 032 889 65 01",
                         "<b>Info :</b> <a href='https://www.ch.ch/maternite' target='_blank'>ch.ch/maternite</a>",
                     ), width='full'),
                 ),
@@ -2032,7 +2004,7 @@ CATEGORIES = [
                             "<b>Permis S :</b> protection temporaire (ex: personnes d'Ukraine). Travail autorisé.",
                             "<b>Permis B :</b> séjour d'un an renouvelable. Travail libre.",
                             "<b>Permis C :</b> établissement permanent (après 5 à 10 ans). Droits proches du citoyen suisse.",
-                            "<b>Permis G :</b> frontalier — travaille en Suisse, habite dans un pays voisin.",
+                            "<b>Permis G :</b> frontalier, travaille en Suisse, habite dans un pays voisin.",
                             "<b>Permis L :</b> séjour de courte durée (moins d'un an).",
                         ),
                     ),
@@ -2043,14 +2015,14 @@ CATEGORIES = [
                             "Envoyez les documents par courrier ou prenez rendez-vous au SMIG",
                         ),
                     ),
-                    sec("SMIG — Service des migrations NE", ul(
+                    sec("SMIG, Service des migrations NE", ul(
                         "<b>Adresse :</b> Rue de Tivoli 28, 2002 Neuchâtel 2",
                         "<b>Téléphone :</b> 032 889 63 10",
                         "<b>Email :</b> smig@ne.ch",
-                        "<b>Heures :</b> lun–ven 8h–12h; mer aussi 13h30–17h",
+                        "<b>Heures :</b> lun à ven 8h à 12h; mer aussi 13h30 à 17h",
                         "<b>Site :</b> <a href='https://www.ne.ch/smig' target='_blank'>ne.ch/smig</a>",
                     ), width='half'),
-                    sec("SEM — niveau fédéral", ul(
+                    sec("SEM, niveau fédéral", ul(
                         "<b>SEM :</b> autorité fédérale qui fixe les règles",
                         "<b>Site :</b> <a href='https://www.sem.admin.ch' target='_blank'>sem.admin.ch</a>",
                         "<b>Infos en plusieurs langues :</b> <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>",
@@ -2067,26 +2039,26 @@ CATEGORIES = [
                     sec("Pourquoi consulter",
                         para("Des professionnels peuvent vous aider si vous avez des problèmes avec votre permis, une décision négative du SMIG, ou des questions sur vos droits."),
                     ),
-                    sec("CSP Neuchâtel — principal organisme", ul(
+                    sec("CSP Neuchâtel, principal organisme", ul(
                         "<b>Neuchâtel :</b> Rue des Parcs 11, 2000 Neuchâtel",
                         "<b>La Chaux-de-Fonds :</b> Rue du Temple-Allemand 23, 2300 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 886 91 00",
                         "<b>Email :</b> csp.neuchatel@ne.ch",
-                        "<b>Permanences migration :</b> jeudi 13h30–16h à Neuchâtel (sur RDV)",
+                        "<b>Permanences migration :</b> jeudi 13h30 à 16h à Neuchâtel (sur RDV)",
                         "<b>Site :</b> <a href='https://csp.ch/neuchatel' target='_blank'>csp.ch/neuchatel</a>",
                     ), width='half'),
-                    sec("Caritas — Bureau de consultation juridique (BCJ)", ul(
+                    sec("Caritas, Bureau de consultation juridique (BCJ)", ul(
                         "<b>Adresse :</b> Vieux-Châtel 4, 2002 Neuchâtel",
                         "<b>Téléphone :</b> 026 552 50 40",
                         "<b>Email :</b> bcj-fr@caritas.ch",
-                        "<b>Sans RDV :</b> mardi 9h–12h",
+                        "<b>Sans RDV :</b> mardi 9h à 12h",
                         "Spécialisé en droit d'asile et droit des étrangers",
                     ), width='half'),
                     sec("Autres ressources",
                         ul(
                             "<b>OSAR (Conseil suisse des réfugiés) :</b> <a href='https://www.osar.ch' target='_blank'>osar.ch</a>",
-                            "<b>Ensemble-ne.ch :</b> infos juridiques en 18 langues — <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>",
-                            "<b>Centre LAVI NE :</b> 032 889 51 00 — victimes de violence",
+                            "<b>Ensemble-ne.ch :</b> infos juridiques en 18 langues, <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>",
+                            "<b>Centre LAVI NE :</b> 032 889 51 00, victimes de violence",
                         ),
                     ),
                 ),
@@ -2116,10 +2088,10 @@ CATEGORIES = [
                         ),
                     ),
                     sec("À Neuchâtel", ul(
-                        "<b>SMIG :</b> Rue de Tivoli 28 — 032 889 63 10",
+                        "<b>SMIG :</b> Rue de Tivoli 28, 032 889 63 10",
                         "<b>CSP Neuchâtel (aide juridique) :</b> 032 886 91 00",
-                        "<b>Caritas BCJ :</b> 026 552 50 40 — mardi 9h–12h sans RDV",
-                        "<b>Ensemble-ne.ch :</b> <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a> — infos en 18 langues",
+                        "<b>Caritas BCJ :</b> 026 552 50 40, mardi 9h à 12h sans RDV",
+                        "<b>Ensemble-ne.ch :</b> <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>, infos en 18 langues",
                     ), width='half'),
                     sec("Niveau fédéral", ul(
                         "<b>SEM :</b> <a href='https://www.sem.admin.ch' target='_blank'>sem.admin.ch</a>",
@@ -2136,8 +2108,8 @@ CATEGORIES = [
                 'body': body(
                     sec("Qui peut faire venir sa famille",
                         ul(
-                            "<b>Permis C :</b> conjoint et enfants de moins de 18 ans — droits étendus",
-                            "<b>Permis B :</b> conjoint et enfants — sous conditions de revenus et de logement",
+                            "<b>Permis C :</b> conjoint et enfants de moins de 18 ans, droits étendus",
+                            "<b>Permis B :</b> conjoint et enfants, sous conditions de revenus et de logement",
                             "<b>Permis F :</b> possible après 3 ans de résidence et intégration démontrée",
                             "<b>Permis N :</b> en principe non autorisé pendant la procédure",
                         ),
@@ -2151,7 +2123,7 @@ CATEGORIES = [
                     ),
                     sec("Comment faire",
                         ol(
-                            "Déposez la demande au SMIG : Rue de Tivoli 28, 2002 Neuchâtel — 032 889 63 10",
+                            "Déposez la demande au SMIG : Rue de Tivoli 28, 2002 Neuchâtel, 032 889 63 10",
                             "Votre famille demande un visa à l'ambassade suisse dans son pays",
                             "Documents : acte de mariage/naissance, passeports, preuves de revenus, bail",
                         ),
@@ -2183,7 +2155,7 @@ CATEGORIES = [
                         ul(
                             "La naturalisation passe par le SMIG (demande cantonale) et votre commune",
                             "Certaines communes organisent une cérémonie ou un entretien",
-                            "<b>SMIG :</b> Rue de Tivoli 28, 2002 Neuchâtel — 032 889 63 10 — <a href='https://www.ne.ch/naturalisation' target='_blank'>ne.ch/naturalisation</a>",
+                            "<b>SMIG :</b> Rue de Tivoli 28, 2002 Neuchâtel, 032 889 63 10, <a href='https://www.ne.ch/naturalisation' target='_blank'>ne.ch/naturalisation</a>",
                             "<b>Guide SEM :</b> <a href='https://www.sem.admin.ch/naturalisation' target='_blank'>sem.admin.ch/naturalisation</a>",
                         ),
                     ),
@@ -2201,7 +2173,7 @@ CATEGORIES = [
                             "<b>Ressortissants UE/AELE :</b> après 5 ans de séjour légal avec permis B",
                             "<b>Ressortissants hors UE/AELE :</b> après 10 ans en Suisse (dont 5 ans avec permis B)",
                             "<b>Condition commune :</b> bonne intégration, respect des lois, pas de dépendance durable à l'aide sociale",
-                            "<b>Conjoint(e) de Suisse :</b> conditions assouplies — renseignez-vous au SMIG",
+                            "<b>Conjoint(e) de Suisse :</b> conditions assouplies, renseignez-vous au SMIG",
                         ),
                     ),
                     sec("Comment faire la demande",
@@ -2243,8 +2215,8 @@ CATEGORIES = [
                     ),
                     sec("Plus d'informations", ul(
                         "<b>Chancellerie d'État NE :</b> <a href='https://www.ne.ch/elections' target='_blank'>ne.ch/elections</a>",
-                        "<b>Votre commune :</b> contrôle des habitants — renseignez-vous directement",
-                        "C'est un droit unique en Suisse — profitez-en pour participer à la vie locale",
+                        "<b>Votre commune :</b> contrôle des habitants, renseignez-vous directement",
+                        "C'est un droit unique en Suisse, profitez-en pour participer à la vie locale",
                     ), width='full'),
                 ),
             },
@@ -2258,19 +2230,19 @@ CATEGORIES = [
                     sec("Ce qui change selon votre permis",
                         ul(
                             "<b>Permis C :</b> le divorce n'affecte généralement pas votre droit de séjour",
-                            "<b>Permis B (obtenu par regroupement familial) :</b> le divorce peut entraîner le non-renouvellement — il faut démontrer une raison importante de rester (enfants, intégration, durée de séjour)",
-                            "<b>Moins de 3 ans de mariage :</b> situation plus précaire — consultez immédiatement un juriste",
+                            "<b>Permis B (obtenu par regroupement familial) :</b> le divorce peut entraîner le non-renouvellement, il faut démontrer une raison importante de rester (enfants, intégration, durée de séjour)",
+                            "<b>Moins de 3 ans de mariage :</b> situation plus précaire, consultez immédiatement un juriste",
                         ),
                     ),
                     sec("Aide juridique d'urgence", ul(
-                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — permanence migration jeudi 13h30–16h",
-                        "<b>Caritas BCJ :</b> 026 552 50 40 — mardi 9h–12h sans RDV",
-                        "<b>Centre LAVI NE :</b> 032 889 51 00 — si séparation liée à des violences",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00, permanence migration jeudi 13h30 à 16h",
+                        "<b>Caritas BCJ :</b> 026 552 50 40, mardi 9h à 12h sans RDV",
+                        "<b>Centre LAVI NE :</b> 032 889 51 00, si séparation liée à des violences",
                     ), width='half'),
                     sec("Démarches au SMIG", ul(
                         "Informez le SMIG du changement de situation dès que possible",
                         "Ne dépassez pas la date d'expiration de votre permis sans avoir déposé une demande",
-                        "<b>SMIG :</b> 032 889 63 10 — smig@ne.ch",
+                        "<b>SMIG :</b> 032 889 63 10, smig@ne.ch",
                     ), width='half'),
                 ),
             },
@@ -2293,9 +2265,9 @@ CATEGORIES = [
                         ),
                     ),
                     sec("Contacts à Neuchâtel", ul(
-                        "<b>COSM (Bureau du délégué) :</b> 032 889 74 42 — cosm@ne.ch — peut orienter et soutenir",
-                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — aide juridique",
-                        "<b>Centre LAVI NE :</b> 032 889 51 00 — si vous avez subi des violences",
+                        "<b>COSM (Bureau du délégué) :</b> 032 889 74 42, cosm@ne.ch, peut orienter et soutenir",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00, aide juridique",
+                        "<b>Centre LAVI NE :</b> 032 889 51 00, si vous avez subi des violences",
                     ), width='half'),
                     sec("Niveau national", ul(
                         "<b>CFR (Commission fédérale contre le racisme) :</b> <a href='https://www.ekr.admin.ch' target='_blank'>ekr.admin.ch</a>",
@@ -2316,20 +2288,20 @@ CATEGORIES = [
                     ),
                     sec("Documents provenant de votre pays d'origine",
                         ol(
-                            "Contactez l'ambassade ou le consulat de votre pays en Suisse — ils peuvent parfois obtenir le document pour vous",
+                            "Contactez l'ambassade ou le consulat de votre pays en Suisse, ils peuvent parfois obtenir le document pour vous",
                             "Demandez à un membre de votre famille restée dans votre pays de l'obtenir auprès de la mairie locale",
                             "Faites traduire le document par un traducteur assermenté si c'est demandé",
                             "Si votre pays ne délivre plus de documents (guerre, etc.) : signalez-le au SMIG ou à l'avocat qui vous aide",
                         ),
                     ),
                     sec("Documents suisses (si vous êtes né ou marié en Suisse)", ul(
-                        "<b>Office de l'état civil NE :</b> Rue du Seyon 4, 2000 Neuchâtel — 032 889 67 87",
+                        "<b>Office de l'état civil NE :</b> Rue du Seyon 4, 2000 Neuchâtel, 032 889 67 87",
                         "<b>En ligne :</b> <a href='https://www.ne.ch/etat-civil' target='_blank'>ne.ch/etat-civil</a>",
                         "Extrait d'acte de naissance ou de mariage disponible sur demande (CHF 30 environ)",
                     ), width='half'),
                     sec("Aide pour les documents étrangers", ul(
-                        "<b>COSM :</b> peut vous orienter — 032 889 74 42",
-                        "<b>CSP Neuchâtel :</b> aide juridique pour les dossiers complexes — 032 886 91 00",
+                        "<b>COSM :</b> peut vous orienter, 032 889 74 42",
+                        "<b>CSP Neuchâtel :</b> aide juridique pour les dossiers complexes, 032 886 91 00",
                         "<b>Traducteurs assermentés :</b> demandez la liste au SMIG ou au COSM",
                         "<b>Info ch.ch :</b> <a href='https://www.ch.ch/fr/etat-civil/' target='_blank'>ch.ch/etat-civil</a>",
                     ), width='half'),
@@ -2347,7 +2319,7 @@ CATEGORIES = [
                     ),
                     sec("Ce que vous obtenez",
                         ul(
-                            "Une attestation de domicile — nécessaire pour ouvrir un compte bancaire, inscrire vos enfants à l'école, etc.",
+                            "Une attestation de domicile, nécessaire pour ouvrir un compte bancaire, inscrire vos enfants à l'école, etc.",
                             "Votre numéro AVS (si c'est votre première inscription)",
                             "Des informations sur votre commune (poubelles, horaires, etc.)",
                         ),
@@ -2361,10 +2333,10 @@ CATEGORIES = [
                         ),
                     ),
                     sec("Où aller", ul(
-                        "<b>Neuchâtel ville :</b> Hôtel de Ville, Rue de l'Hôpital 1 — 032 717 50 00",
-                        "<b>La Chaux-de-Fonds :</b> Administration communale, Espacité 1 — 032 889 60 00",
+                        "<b>Neuchâtel ville :</b> Hôtel de Ville, Rue de l'Hôpital 1, 032 717 50 00",
+                        "<b>La Chaux-de-Fonds :</b> Administration communale, Espacité 1, 032 889 60 00",
                         "<b>Autres communes :</b> cherchez 'contrôle des habitants' + nom de votre commune",
-                        "<b>Horaires :</b> généralement lun–ven 8h–12h / 13h30–17h",
+                        "<b>Horaires :</b> généralement lun à ven 8h à 12h / 13h30 à 17h",
                     ), width='full'),
                 ),
             },
@@ -2389,9 +2361,9 @@ CATEGORIES = [
                 'body': body(
                     sec("Appelez d'abord",
                         ul(
-                            "<b>SMIG (demandeurs d'asile) :</b> Rue de Tivoli 28, Neuchâtel — 032 889 63 10 — ils orientent vers les hébergements d'asile",
-                            "<b>GSR Neuchâtel (personnes domiciliées) :</b> 032 717 74 10 — peut orienter vers des solutions d'urgence",
-                            "<b>Armée du Salut :</b> présente à Neuchâtel et La Chaux-de-Fonds — <a href='https://armeedusalut.ch/jai-besoin-dun-hebergement/' target='_blank'>armeedusalut.ch</a>",
+                            "<b>SMIG (demandeurs d'asile) :</b> Rue de Tivoli 28, Neuchâtel, 032 889 63 10, ils orientent vers les hébergements d'asile",
+                            "<b>GSR Neuchâtel (personnes domiciliées) :</b> 032 717 74 10, peut orienter vers des solutions d'urgence",
+                            "<b>Armée du Salut :</b> présente à Neuchâtel et La Chaux-de-Fonds, <a href='https://armeedusalut.ch/jai-besoin-dun-hebergement/' target='_blank'>armeedusalut.ch</a>",
                         ),
                     ),
                     sec("Structures d'hébergement pour demandeurs d'asile",
@@ -2402,9 +2374,9 @@ CATEGORIES = [
                         ),
                     ),
                     sec("Pour les autres situations", ul(
-                        "<b>Caritas NE :</b> 032 886 80 70 — peut orienter vers des solutions temporaires",
+                        "<b>Caritas NE :</b> 032 886 80 70, peut orienter vers des solutions temporaires",
                         "<b>Croix-Rouge NE :</b> <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
-                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — accompagnement social",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00, accompagnement social",
                     ), width='half'),
                     sec("Aide d'urgence (aide de dernier recours)", ul(
                         "Si vous êtes débouté de l'asile, vous avez quand même droit à l'aide d'urgence",
@@ -2423,7 +2395,7 @@ CATEGORIES = [
                     sec("Ce que vous devez savoir",
                         ul(
                             "Le bail est un contrat légal. Lisez-le attentivement avant de signer.",
-                            "L'état des lieux d'entrée est très important — signalez tout défaut immédiatement",
+                            "L'état des lieux d'entrée est très important, signalez tout défaut immédiatement",
                             "Le loyer ne peut pas être augmenté sans raison valable et préavis",
                             "Le propriétaire ne peut pas entrer chez vous sans votre accord",
                         ),
@@ -2436,9 +2408,9 @@ CATEGORIES = [
                         ),
                     ),
                     sec("En cas de problème", ul(
-                        "<b>Asloca Neuchâtel :</b> association des locataires — conseil juridique — <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
+                        "<b>Asloca Neuchâtel :</b> association des locataires, conseil juridique, <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
                         "<b>Autorité de conciliation NE :</b> recours gratuit avant tout tribunal",
-                        "<b>CSP Neuchâtel :</b> 032 886 91 00 — aide juridique générale",
+                        "<b>CSP Neuchâtel :</b> 032 886 91 00, aide juridique générale",
                     ), width='half'),
                     sec("Ressources utiles", ul(
                         "<b>Formulaires de bail :</b> <a href='https://www.ne.ch/bail' target='_blank'>ne.ch/bail</a>",
@@ -2455,9 +2427,9 @@ CATEGORIES = [
                 'body': body(
                     sec("Les principales plateformes",
                         ul(
-                            "<a href='https://www.homegate.ch' target='_blank'>homegate.ch</a> — le plus utilisé en Suisse",
-                            "<a href='https://www.immoscout24.ch' target='_blank'>immoscout24.ch</a> — grand choix",
-                            "<a href='https://www.anibis.ch' target='_blank'>anibis.ch</a> — petites annonces, souvent moins cher",
+                            "<a href='https://www.homegate.ch' target='_blank'>homegate.ch</a>, le plus utilisé en Suisse",
+                            "<a href='https://www.immoscout24.ch' target='_blank'>immoscout24.ch</a>, grand choix",
+                            "<a href='https://www.anibis.ch' target='_blank'>anibis.ch</a>, petites annonces, souvent moins cher",
                             "Groupes Facebook locaux : 'appartement Neuchâtel', 'logement La Chaux-de-Fonds'",
                         ),
                     ),
@@ -2471,7 +2443,7 @@ CATEGORIES = [
                     ),
                     sec("Conseils pratiques",
                         ul(
-                            "Répondez très vite aux annonces — les appartements partent en quelques heures",
+                            "Répondez très vite aux annonces, les appartements partent en quelques heures",
                             "Soignez votre présentation lors des visites",
                             "En cas de discrimination : contactez le COSM (032 889 74 42)",
                             "<b>Logement social :</b> renseignez-vous auprès de votre commune ou du GSR",
@@ -2490,14 +2462,14 @@ CATEGORIES = [
                         para("Le dépôt de garantie est une somme d'argent que vous versez au propriétaire quand vous signez le bail. Il sert à couvrir d'éventuels dommages ou loyers impayés à la fin du contrat."),
                         ul(
                             "Maximum légal : <b>3 mois de loyer net</b>",
-                            "Doit être déposé sur un compte bancaire bloqué au nom du locataire — pas remis directement au propriétaire",
-                            "L'argent vous appartient — le propriétaire ne peut y accéder qu'en cas de litige",
+                            "Doit être déposé sur un compte bancaire bloqué au nom du locataire, pas remis directement au propriétaire",
+                            "L'argent vous appartient, le propriétaire ne peut y accéder qu'en cas de litige",
                         ),
                     ),
                     sec("Comment payer",
                         ul(
                             "Ouvrez un compte de garantie dans une banque (présentez votre bail)",
-                            "Alternative : garantie de loyer via une assurance (ex: Firstcaution, SwissCaution) — vous payez une prime annuelle au lieu d'immobiliser l'argent",
+                            "Alternative : garantie de loyer via une assurance (ex: Firstcaution, SwissCaution), vous payez une prime annuelle au lieu d'immobiliser l'argent",
                             "<b>Firstcaution :</b> <a href='https://www.firstcaution.ch' target='_blank'>firstcaution.ch</a>",
                             "<b>SwissCaution :</b> <a href='https://www.swisscaution.ch' target='_blank'>swisscaution.ch</a>",
                         ),
@@ -2505,12 +2477,12 @@ CATEGORIES = [
                     sec("Récupérer son dépôt", ul(
                         "Après l'état des lieux de sortie, le propriétaire a 1 an pour libérer le dépôt",
                         "Si tout est en ordre : remboursement intégral",
-                        "En cas de litige : l'Asloca peut vous aider — <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
+                        "En cas de litige : l'Asloca peut vous aider, <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
                     ), width='half'),
                     sec("À savoir", ul(
                         "Exigez toujours un reçu ou la confirmation du compte bancaire créé",
                         "Photographiez chaque pièce lors de l'état des lieux d'entrée",
-                        "<b>Asloca NE :</b> conseil gratuit aux locataires — <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
+                        "<b>Asloca NE :</b> conseil gratuit aux locataires, <a href='https://www.asloca.ch' target='_blank'>asloca.ch</a>",
                     ), width='half'),
                 ),
             },
@@ -2522,13 +2494,13 @@ CATEGORIES = [
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile", 'Senior'],
                 'body': body(
                     sec("Qui peut en bénéficier",
-                        para("Le logement social s'adresse aux personnes dont les revenus ne permettent pas d'accéder au marché locatif ordinaire. Les listes d'attente peuvent être longues — inscrivez-vous dès que possible."),
+                        para("Le logement social s'adresse aux personnes dont les revenus ne permettent pas d'accéder au marché locatif ordinaire. Les listes d'attente peuvent être longues, inscrivez-vous dès que possible."),
                     ),
                     sec("Organismes à contacter", ul(
-                        "<b>Neuchâtel ville — Service du logement :</b> 032 717 50 00 — mairie, Rue de l'Hôpital 1",
-                        "<b>La Chaux-de-Fonds — Service du logement :</b> 032 889 60 00 — Espacité 1",
-                        "<b>GSR :</b> peut vous orienter selon votre situation — 032 717 74 10",
-                        "<b>Caritas NE :</b> logements d'urgence ponctuels — 032 886 80 70",
+                        "<b>Neuchâtel ville, Service du logement :</b> 032 717 50 00, mairie, Rue de l'Hôpital 1",
+                        "<b>La Chaux-de-Fonds, Service du logement :</b> 032 889 60 00, Espacité 1",
+                        "<b>GSR :</b> peut vous orienter selon votre situation, 032 717 74 10",
+                        "<b>Caritas NE :</b> logements d'urgence ponctuels, 032 886 80 70",
                     ), width='half'),
                     sec("Conseils pratiques", ul(
                         "Inscrivez-vous auprès de plusieurs communes si possible",
@@ -2557,10 +2529,10 @@ CATEGORIES = [
                     ),
                     sec("Où souscrire", ul(
                         "<b>Comparer :</b> <a href='https://www.comparis.ch/assurances' target='_blank'>comparis.ch/assurances</a>",
-                        "<b>Vaudoise :</b> présente à Neuchâtel — <a href='https://www.vaudoise.ch' target='_blank'>vaudoise.ch</a>",
+                        "<b>Vaudoise :</b> présente à Neuchâtel, <a href='https://www.vaudoise.ch' target='_blank'>vaudoise.ch</a>",
                         "<b>Helvetia :</b> <a href='https://www.helvetia.com/ch/fr' target='_blank'>helvetia.com</a>",
                         "<b>AXA / Zurich :</b> en ligne et en agence",
-                        "<b>Coût :</b> environ CHF 100–250/an selon la valeur des biens assurés",
+                        "<b>Coût :</b> environ CHF 100 à 250/an selon la valeur des biens assurés",
                     ), width='full'),
                 ),
             },
@@ -2600,7 +2572,7 @@ CATEGORIES = [
                         "<b>Adresse :</b> Place de la Gare 6, 2300 La Chaux-de-Fonds",
                         "<b>Téléphone :</b> 032 889 74 42",
                         "<b>Email :</b> cosm@ne.ch",
-                        "<b>Heures :</b> lun–ven 8h–12h / 13h30–17h",
+                        "<b>Heures :</b> lun à ven 8h à 12h / 13h30 à 17h",
                         "<b>Site :</b> <a href='https://www.ne.ch/cosm' target='_blank'>ne.ch/cosm</a>",
                     ), width='half'),
                     sec("Permanences à Neuchâtel et Fleurier", ul(
@@ -2658,9 +2630,9 @@ CATEGORIES = [
                     ),
                     sec("Comment trouver",
                         ul(
-                            "<b>Bénévolat NE :</b> <a href='https://www.benevolat-ne.ch' target='_blank'>benevolat-ne.ch</a> — cherchez une activité bénévole selon vos intérêts",
+                            "<b>Bénévolat NE :</b> <a href='https://www.benevolat-ne.ch' target='_blank'>benevolat-ne.ch</a>, cherchez une activité bénévole selon vos intérêts",
                             "<b>Clubs sportifs :</b> demandez à votre commune ou au COSM",
-                            "<b>Maisons de quartier :</b> activités culturelles, cours, rencontres — renseignez-vous dans votre quartier",
+                            "<b>Maisons de quartier :</b> activités culturelles, cours, rencontres, renseignez-vous dans votre quartier",
                             "<b>Bibliothèques municipales :</b> gratuites, proposent des événements ouverts à tous",
                             "<b>Associations culturelles :</b> le COSM peut vous mettre en relation avec des associations de votre communauté d'origine",
                         ),
@@ -2683,7 +2655,7 @@ CATEGORIES = [
                     sec("Règles de bon voisinage",
                         ul(
                             "<b>Bruit :</b> après 22h, le silence est exigé. Évitez aussi le bruit le dimanche toute la journée.",
-                            "<b>Buanderie commune :</b> respectez les horaires affichés — c'est pris très au sérieux",
+                            "<b>Buanderie commune :</b> respectez les horaires affichés, c'est pris très au sérieux",
                             "<b>Poubelles :</b> chaque commune a ses règles de tri. Renseignez-vous dès l'arrivée.",
                             "<b>Cave et débarras :</b> ne laissez pas d'affaires dans les parties communes sans autorisation",
                         ),
@@ -2691,9 +2663,9 @@ CATEGORIES = [
                     sec("Vie quotidienne",
                         ul(
                             "<b>Magasins :</b> fermés le dimanche (sauf gares et certains centres commerciaux)",
-                            "<b>Ponctualité :</b> très importante — arrivez à l'heure aux rendez-vous",
+                            "<b>Ponctualité :</b> très importante, arrivez à l'heure aux rendez-vous",
                             "<b>Saluer :</b> dites bonjour à vos voisins dans l'ascenseur et les couloirs",
-                            "<b>Chaussures :</b> beaucoup de Suisses enlèvent leurs chaussures en entrant — attendez qu'on vous le propose",
+                            "<b>Chaussures :</b> beaucoup de Suisses enlèvent leurs chaussures en entrant, attendez qu'on vous le propose",
                         ),
                     ),
                     sec("Jours fériés à Neuchâtel", ul(
@@ -2712,19 +2684,19 @@ CATEGORIES = [
                 'audiences': ['Nouveaux arrivants', "Demandeur d'asile"],
                 'body': body(
                     sec("Qu'est-ce qu'un interprète communautaire",
-                        para("C'est une personne formée qui traduit pour vous lors de vos rendez-vous médicaux, scolaires ou administratifs. Ce n'est pas simplement un traducteur — il connaît aussi les différences culturelles."),
+                        para("C'est une personne formée qui traduit pour vous lors de vos rendez-vous médicaux, scolaires ou administratifs. Ce n'est pas simplement un traducteur, il connaît aussi les différences culturelles."),
                     ),
                     sec("Comment en demander un", ul(
-                        "<b>COSM :</b> le premier contact — 032 889 74 42 — ils coordonnent les interprètes pour tout le canton",
-                        "<b>HNE :</b> l'hôpital dispose d'un service d'interprétariat — demandez lors de la prise de RDV",
+                        "<b>COSM :</b> le premier contact, 032 889 74 42, ils coordonnent les interprètes pour tout le canton",
+                        "<b>HNE :</b> l'hôpital dispose d'un service d'interprétariat, demandez lors de la prise de RDV",
                         "<b>Écoles :</b> le COSM peut envoyer un interprète pour les réunions parents-enseignants",
                         "<b>SMIG :</b> un interprète est prévu pour certains rendez-vous officiels",
                     ), width='half'),
                     sec("Plateformes en ligne", ul(
-                        "<b>Ensemble-ne.ch :</b> informations officielles en 18 langues — <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>",
-                        "<b>ch.ch :</b> guide officiel suisse en plusieurs langues — <a href='https://www.ch.ch' target='_blank'>ch.ch</a>",
+                        "<b>Ensemble-ne.ch :</b> informations officielles en 18 langues, <a href='https://www.ensemble-ne.ch' target='_blank'>ensemble-ne.ch</a>",
+                        "<b>ch.ch :</b> guide officiel suisse en plusieurs langues, <a href='https://www.ch.ch' target='_blank'>ch.ch</a>",
                         "<b>Traduction de documents :</b> demandez au COSM pour les documents officiels",
-                        "Google Translate peut aider pour les documents simples — mais évitez-le pour les contrats importants",
+                        "Google Translate peut aider pour les documents simples, mais évitez-le pour les contrats importants",
                     ), width='half'),
                 ),
             },
@@ -2739,15 +2711,15 @@ CATEGORIES = [
                         para("En Suisse, beaucoup de démarches se font en ligne : s'inscrire au chômage, payer ses factures, remplir sa déclaration d'impôts. Maîtriser les bases de l'informatique facilite énormément la vie."),
                     ),
                     sec("Cours disponibles à Neuchâtel", ul(
-                        "<b>COSM :</b> cours d'informatique pour migrants — 032 889 74 42 — renseignez-vous sur les sessions en cours",
-                        "<b>Bibliothèques :</b> initiations gratuites à l'informatique — Bibliothèque publique de Neuchâtel — 032 717 69 60",
-                        "<b>Croix-Rouge NE :</b> ateliers numériques ponctuels — <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
-                        "<b>Caritas NE :</b> bénévoles disponibles pour aider — 032 886 80 70",
+                        "<b>COSM :</b> cours d'informatique pour migrants, 032 889 74 42, renseignez-vous sur les sessions en cours",
+                        "<b>Bibliothèques :</b> initiations gratuites à l'informatique, Bibliothèque publique de Neuchâtel, 032 717 69 60",
+                        "<b>Croix-Rouge NE :</b> ateliers numériques ponctuels, <a href='https://www.croix-rouge-ne.ch' target='_blank'>croix-rouge-ne.ch</a>",
+                        "<b>Caritas NE :</b> bénévoles disponibles pour aider, 032 886 80 70",
                     ), width='half'),
                     sec("Ressources gratuites en ligne", ul(
-                        "<b>Clé Numérique :</b> cours en ligne gratuits en français — <a href='https://cle-numerique.ch' target='_blank'>cle-numerique.ch</a>",
-                        "<b>OpenClassrooms :</b> formation gratuite — <a href='https://openclassrooms.com' target='_blank'>openclassrooms.com</a>",
-                        "<b>France Numérique :</b> tutoriels simples — <a href='https://www.numerique.gouv.fr' target='_blank'>numerique.gouv.fr</a>",
+                        "<b>Clé Numérique :</b> cours en ligne gratuits en français, <a href='https://cle-numerique.ch' target='_blank'>cle-numerique.ch</a>",
+                        "<b>OpenClassrooms :</b> formation gratuite, <a href='https://openclassrooms.com' target='_blank'>openclassrooms.com</a>",
+                        "<b>France Numérique :</b> tutoriels simples, <a href='https://www.numerique.gouv.fr' target='_blank'>numerique.gouv.fr</a>",
                     ), width='half'),
                 ),
             },
@@ -2772,17 +2744,17 @@ CATEGORIES = [
                 'body': body(
                     sec("Les réseaux à Neuchâtel",
                         ul(
-                            "<b>CFF :</b> trains entre les villes — <a href='https://www.cff.ch' target='_blank'>cff.ch</a> ou application CFF Mobile",
-                            "<b>TRN (Transports Régionaux Neuchâtelois) :</b> bus dans le canton — <a href='https://www.trn.ch' target='_blank'>trn.ch</a>",
-                            "<b>TRAVYS :</b> région Yverdon–Val-de-Travers",
-                            "<b>CarPostal :</b> cars jaunes pour les villages — <a href='https://www.postauto.ch' target='_blank'>postauto.ch</a>",
+                            "<b>CFF :</b> trains entre les villes, <a href='https://www.cff.ch' target='_blank'>cff.ch</a> ou application CFF Mobile",
+                            "<b>TRN (Transports Régionaux Neuchâtelois) :</b> bus dans le canton, <a href='https://www.trn.ch' target='_blank'>trn.ch</a>",
+                            "<b>TRAVYS :</b> région Yverdon à Val-de-Travers",
+                            "<b>CarPostal :</b> cars jaunes pour les villages, <a href='https://www.postauto.ch' target='_blank'>postauto.ch</a>",
                         ),
                     ),
                     sec("Économiser",
                         ul(
-                            "<b>Demi-tarif CFF :</b> CHF 185/an — réduit tous vos billets de 50 %",
-                            "<b>Abonnement général :</b> voyages illimités sur tout le réseau — environ CHF 3 860/an (2e classe)",
-                            "<b>SwissPass :</b> regroupe tous vos abonnements — <a href='https://www.swisspass.ch' target='_blank'>swisspass.ch</a>",
+                            "<b>Demi-tarif CFF :</b> CHF 185/an, réduit tous vos billets de 50 %",
+                            "<b>Abonnement général :</b> voyages illimités sur tout le réseau, environ CHF 3 860/an (2e classe)",
+                            "<b>SwissPass :</b> regroupe tous vos abonnements, <a href='https://www.swisspass.ch' target='_blank'>swisspass.ch</a>",
                             "<b>Enfants de moins de 6 ans :</b> gratuits",
                             "<b>Abonnement régional NE :</b> renseignez-vous auprès de TRN pour les tarifs locaux",
                         ),
@@ -2831,16 +2803,16 @@ CATEGORIES = [
                     sec("Pourquoi le vélo",
                         para("Neuchâtel est une ville cyclable. Le vélo est rapide, gratuit et bon pour la santé. Plusieurs pistes cyclables relient les quartiers et les communes du lac."),
                     ),
-                    sec("PubliBike — vélos partagés", ul(
+                    sec("PubliBike, vélos partagés", ul(
                         "<b>Comment ça marche :</b> louez un vélo (normal ou électrique) à la station, rendez-le n'importe où",
-                        "<b>Prix :</b> CHF 3/30 min (vélo normal), CHF 5/30 min (e-bike) — abonnement annuel disponible",
-                        "<b>App :</b> téléchargez 'PubliBike' — <a href='https://www.publibike.ch' target='_blank'>publibike.ch</a>",
+                        "<b>Prix :</b> CHF 3/30 min (vélo normal), CHF 5/30 min (e-bike), abonnement annuel disponible",
+                        "<b>App :</b> téléchargez 'PubliBike', <a href='https://www.publibike.ch' target='_blank'>publibike.ch</a>",
                         "<b>Stations :</b> gare, centre-ville, quartiers principaux de Neuchâtel",
                     ), width='half'),
                     sec("Règles et sécurité", ul(
                         "<b>Casque :</b> obligatoire pour les e-bikes, fortement recommandé pour tous",
                         "<b>Lumières :</b> obligatoires de nuit",
-                        "<b>Alcool :</b> limite légale à 0,5‰ — même à vélo",
+                        "<b>Alcool :</b> limite légale à 0,5‰, même à vélo",
                         "<b>Cartes des pistes :</b> <a href='https://www.schweizmobil.ch' target='_blank'>schweizmobil.ch</a>",
                     ), width='half'),
                 ),
@@ -2855,19 +2827,19 @@ CATEGORIES = [
                     sec("Qui a droit au transport médical remboursé",
                         ul(
                             "Les personnes qui ne peuvent pas se déplacer seules pour raison médicale",
-                            "Sur prescription de votre médecin — demandez une ordonnance",
+                            "Sur prescription de votre médecin, demandez une ordonnance",
                             "La LAMal rembourse le transport si la distance est supérieure à 25 km ou si un transport médicalement justifié",
                             "Demandez l'accord de votre caisse maladie avant le transport si possible",
                         ),
                     ),
                     sec("Options disponibles à Neuchâtel", ul(
-                        "<b>Taxi médical :</b> prenez rendez-vous avec un taxi agréé — présentez votre ordonnance médicale",
-                        "<b>Ambulance non urgente :</b> pour les soins planifiés — contactez votre médecin",
-                        "<b>Bénévoles Croix-Rouge NE :</b> accompagnement bénévole à vos RDV médicaux — 032 913 77 77",
-                        "<b>Pro Senectute NE :</b> aide à la mobilité pour les seniors — 032 722 07 90",
+                        "<b>Taxi médical :</b> prenez rendez-vous avec un taxi agréé, présentez votre ordonnance médicale",
+                        "<b>Ambulance non urgente :</b> pour les soins planifiés, contactez votre médecin",
+                        "<b>Bénévoles Croix-Rouge NE :</b> accompagnement bénévole à vos RDV médicaux, 032 913 77 77",
+                        "<b>Pro Senectute NE :</b> aide à la mobilité pour les seniors, 032 722 07 90",
                     ), width='half'),
                     sec("En cas d'urgence", ul(
-                        "<b>Ambulance :</b> 144 — gratuit, 24h/24",
+                        "<b>Ambulance :</b> 144, gratuit, 24h/24",
                         "Le transport d'urgence est toujours remboursé par la LAMal",
                         "Gardez votre carte d'assuré LAMal toujours avec vous",
                     ), width='half'),
@@ -2890,7 +2862,7 @@ CATEGORIES = [
                         ),
                     ),
                     sec("Immatriculation et plaques NE", ul(
-                        "<b>SAN Neuchâtel :</b> Chemin de la Vuarpillière 29, 2000 Neuchâtel — 032 889 67 67",
+                        "<b>SAN Neuchâtel :</b> Chemin de la Vuarpillière 29, 2000 Neuchâtel, 032 889 67 67",
                         "<b>Documents :</b> permis de conduire, permis de séjour, attestation d'assurance RC, certificat d'origine du véhicule",
                         "<b>Contrôle technique :</b> obligatoire à l'immatriculation, puis tous les 2 ou 4 ans",
                         "<b>Site :</b> <a href='https://www.ne.ch/san' target='_blank'>ne.ch/san</a>",
@@ -3002,7 +2974,6 @@ RESOURCE_SUBCATEGORY = {
     "Je cherche une garde pour mes enfants avant ou après l'école": "Scolarité et garde",
     "Je veux recevoir les allocations pour mes enfants": "Aides et droits",
     "Je veux connaître mes droits lors d'une naissance": "Aides et droits",
-    "Je subis des violences à la maison": "Aides et droits",
     # Rights & duties
     "Je dois obtenir un document d'état civil (acte de naissance, mariage)": "Permis et séjour",
     "Je ne comprends pas les différents permis de séjour": "Permis et séjour",
@@ -3039,7 +3010,7 @@ PATHWAYS = [
 
     # -----------------------------------------------------------------------
     {
-        'title': "Certifier son niveau de français — le test fide",
+        'title': "Certifier son niveau de français, le test fide",
         'category': 'Education',
         'description': "Faites reconnaître officiellement votre niveau de français. Le test fide est accepté pour le renouvellement de permis et la naturalisation.",
         'order': 0,
@@ -3077,16 +3048,16 @@ PATHWAYS = [
                     'description': "Avant de passer le test, évaluez votre niveau gratuitement. Vous serez orienté vers le bon cours ou le bon examen.",
                     'tags': ['Langue', 'Gratuit', 'En personne', 'Traduction disponible'],
                     'body': body(
-                        sec("COSM — Service de cohésion multiculturelle",
+                        sec("COSM, Service de cohésion multiculturelle",
                             para("Le COSM propose des entretiens d'accueil gratuits et confidentiels en plusieurs langues. L'entretien permet d'évaluer votre niveau de français et de vous orienter vers les bons services."),
                             ul(
                                 "<b>Adresse :</b> Rue de Tivoli 22, 2000 Neuchâtel",
                                 "<b>Téléphone :</b> 032 889 74 42",
                                 "<b>Email :</b> cosm@ne.ch",
-                                "<b>Sur rendez-vous</b> — gratuit et confidentiel",
+                                "<b>Sur rendez-vous</b>, gratuit et confidentiel",
                             ),
                         ),
-                        sec("ESPACE — Centre de formation intégré",
+                        sec("ESPACE, Centre de formation intégré",
                             para("ESPACE intègre l'évaluation de niveau dans son processus d'inscription aux cours de français."),
                             ul(
                                 "<b>Adresse :</b> Avenue de Clos-Brochet 10, 2000 Neuchâtel",
@@ -3112,7 +3083,7 @@ PATHWAYS = [
                                 "<b>Adresse :</b> Avenue de Clos-Brochet 10, 2000 Neuchâtel",
                             ),
                         ),
-                        sec("Université de Neuchâtel — Français pour tous",
+                        sec("Université de Neuchâtel, Français pour tous",
                             para("L'UniNE propose des cours de français pour les titulaires de permis N, F ou B."),
                             ul(
                                 "Niveaux A2 à C1",
@@ -3163,10 +3134,10 @@ PATHWAYS = [
                     'tags': ['Langue', 'Documents officiels'],
                     'body': body(
                         sec("Le passeport linguistique fide",
-                            para("Le passeport fide indique votre niveau séparément pour l'oral et l'écrit (par exemple : oral B1 — écrit A2). Il est valable à vie et reconnu par toutes les autorités suisses."),
+                            para("Le passeport fide indique votre niveau séparément pour l'oral et l'écrit (par exemple : oral B1, écrit A2). Il est valable à vie et reconnu par toutes les autorités suisses."),
                             ul(
                                 "Reçu par courrier environ <b>4 semaines</b> après le test",
-                                "Valable à vie — pas de date d'expiration",
+                                "Valable à vie, pas de date d'expiration",
                                 "Reconnu pour le renouvellement de permis B et C",
                                 "Reconnu pour la demande de naturalisation",
                                 "Utile aussi pour la recherche d'emploi",
@@ -3180,7 +3151,7 @@ PATHWAYS = [
 
     # -----------------------------------------------------------------------
     {
-        'title': "S'inscrire au chômage à Neuchâtel — ONE",
+        'title': "S'inscrire au chômage à Neuchâtel, ONE",
         'category': 'Work',
         'description': "Activez vos droits aux indemnités chômage dès que vous perdez votre emploi. Chaque jour de retard peut vous faire perdre des indemnités.",
         'order': 1,
@@ -3220,7 +3191,7 @@ PATHWAYS = [
                     'body': body(
                         sec("Principales caisses à Neuchâtel",
                             ul(
-                                "<b>Caisse Cantonale Neuchâteloise (CCNAC) :</b> Espacité 4, 2302 La Chaux-de-Fonds — 032 889 67 90",
+                                "<b>Caisse Cantonale Neuchâteloise (CCNAC) :</b> Espacité 4, 2302 La Chaux-de-Fonds, 032 889 67 90",
                                 "<b>Unia :</b> accessible aux membres du syndicat Unia",
                                 "Autres caisses syndicales selon votre secteur professionnel",
                             ),
@@ -3241,7 +3212,7 @@ PATHWAYS = [
                     'body': body(
                         sec("Comment s'inscrire",
                             ul(
-                                "En ligne sur <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a> — disponible 24h/24, sans création de compte obligatoire",
+                                "En ligne sur <a href='https://www.arbeit.swiss' target='_blank'>arbeit.swiss</a>, disponible 24h/24, sans création de compte obligatoire",
                                 "Ou au guichet ONE sur rendez-vous",
                             ),
                         ),
@@ -3301,7 +3272,7 @@ PATHWAYS = [
                     'description': "Chaque mois, avant le 5, vous devez envoyer vos preuves de recherche d'emploi à votre caisse. C'est obligatoire pour recevoir les indemnités.",
                     'tags': ['Chomage', 'Formulaire', 'Documents officiels'],
                     'body': body(
-                        sec("L'IPA — formulaire mensuel obligatoire",
+                        sec("L'IPA, formulaire mensuel obligatoire",
                             para("L'IPA est le formulaire qui prouve que vous recherchez activement un emploi. Il doit être envoyé à votre caisse chômage <b>avant le 5 du mois suivant</b>."),
                             ul(
                                 "Remplissez-le chaque mois, même si vous n'avez pas trouvé de travail",
@@ -3333,7 +3304,7 @@ PATHWAYS = [
                     'description': "En Suisse, certaines professions exigent une reconnaissance officielle obligatoire. Pour les autres, une attestation aide à convaincre les employeurs.",
                     'tags': ['Reconnaissance diplome', 'Formation', 'Travail'],
                     'body': body(
-                        sec("Professions réglementées — reconnaissance obligatoire",
+                        sec("Professions réglementées, reconnaissance obligatoire",
                             para("Dans ces professions, vous devez faire reconnaître votre diplôme avant de pouvoir exercer en Suisse :"),
                             ul(
                                 "Professions médicales : médecin, dentiste, pharmacien, vétérinaire",
@@ -3342,7 +3313,7 @@ PATHWAYS = [
                                 "Avocat (pour représenter des clients en justice)",
                             ),
                         ),
-                        sec("Professions non réglementées — reconnaissance utile",
+                        sec("Professions non réglementées, reconnaissance utile",
                             para("La grande majorité des professions en Suisse ne sont pas réglementées. Un employeur peut vous recruter sans reconnaissance officielle. Mais une attestation de niveau renforce votre candidature."),
                             para("Exemples : ingénieur, comptable, informaticien, économiste, architecte."),
                         ),
@@ -3363,7 +3334,7 @@ PATHWAYS = [
                         sec("Quelle autorité contacter",
                             ul(
                                 "<b>SERI</b> (Secrétariat d'État à la formation) → professions réglementées non médicales + attestations de niveau → <a href='https://www.recognition.swiss' target='_blank'>recognition.swiss</a>",
-                                "<b>Croix-Rouge Suisse (CRS)</b> → infirmiers, sages-femmes → <a href='https://www.redcross.ch' target='_blank'>redcross.ch</a> — CHF 680",
+                                "<b>Croix-Rouge Suisse (CRS)</b> → infirmiers, sages-femmes → <a href='https://www.redcross.ch' target='_blank'>redcross.ch</a>, CHF 680",
                                 "<b>CDIP</b> → enseignants (tous niveaux) → <a href='https://www.cdip.ch' target='_blank'>cdip.ch</a>",
                                 "<b>Swiss ENIC / swissuniversities</b> → diplômes universitaires (sur demande de l'employeur) → <a href='https://www.anerkennung.swiss' target='_blank'>anerkennung.swiss</a>",
                             ),
@@ -3384,7 +3355,7 @@ PATHWAYS = [
                     'body': body(
                         sec("Documents obligatoires",
                             ul(
-                                "Diplôme original — <b>copie certifiée conforme</b> par une autorité officielle (notaire, ambassade)",
+                                "Diplôme original, <b>copie certifiée conforme</b> par une autorité officielle (notaire, ambassade)",
                                 "Relevés de notes complets",
                                 "Pièce d'identité ou permis de séjour en cours de validité",
                             ),
@@ -3456,7 +3427,7 @@ PATHWAYS = [
                             ),
                         ),
                         sec("Besoin d'aide",
-                            para("Le COSM à Neuchâtel peut vous accompagner pour comprendre la décision et préparer les étapes suivantes. Contact : 032 889 74 42 — cosm@ne.ch"),
+                            para("Le COSM à Neuchâtel peut vous accompagner pour comprendre la décision et préparer les étapes suivantes. Contact : 032 889 74 42, cosm@ne.ch"),
                         ),
                     ),
                 },
@@ -3466,7 +3437,7 @@ PATHWAYS = [
 
     # -----------------------------------------------------------------------
     {
-        'title': "S'assurer avec la LAMal — assurance maladie obligatoire",
+        'title': "S'assurer avec la LAMal, assurance maladie obligatoire",
         'category': 'Health',
         'description': "Toute personne qui habite en Suisse doit avoir une assurance maladie. Vous avez 3 mois après l'arrivée pour choisir votre caisse.",
         'order': 3,
@@ -3484,7 +3455,7 @@ PATHWAYS = [
                                 "Toute personne résidant en Suisse <b>plus de 3 mois</b> doit être assurée",
                                 "Délai : <b>3 mois</b> après l'arrivée en Suisse pour souscrire",
                                 "La couverture est <b>rétroactive</b> au premier jour d'arrivée, même si vous souscrivez dans le délai",
-                                "Si vous ne souscrivez pas à temps, le canton vous assigne automatiquement à une caisse — souvent parmi les plus chères",
+                                "Si vous ne souscrivez pas à temps, le canton vous assigne automatiquement à une caisse, souvent parmi les plus chères",
                             ),
                         ),
                         sec("Permis N, F et S",
@@ -3515,7 +3486,7 @@ PATHWAYS = [
                             ul(
                                 "Faites la demande <b>dès votre inscription</b> à l'assurance maladie",
                                 "Les subsides ne sont pas rétroactifs au-delà de l'année en cours",
-                                "<b>Contact :</b> Service des subsides Neuchâtel — 032 889 74 00",
+                                "<b>Contact :</b> Service des subsides Neuchâtel, 032 889 74 00",
                             ),
                         ),
                     ),
@@ -3531,12 +3502,12 @@ PATHWAYS = [
                     'body': body(
                         sec("Où comparer",
                             ul(
-                                "<a href='https://www.comparis.ch' target='_blank'>comparis.ch</a> — comparateur gratuit en ligne",
-                                "<a href='https://www.bonus.ch' target='_blank'>bonus.ch</a> — autre comparateur gratuit",
-                                "<b>OCAM</b> (Office cantonal d'assurance maladie Neuchâtel) — conseil gratuit et neutre : <b>032 889 74 74</b>",
+                                "<a href='https://www.comparis.ch' target='_blank'>comparis.ch</a>, comparateur gratuit en ligne",
+                                "<a href='https://www.bonus.ch' target='_blank'>bonus.ch</a>, autre comparateur gratuit",
+                                "<b>OCAM</b> (Office cantonal d'assurance maladie Neuchâtel), conseil gratuit et neutre : <b>032 889 74 74</b>",
                             ),
                         ),
-                        sec("Franchise — que choisir",
+                        sec("Franchise, que choisir",
                             para("La franchise est le montant que vous payez vous-même chaque année avant que la caisse rembourse. Choix possible : CHF 300 à CHF 2 500."),
                             ul(
                                 "<b>Franchise basse (CHF 300)</b> → prime mensuelle élevée → si vous allez souvent chez le médecin",
@@ -3545,9 +3516,9 @@ PATHWAYS = [
                         ),
                         sec("Modèle de couverture",
                             ul(
-                                "<b>Standard</b> — libre choix du médecin (prime plus élevée)",
-                                "<b>Médecin de famille</b> — vous devez d'abord appeler votre médecin traitant (moins cher)",
-                                "<b>HMO</b> — suivi dans un centre médical agréé (moins cher)",
+                                "<b>Standard</b>, libre choix du médecin (prime plus élevée)",
+                                "<b>Médecin de famille</b>, vous devez d'abord appeler votre médecin traitant (moins cher)",
+                                "<b>HMO</b>, suivi dans un centre médical agréé (moins cher)",
                             ),
                         ),
                     ),
@@ -3572,7 +3543,7 @@ PATHWAYS = [
                             ul(
                                 "La plupart des caisses acceptent une inscription <b>en ligne en 15 à 30 minutes</b>",
                                 "Vous recevez votre carte d'assuré par courrier dans les 2 à 3 semaines",
-                                "Conservez cette carte — elle est indispensable à chaque consultation médicale",
+                                "Conservez cette carte, elle est indispensable à chaque consultation médicale",
                             ),
                         ),
                     ),
@@ -3661,7 +3632,7 @@ class Command(BaseCommand):
                 perms.append(p)
         guests_group.permissions.set(perms)
 
-        # Utilisateur invité de démo (Caritas) — login: caritas / caritas123
+        # Utilisateur invité de démo (Caritas), login: caritas / caritas123
         User = get_user_model()
         guest_user, created = User.objects.get_or_create(
             username='caritas',
@@ -3745,7 +3716,7 @@ class Command(BaseCommand):
 
             for res_data in resources_data:
                 tag_labels = res_data.pop('tags')
-                res_audience_names = res_data.pop('audiences')
+                res_data.pop('audiences', None)  # resources link to tags only
                 old_body = res_data.pop('body', None)
 
                 section_values = {k: res_data.get(k, '') for k in SECTION_FIELDS}
@@ -3772,7 +3743,6 @@ class Command(BaseCommand):
                     res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
 
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
-                res.audiences.set([audience_map[n] for n in res_audience_names if n in audience_map])
 
                 subcat_name = RESOURCE_SUBCATEGORY.get(res.name)
                 res.subcategory = subcat_map.get(subcat_name)
@@ -3876,75 +3846,75 @@ class Command(BaseCommand):
                     ps.step_label = step_data.get('step_label', '')
                     ps.save()
 
-        # -- Traductions RU (démo de la file de validation) --
-        # Vraies traductions russes pour quelques fiches : 2 approuvées (visibles
-        # dans l'app) et 2 en attente (dans la file « Translations to validate »).
-        # Les autres langues/fiches passent par `python manage.py translate_resources`.
-        self.stdout.write('\nCréation des traductions RU (démo)...')
-        RU_TRANSLATIONS = [
+        # -- Traductions UK (démo de la file de validation) --
+        # Le contenu est traduit en ukrainien (le russe reste une langue
+        # d'interface mais pas une langue de contenu). 2 fiches approuvées,
+        # 2 en attente. Le reste passe par `python manage.py translate_resources`.
+        self.stdout.write('\nCréation des traductions UK (démo)...')
+        UK_TRANSLATIONS = [
             {
                 'fr': "Je dois m'assurer contre la maladie",
                 'status': ResourceTranslation.STATUS_APPROVED,
-                'name': "Мне нужно оформить медицинскую страховку",
-                'description': "В Швейцарии страховка обязательна для всех. Оформите её в течение 3 месяцев после приезда.",
-                'why': para("В Швейцарии базовая медицинская страховка называется LAMal. Она обязательна для всех.")
-                       + ul("У вас есть 3 месяца после приезда, чтобы оформить её",
-                            "Все кассы обязаны вас принять — они не могут отказать"),
-                'how': h3("Как выбрать и оформить") + ol(
-                    "Сравните тарифы на comparis.ch (укажите кантон NE и ваш возраст)",
-                    "Выберите франшизу",
-                    "Свяжитесь напрямую с выбранной кассой",
-                    "Затем попросите снижение взноса, если доход небольшой",
+                'name': "Мені потрібно оформити медичне страхування",
+                'description': "У Швейцарії страхування обов'язкове для всіх. Оформіть його протягом 3 місяців після приїзду.",
+                'why': para("У Швейцарії базове медичне страхування називається LAMal. Воно обов'язкове для всіх.")
+                       + ul("У вас є 3 місяці після приїзду, щоб оформити його",
+                            "Усі каси зобов'язані вас прийняти, вони не можуть відмовити"),
+                'how': h3("Як вибрати та оформити") + ol(
+                    "Порівняйте тарифи на comparis.ch (вкажіть кантон NE та ваш вік)",
+                    "Виберіть франшизу",
+                    "Зв'яжіться напряму з вибраною касою",
+                    "Потім попросіть знижку внеску, якщо дохід невеликий",
                 ),
             },
             {
                 'fr': "Je cherche un médecin de famille",
                 'status': ResourceTranslation.STATUS_APPROVED,
-                'name': "Я ищу семейного врача",
-                'description': "Я хочу найти терапевта, который принимает новых пациентов в кантоне Невшатель.",
-                'why': para("В Швейцарии семейный врач — это первый контакт по любым вопросам здоровья. Он направляет к специалистам при необходимости."),
-                'how': h3("Как искать") + ol(
-                    "Ищите на doctorfmh.ch — официальный реестр врачей",
-                    "Записывайтесь онлайн на onedoc.ch",
-                    "Звоните в кабинеты рядом с домом",
+                'name': "Я шукаю сімейного лікаря",
+                'description': "Я хочу знайти терапевта, який приймає нових пацієнтів у кантоні Невшатель.",
+                'why': para("У Швейцарії сімейний лікар, це перший контакт з усіх питань здоров'я. Він направляє до спеціалістів за потреби."),
+                'how': h3("Як шукати") + ol(
+                    "Шукайте на doctorfmh.ch, офіційний реєстр лікарів",
+                    "Записуйтесь онлайн на onedoc.ch",
+                    "Телефонуйте до кабінетів поряд із домом",
                 ),
             },
             {
                 'fr': "Je cherche du travail, par où commencer ?",
                 'status': ResourceTranslation.STATUS_PENDING,
-                'name': "Я ищу работу, с чего начать?",
-                'description': "ONE помогает искать работу. Если вы платили взносы в Швейцарии, вы можете получать пособие во время поиска.",
-                'why': para("ORP (Региональное бюро по трудоустройству) в Невшателе называется ONE. Это государственная служба, которая помогает безработным найти работу.")
-                       + para("Если вы работали в Швейцарии и платили взносы по безработице, вы можете получать пособие — деньги каждый месяц во время поиска."),
-                'how': h3("Кто может зарегистрироваться") + ul(
-                    "Вы работали в Швейцарии и платили взносы по безработице",
-                    "У вас есть действующий вид на жительство (B, C или иногда L)",
-                ) + h3("Шаги") + ol(
-                    "Зарегистрируйтесь в первый же день без работы — не ждите",
-                    "Онлайн на arbeit.swiss (круглосуточно)",
-                    "ONE свяжется с вами в течение 24–48 часов",
+                'name': "Я шукаю роботу, з чого почати?",
+                'description': "ONE допомагає шукати роботу. Якщо ви сплачували внески у Швейцарії, ви можете отримувати допомогу під час пошуку.",
+                'why': para("ORP (Регіональне бюро працевлаштування) у Невшателі називається ONE. Це державна служба, яка допомагає безробітним знайти роботу.")
+                       + para("Якщо ви працювали у Швейцарії та сплачували внески на страхування від безробіття, ви можете отримувати допомогу, гроші щомісяця під час пошуку."),
+                'how': h3("Хто може зареєструватися") + ul(
+                    "Ви працювали у Швейцарії та сплачували внески",
+                    "У вас є дійсний дозвіл на проживання (B, C або іноді L)",
+                ) + h3("Кроки") + ol(
+                    "Зареєструйтеся в перший же день без роботи, не чекайте",
+                    "Онлайн на arbeit.swiss (цілодобово)",
+                    "ONE зв'яжеться з вами протягом 24-48 годин",
                 ),
             },
             {
                 'fr': "Je veux payer moins cher mon assurance maladie",
                 'status': ResourceTranslation.STATUS_PENDING,
-                'name': "Я хочу платить меньше за медицинскую страховку",
-                'description': "Если доход небольшой, государство может оплатить часть страховки. Эта помощь называется subside.",
-                'why': para("Subside — это помощь кантона. Она уменьшает или покрывает ваш страховой взнос, если у вас небольшой доход."),
-                'how': h3("Как подать заявку") + ol(
-                    "Обратитесь в GSR вашей коммуны",
-                    "Принесите справки о доходах и составе семьи",
-                    "GSR передаёт ваше дело в OCAB",
+                'name': "Я хочу платити менше за медичне страхування",
+                'description': "Якщо дохід невеликий, держава може оплатити частину страхування. Ця допомога називається subside.",
+                'why': para("Subside, це допомога кантону. Вона зменшує або покриває ваш страховий внесок, якщо дохід невеликий."),
+                'how': h3("Як подати заявку") + ol(
+                    "Зверніться до GSR вашої комуни",
+                    "Принесіть довідки про доходи та склад родини",
+                    "GSR передає вашу справу в OCAB",
                 ),
             },
         ]
         n_tr = n_pending = 0
-        for t in RU_TRANSLATIONS:
+        for t in UK_TRANSLATIONS:
             res = Resource.objects.filter(name=t['fr']).first()
             if not res:
                 continue
             ResourceTranslation.objects.update_or_create(
-                resource=res, language='ru',
+                resource=res, language='uk',
                 defaults={
                     'name': t['name'],
                     'description': t['description'],
@@ -3954,7 +3924,7 @@ class Command(BaseCommand):
             )
             n_tr += 1
             n_pending += t['status'] == ResourceTranslation.STATUS_PENDING
-        self.stdout.write(f'  + {n_tr} traductions RU ({n_pending} en attente de validation)')
+        self.stdout.write(f'  + {n_tr} traductions UK ({n_pending} en attente de validation)')
 
         # -- Profils de démonstration + likes communautaires --
         # Crée de faux profils qui jugent des ressources utiles, afin que les

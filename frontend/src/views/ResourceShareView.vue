@@ -85,7 +85,7 @@ onMounted(async () => {
           class="text-xs font-semibold tracking-[0.2em] uppercase text-brand-500 bg-transparent border-none cursor-pointer p-0"
           @click="router.push('/')"
         >
-          Immiguide
+          PIN
         </button>
       </div>
     </header>

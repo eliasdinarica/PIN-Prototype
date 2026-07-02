@@ -75,6 +75,7 @@ digraph data_model {
         <tr><td align="left">language</td></tr>
         <tr><td align="left">name / description</td></tr>
         <tr><td align="left">body (sections)</td></tr>
+        <tr><td align="left">status</td></tr>
         </table>>];
 
     ResourcePlace [label=<
@@ -149,9 +150,7 @@ digraph data_model {
 
     edge [style=dashed, color="#999999", arrowhead=none, penwidth=1.4];
     Category  -> Audience [label="audiences"];
-    Resource  -> Audience [label="audiences"];
     Resource  -> Tag      [label="tags"];
-    Guide     -> Audience [label="audiences"];
     Guide     -> Tag      [label="tags"];
     Audience  -> Tag      [label="relevant_tags"];
     Contributor -> User   [label="editors"];

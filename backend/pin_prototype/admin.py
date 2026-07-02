@@ -51,8 +51,8 @@ class AttachmentInline(admin.TabularInline):
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'category', 'created_at']
-    list_filter = ['category', 'tags', 'audiences']
-    filter_horizontal = ['tags', 'audiences']
+    list_filter = ['category', 'tags']
+    filter_horizontal = ['tags']
     readonly_fields = ['created_at']
     inlines = [AttachmentInline]
 

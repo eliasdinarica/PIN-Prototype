@@ -102,7 +102,7 @@ async function share() {
         >
           <div class="flex-1 min-w-0">
             <p v-if="category" class="text-xs font-medium text-brand-400 mb-0.5">{{ category.name }}</p>
-            <h3 class="font-bold text-xl leading-snug text-surface-800">{{ guide.title }}</h3>
+            <h3 class="font-bold text-xl leading-snug text-surface-800">{{ content.title }}</h3>
             <span class="inline-flex items-center gap-1 text-xs text-brand-500 mt-1">
               <MapIcon class="w-3.5 h-3.5 shrink-0" />{{ t('pathways.steps', { n: guide.step_count }) }}
             </span>

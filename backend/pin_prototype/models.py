@@ -250,7 +250,6 @@ class Resource(PreviewableMixin, ClusterableModel):
         Subcategory, on_delete=models.SET_NULL,
         null=True, blank=True, related_name='resources',
     )
-    audiences = models.ManyToManyField(Audience, blank=True, related_name='resources')
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
     # Sections fixes (même template pour chaque ressource) — inspiré de refugies.info
@@ -493,7 +492,6 @@ class Guide(PreviewableMixin, ClusterableModel):
         Category, on_delete=models.SET_NULL, related_name='guides', null=True, blank=True,
         help_text='Category this guide is shown under.',
     )
-    audiences = models.ManyToManyField(Audience, blank=True, related_name='guides')
     tags = models.ManyToManyField(Tag, blank=True, related_name='guides')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -543,6 +541,30 @@ class GuideStep(Orderable):
     def __str__(self):
         label = self.step_label or (self.resource.name if self.resource_id else '')
         return f"{self.guide.title} › {label}"
+
+
+class GuideTranslation(models.Model):
+    """Translation of a guide's own title/description. The steps translate via
+    their resources (ResourceTranslation); this only covers the guide-level text."""
+    STATUS_PENDING = 'pending'
+    STATUS_APPROVED = 'approved'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending review'),
+        (STATUS_APPROVED, 'Approved'),
+    ]
+
+    guide = models.ForeignKey(Guide, on_delete=models.CASCADE, related_name='translations')
+    language = models.CharField(max_length=5)
+    title = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_APPROVED)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['guide', 'language']]
+
+    def __str__(self):
+        return f"{self.guide} [{self.language}]"
 
 
 class ResourceFeedback(models.Model):

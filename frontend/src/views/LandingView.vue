@@ -23,7 +23,7 @@ const steps = computed(() => [
     <!-- ── Hero ──────────────────────────────────────── -->
     <header class="max-w-3xl w-full mx-auto px-5 pt-8 pb-5">
       <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brand-400 mb-3">
-        Immiguide
+        PIN
       </p>
       <h1 class="text-3xl sm:text-4xl font-bold text-white leading-[1.05] mb-3">
         {{ t('landing.headline') }}

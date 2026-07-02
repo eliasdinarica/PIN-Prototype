@@ -5,7 +5,8 @@ from rest_framework import serializers
 from wagtail.rich_text import expand_db_html
 from .models import (
     Profile, Category, Subcategory, Resource, Tag, Audience, ResourceFeedback,
-    Attachment, Guide, GuideStep, ResourceTranslation, resource_section_dicts,
+    Attachment, Guide, GuideStep, ResourceTranslation, GuideTranslation,
+    resource_section_dicts,
 )
 
 
@@ -102,9 +103,6 @@ class ResourceSerializer(serializers.ModelSerializer):
     tag_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
     )
-    audience_ids = serializers.PrimaryKeyRelatedField(
-        many=True, source='audiences', read_only=True
-    )
 
     def _translation(self, obj):
         """Return the ResourceTranslation matching the requested ?lang, or None."""
@@ -160,10 +158,10 @@ class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
         fields = [
-            'id', 'category', 'subcategory', 'audiences', 'audience_ids', 'tags', 'tag_ids',
+            'id', 'category', 'subcategory', 'tags', 'tag_ids',
             'name', 'description', 'sections', 'author', 'languages', 'places', 'attachments', 'created_at',
         ]
-        read_only_fields = ['id', 'created_at', 'audiences', 'audience_ids', 'subcategory']
+        read_only_fields = ['id', 'created_at', 'subcategory']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -188,8 +186,34 @@ class GuideStepSerializer(serializers.ModelSerializer):
         fields = ['id', 'step_label', 'resource']
 
 
-class GuideBriefSerializer(serializers.ModelSerializer):
+class _GuideTranslationMixin:
+    """Swap a guide's own title/description for an approved translation when the
+    request carries ?lang=. (The steps translate via their resources.)"""
+    def _guide_tr(self, obj):
+        request = self.context.get('request')
+        params = getattr(request, 'query_params', None) or getattr(request, 'GET', {})
+        lang = params.get('lang') if request else None
+        if not lang or lang == BASE_LANG:
+            return None
+        return next(
+            (t for t in obj.translations.all()
+             if t.language == lang and t.status == GuideTranslation.STATUS_APPROVED),
+            None,
+        )
+
+    def get_title(self, obj):
+        tr = self._guide_tr(obj)
+        return tr.title if (tr and tr.title) else obj.title
+
+    def get_description(self, obj):
+        tr = self._guide_tr(obj)
+        return tr.description if (tr and tr.description) else obj.description
+
+
+class GuideBriefSerializer(_GuideTranslationMixin, serializers.ModelSerializer):
     step_count = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
 
     def get_step_count(self, obj):
         return obj.steps.count()
@@ -199,17 +223,16 @@ class GuideBriefSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'step_count', 'order']
 
 
-class GuideSerializer(serializers.ModelSerializer):
+class GuideSerializer(_GuideTranslationMixin, serializers.ModelSerializer):
     steps = GuideStepSerializer(many=True, read_only=True)
     step_count = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
     tags = TagSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), source='tags', write_only=True, required=False
-    )
-    audience_ids = serializers.PrimaryKeyRelatedField(
-        many=True, source='audiences', read_only=True
     )
 
     def get_step_count(self, obj):
@@ -226,11 +249,14 @@ class GuideSerializer(serializers.ModelSerializer):
             for tr in step.resource.translations.all():
                 if tr.status == ResourceTranslation.STATUS_APPROVED:
                     langs.add(tr.language)
+        for gt in obj.translations.all():
+            if gt.status == GuideTranslation.STATUS_APPROVED:
+                langs.add(gt.language)
         return [BASE_LANG] + sorted(langs)
 
     class Meta:
         model = Guide
         fields = [
             'id', 'title', 'description', 'step_count', 'order', 'category',
-            'languages', 'tags', 'tag_ids', 'audience_ids', 'steps',
+            'languages', 'tags', 'tag_ids', 'steps',
         ]

@@ -10,7 +10,7 @@ const { t } = useI18n()
 <template>
   <div class="min-h-screen bg-gradient-to-br from-surface-100 to-surface-200 flex flex-col">
     <header class="px-5 pt-12 pb-8 max-w-xl mx-auto w-full">
-      <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brand-500 mb-4">Immiguide</p>
+      <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brand-500 mb-4">PIN</p>
       <h1 class="text-2xl sm:text-3xl font-bold text-surface-800 leading-snug">{{ t('hub.title') }}</h1>
     </header>
 

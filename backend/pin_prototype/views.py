@@ -193,7 +193,7 @@ class CategoryViewSet(ModelViewSet):
         approved = (
             Resource.objects.filter(status=Resource.STATUS_APPROVED)
             .select_related('subcategory', 'author')
-            .prefetch_related('tags', 'audiences', 'attachments', 'places', 'translations')
+            .prefetch_related('tags', 'attachments', 'places', 'translations')
         )
         return Category.objects.prefetch_related(
             'audiences', 'audiences__relevant_tags',
@@ -215,23 +215,13 @@ class CategoryViewSet(ModelViewSet):
             try:
                 profile = Profile.objects.get(pk=profile_id)
                 tag_ids = _matched_tag_ids(profile)
-                all_audiences = {a.id: a for a in Audience.objects.all()}
 
                 def score(r):
                     r_tag_ids = frozenset(t['id'] for t in r.get('tags', []))
-                    aid_list = r.get('audience_ids', [])
-                    if not aid_list:
-                        return 0, False
-                    audience_matches = sum(
-                        1 for aid in aid_list
-                        if aid in all_audiences and _audience_matches(all_audiences[aid], profile)
-                    )
-                    if audience_matches == 0:
-                        return 0, False
                     tag_overlap = len(r_tag_ids & tag_ids)
                     if tag_overlap == 0:
                         return 0, False
-                    return audience_matches + tag_overlap * 0.5, tag_overlap >= 2
+                    return tag_overlap * 0.5, tag_overlap >= 2
 
                 scored = sorted([(r, score(r)) for r in data['resources']], key=lambda x: -x[1][0])
                 similar_likes = _similar_liked(profile)
@@ -256,6 +246,7 @@ class CategoryViewSet(ModelViewSet):
             .prefetch_related(
                 'steps__resource__tags', 'steps__resource__places',
                 'steps__resource__attachments', 'steps__resource__translations',
+                'translations',
             )
         )
         data['guides'] = GuideSerializer(guides, many=True, context={'request': request}).data
@@ -282,22 +273,16 @@ def top_resources(request):
     similar_likes = _similar_liked(profile)
     results = []
     for cat in Category.objects.prefetch_related(
-        'resources__tags', 'resources__audiences', 'resources__attachments', 'resources__subcategory', 'resources__places',
+        'resources__tags', 'resources__attachments', 'resources__subcategory', 'resources__places',
     ).all():
         for resource in cat.resources.all():
             if resource.status != Resource.STATUS_APPROVED:
                 continue
             resource_tag_ids = frozenset(t.id for t in resource.tags.all())
-            r_audiences = list(resource.audiences.all())
-            if not r_audiences:
-                continue
-            audience_matches = sum(1 for a in r_audiences if _audience_matches(a, profile))
-            if audience_matches == 0:
-                continue
             tag_overlap = len(resource_tag_ids & tag_ids)
             if tag_overlap == 0:
                 continue
-            score = audience_matches + tag_overlap * 0.5
+            score = tag_overlap * 0.5
             data = ResourceSerializer(resource, context={'request': request}).data
             results.append({
                 **data,
@@ -311,12 +296,13 @@ def top_resources(request):
     return Response(results[:limit])
 
 
-def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences,
+def _rank_by_profile(items, name_key, profile, tag_ids,
                      similar_likes, affinity_tags, affinity_exclude):
     """Annotate serialized items (resources or guides) with recommendation flags
     and sort them so recommended ones bubble up. Three independent signals:
 
-    - system: the resource's audience matches the profile and shares tags (COSM).
+    - system: the item carries tags flagged as relevant by the audiences the
+      profile matches (the tag is the sole bridge between a profile and content).
     - similar: liked by enough profiles whose situation resembles this one.
     - affinity: shares tags with what the person saved or liked (content-based).
 
@@ -324,16 +310,10 @@ def _rank_by_profile(items, name_key, profile, tag_ids, all_audiences,
     with empty similar/affinity sets and receive the system signal only."""
     def score(it):
         it_tag_ids = frozenset(t['id'] for t in it.get('tags', []))
-        aid_list = it.get('audience_ids', [])
-        if not aid_list:
-            return 0, False
-        matches = sum(1 for a in aid_list if a in all_audiences and _audience_matches(all_audiences[a], profile))
-        if matches == 0:
-            return 0, False
         overlap = len(it_tag_ids & tag_ids)
         if overlap == 0:
             return 0, False
-        return matches + overlap * 0.5, overlap >= 2
+        return overlap * 0.5, overlap >= 2
 
     for it in items:
         s, rec = score(it)
@@ -373,7 +353,7 @@ def search_data(request):
     resources = (
         Resource.objects.filter(status=Resource.STATUS_APPROVED, category__isnull=False)
         .select_related('category', 'author', 'subcategory')
-        .prefetch_related('tags', 'audiences', 'attachments', 'places', 'translations')
+        .prefetch_related('tags', 'attachments', 'places', 'translations')
         .order_by('name')
     )
     rdata = ResourceSerializer(resources, many=True, context={'request': request}).data
@@ -384,22 +364,22 @@ def search_data(request):
     guides = (
         Guide.objects.filter(is_active=True).select_related('category').order_by('order')
         .prefetch_related(
-            'tags', 'audiences',
+            'tags',
             'steps__resource__tags', 'steps__resource__places',
             'steps__resource__attachments', 'steps__resource__translations',
+            'translations',
         )
     )
     gdata = GuideSerializer(guides, many=True, context={'request': request}).data
 
     # Default ranking: surface the resources and guides most relevant to the
-    # visitor first. Three signals combine — editorial match (COSM audiences and
-    # tags), similar profiles' likes, and the visitor's own saved/liked resources.
+    # visitor first. Three signals combine, the editorial match (tags flagged by
+    # matching audiences), similar profiles' likes, and the visitor's own saved/liked.
     profile_id = request.query_params.get('profile')
     if profile_id:
         try:
             profile = Profile.objects.get(pk=profile_id)
             tag_ids = _matched_tag_ids(profile)
-            all_audiences = {a.id: a for a in Audience.objects.all()}
             similar_likes = _similar_liked(profile)
             # Personal affinity from what the visitor liked (server-side) and
             # saved (sent by the client as ?saved=1,2,3).
@@ -411,9 +391,9 @@ def search_data(request):
             saved_ids = {int(s) for s in request.query_params.get('saved', '').split(',') if s.isdigit()}
             affinity_source = liked_ids | saved_ids
             affinity_tags = _affinity_tags(affinity_source)
-            _rank_by_profile(rdata, 'name', profile, tag_ids, all_audiences,
+            _rank_by_profile(rdata, 'name', profile, tag_ids,
                              similar_likes, affinity_tags, affinity_source)
-            _rank_by_profile(gdata, 'title', profile, tag_ids, all_audiences,
+            _rank_by_profile(gdata, 'title', profile, tag_ids,
                              set(), set(), set())
         except Profile.DoesNotExist:
             pass
@@ -426,7 +406,7 @@ class ResourceViewSet(ModelViewSet):
 
     def get_queryset(self):
         qs = Resource.objects.filter(status=Resource.STATUS_APPROVED).prefetch_related(
-            'tags', 'audiences', 'attachments', 'places', 'translations',
+            'tags', 'attachments', 'places', 'translations',
         ).select_related('category', 'author').order_by('name')
         category_id = self.request.query_params.get('category')
         search = self.request.query_params.get('search')

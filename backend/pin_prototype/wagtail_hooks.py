@@ -1,4 +1,6 @@
 from django.urls import reverse
+from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
@@ -9,6 +11,26 @@ from wagtail.admin.panels import (
     MultiFieldPanel, FieldRowPanel, HelpPanel,
 )
 from .models import Resource, Guide, Contributor, Audience, Category, Tag, ResourceTranslation
+
+
+class TagTransferWidget(FilteredSelectMultiple):
+    """Django admin's two-box 'available / chosen' transfer widget, wired to work
+    inside the Wagtail admin. The admin i18n catalog must load before
+    SelectFilter2.js, which relies on gettext()."""
+    def __init__(self, verbose_name='tags', is_stacked=False, **kwargs):
+        super().__init__(verbose_name, is_stacked, **kwargs)
+
+    @property
+    def media(self):
+        return forms.Media(
+            css={'all': ['admin/css/widgets.css']},
+            js=[
+                reverse('admin:jsi18n'),
+                'admin/js/core.js',
+                'admin/js/SelectBox.js',
+                'admin/js/SelectFilter2.js',
+            ],
+        )
 
 
 class ResourceSnippetViewSet(SnippetViewSet):
@@ -37,7 +59,6 @@ class ResourceSnippetViewSet(SnippetViewSet):
         FieldPanel('status'),
         FieldPanel('category'),
         FieldPanel('subcategory'),
-        FieldPanel('audiences'),
         FieldPanel('tags'),
     ]
 
@@ -107,7 +128,6 @@ class GuideSnippetViewSet(SnippetViewSet):
         FieldPanel('category'),
         FieldPanel('order'),
         FieldPanel('is_active'),
-        FieldPanel('audiences'),
         FieldPanel('tags'),
     ]
 
@@ -158,7 +178,7 @@ class AudienceSnippetViewSet(SnippetViewSet):
             heading='Matching criteria',
         ),
         MultiFieldPanel(
-            [FieldPanel('relevant_tags')],
+            [FieldPanel('relevant_tags', widget=TagTransferWidget())],
             heading='Resources to highlight',
         ),
     ]
