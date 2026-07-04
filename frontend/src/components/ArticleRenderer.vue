@@ -23,6 +23,11 @@ function itemId(key, i) {
 function itemText(item) {
   return [item.title, stripHtml(item.html)].filter(Boolean).join('. ')
 }
+// Spoken text for a section's intro (the paragraph before any sub-heading) —
+// e.g. the whole "why is it interesting" section, which has no collapsible items.
+function introText(section) {
+  return [section.title, stripHtml(section.intro)].filter(Boolean).join('. ')
+}
 
 // Collapsed by default — user opens each item via the "+".
 const open = ref({})
@@ -103,7 +108,19 @@ const parsedSections = computed(() =>
 <template>
   <div class="ar">
     <section v-for="s in parsedSections" :key="s.key" class="ar-card">
-      <h2 class="ar-title">{{ s.title }}</h2>
+      <div class="ar-head">
+        <h2 class="ar-title">{{ s.title }}</h2>
+        <!-- Audio for the section intro (covers "why", which has no items) -->
+        <button
+          v-if="speechSupported && s.intro"
+          class="ar-audio ar-audio-title"
+          :class="{ 'ar-audio-on': speakingId === itemId(s.key, 'intro') }"
+          :title="t(speakingId === itemId(s.key, 'intro') ? 'actions.stopListen' : 'actions.listen')"
+          @click.stop="toggleSpeech(itemId(s.key, 'intro'), introText(s), lang)"
+        >
+          <component :is="speakingId === itemId(s.key, 'intro') ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+        </button>
+      </div>
 
       <!-- Intro (text before the first heading) -->
       <div v-if="s.intro" class="ar-rt ar-intro" v-html="sanitizeHtml(s.intro)" />
@@ -156,10 +173,15 @@ const parsedSections = computed(() =>
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   padding: 1.5rem 1.5rem 0.5rem;
 }
+.ar-head {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
 .ar-title {
+  flex: 1; min-width: 0;
   font-size: 1.5rem; font-weight: 700; color: rgb(15 23 42);
   line-height: 1.2; margin-bottom: 1rem;
 }
+.ar-audio-title { margin-top: 0.15rem; }
 .ar-intro { color: rgb(63 63 70); margin-bottom: 0.75rem; }
 
 /* collapsible item rows — thin bands with a + */

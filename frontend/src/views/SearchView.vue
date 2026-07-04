@@ -326,7 +326,7 @@ onMounted(async () => {
             <SparklesIcon class="w-4 h-4" />{{ t('search.askAi') }}
           </button>
 
-          <div v-else-if="aiOpen && !aiActive" class="flex items-end gap-2 max-w-xl">
+          <div v-else-if="aiOpen || aiActive" class="flex items-end gap-2 max-w-xl">
             <textarea
               v-model="aiInput"
               rows="2"
@@ -343,7 +343,7 @@ onMounted(async () => {
             </button>
             <button
               class="text-surface-400 hover:text-surface-600 bg-transparent border-none cursor-pointer p-1"
-              @click="aiOpen = false"
+              @click="clearAi"
             >
               <XMarkIcon class="w-4 h-4" />
             </button>

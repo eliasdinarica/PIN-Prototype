@@ -5,6 +5,7 @@ from .views import (
     ResourceFeedbackViewSet, AudienceViewSet, CategoryBriefViewSet,
     GuideViewSet, top_resources, editor_image_upload, chat_view, search_data,
 )
+from .tts import tts_view
 
 router = DefaultRouter()
 router.register('profiles', ProfileViewSet)
@@ -21,4 +22,5 @@ urlpatterns = router.urls + [
     path('search/', search_data),
     path('editor/image/', editor_image_upload),
     path('chat/', chat_view),
+    path('tts/', tts_view),
 ]

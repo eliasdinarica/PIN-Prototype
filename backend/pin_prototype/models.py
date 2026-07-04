@@ -9,7 +9,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
-from wagtail.fields import RichTextField, StreamField
+from wagtail.fields import StreamField
 from wagtail.models import Orderable, PreviewableMixin
 
 
@@ -212,9 +212,8 @@ _RICHTEXT_FEATURES = ['h1', 'h2', 'h3', 'bold', 'italic', 'link', 'document-link
 class SectionBlock(blocks.StructBlock):
     """One titled section of a resource body. The three standard kinds (why /
     how / location) keep their UI-translated titles on the frontend; a 'custom'
-    section uses its own heading. This block replaces the former fixed
-    why_interesting / how_to / location fields while keeping the exact same
-    on-screen rendering — the editor can now add, remove or reorder sections."""
+    section uses its own heading. The editor can add, remove or reorder
+    sections freely."""
     kind = blocks.ChoiceBlock(
         choices=[
             ('why', 'Why is it interesting?'),
@@ -252,15 +251,10 @@ class Resource(PreviewableMixin, ClusterableModel):
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name='resources')
     name = models.CharField(max_length=200)
-    # Sections fixes (même template pour chaque ressource) — inspiré de refugies.info
     description = models.TextField(blank=True, help_text='Short intro shown at the top.')
-    # Body as a flexible list of titled sections (StreamField → one JSON column).
-    # Replaces the three fixed fields below, which are kept for the transition and
-    # as a fallback; they can be dropped once everything reads from `body`.
+    # Body: a flexible list of titled sections (StreamField → one JSON column).
+    # Single source of truth for a resource's content.
     body = StreamField([('section', SectionBlock())], blank=True, verbose_name='Body (sections)')
-    why_interesting = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='Why is it interesting? (legacy)')
-    how_to = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='How to do it? (legacy)')
-    location = RichTextField(blank=True, features=_RICHTEXT_FEATURES, verbose_name='Location (legacy)')
     author = models.ForeignKey(
         Contributor, on_delete=models.SET_NULL, null=True, blank=True, related_name='resources',
         help_text='Organisation that wrote this resource. Defaults to COSM.',
@@ -283,18 +277,12 @@ class Resource(PreviewableMixin, ClusterableModel):
             'sections': preview_sections(resource_section_dicts(self)),
         }
 
-    def admin_kind(self):
-        """Distinguish standalone fiches (first-person titles) from guide steps
-        (action titles) in the Wagtail list, so the mix isn't confusing."""
-        return 'Étape de guide' if self.guide_steps.exists() else 'Fiche'
-    admin_kind.short_description = 'Type'
-
     def __str__(self):
         return self.name
 
 
 def section_stream_blocks(why, how, location):
-    """Build StreamField section blocks from the three legacy section values.
+    """Build StreamField section blocks from the three standard section values.
     Shared by the data migration and the seed so `body` stays in sync."""
     out = []
     for kind, html in (('why', why), ('how', how), ('location', location)):
@@ -304,8 +292,7 @@ def section_stream_blocks(why, how, location):
 
 
 def resource_section_dicts(resource):
-    """Plain dicts {kind, heading, content} from a resource's body StreamField,
-    falling back to the legacy why/how/location fields when the body is empty.
+    """Plain dicts {kind, heading, content} from a resource's body StreamField.
     The single source of truth for both API rendering and translation."""
     out = []
     body = getattr(resource, 'body', None)
@@ -321,16 +308,6 @@ def resource_section_dicts(resource):
                 'heading': value.get('heading') or '',
                 'content': source,
             })
-    if out:
-        return out
-    # Legacy fallback (Resource only; translations have no such fields).
-    for kind, html in (
-        ('why', getattr(resource, 'why_interesting', '')),
-        ('how', getattr(resource, 'how_to', '')),
-        ('location', getattr(resource, 'location', '')),
-    ):
-        if html and str(html).strip():
-            out.append({'kind': kind, 'heading': '', 'content': str(html)})
     return out
 
 

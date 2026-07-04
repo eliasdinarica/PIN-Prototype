@@ -38,6 +38,14 @@ const content = computed(() => translated.value || props.guide)
 const introId = computed(() => `g${props.guide.id}-intro`)
 const introText = computed(() => [content.value.title, content.value.description].filter(Boolean).join('. '))
 
+// Each step reads its own title + description (its sections have their own
+// audio buttons inside ArticleRenderer). Steps with no sections would otherwise
+// have no way to be listened to.
+function stepId(step) { return `g${props.guide.id}-s${step.id}-step` }
+function stepText(step) {
+  return [step.step_label || step.resource.name, step.resource.description].filter(Boolean).join('. ')
+}
+
 async function selectLang(lang) {
   langOpen.value = false
   if (lang === currentLang.value) return
@@ -191,9 +199,20 @@ async function share() {
         </div>
         <div class="flex-1 min-w-0 pb-2">
           <div class="bg-white rounded-2xl p-5 shadow-sm border border-surface-200/60">
-            <h4 class="font-bold text-surface-800 text-lg leading-snug mb-1">
-              {{ step.step_label || step.resource.name }}
-            </h4>
+            <div class="flex items-start gap-2 mb-1">
+              <h4 class="flex-1 min-w-0 font-bold text-surface-800 text-lg leading-snug">
+                {{ step.step_label || step.resource.name }}
+              </h4>
+              <button
+                v-if="speechSupported && stepText(step)"
+                class="shrink-0 flex items-center justify-center p-1.5 rounded-lg bg-transparent border-none cursor-pointer transition-colors"
+                :class="speakingId === stepId(step) ? 'text-brand-600' : 'text-surface-400 hover:text-brand-600'"
+                :title="t(speakingId === stepId(step) ? 'actions.stopListen' : 'actions.listen')"
+                @click.stop="toggleSpeech(stepId(step), stepText(step), currentLang)"
+              >
+                <component :is="speakingId === stepId(step) ? StopCircleIcon : SpeakerWaveIcon" class="w-5 h-5" />
+              </button>
+            </div>
             <p v-if="step.resource.description" class="text-surface-500 text-sm leading-relaxed mb-3">
               {{ step.resource.description }}
             </p>

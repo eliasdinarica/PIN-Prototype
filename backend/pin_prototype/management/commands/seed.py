@@ -3943,14 +3943,13 @@ class Command(BaseCommand):
 
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'], category=cat,
-                    defaults={**section_values, 'author': cosm, 'status': Resource.STATUS_APPROVED},
+                    defaults={'description': section_values['description'], 'author': cosm, 'status': Resource.STATUS_APPROVED},
                 )
                 if not res_created:
-                    for f, v in section_values.items():
-                        setattr(res, f, v)
+                    res.description = section_values['description']
                     res.author = cosm
                     res.status = Resource.STATUS_APPROVED
-                    res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
+                    res.save(update_fields=['description', 'author', 'status'])
 
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
 
@@ -3968,33 +3967,28 @@ class Command(BaseCommand):
 
         # -- Démo : une ressource soumise par un invité, en attente de validation --
         edu_cat = Category.objects.filter(name='Education').first()
+        demo_why = RESOURCE_WHY.get("Atelier conversation français (Caritas)", '')
+        demo_how = RESOURCE_HOW.get("Atelier conversation français (Caritas)", '')
+        demo_location = h3('Caritas Neuchâtel') + ul(
+            '<b>Adresse :</b> Rue du Vieux-Châtel 4, 2000 Neuchâtel',
+            '<b>Téléphone :</b> 032 886 80 70',
+        )
         demo, demo_created = Resource.objects.get_or_create(
             name="Atelier conversation français (Caritas)",
             defaults={
                 'category': edu_cat,
                 'description': "Un atelier hebdomadaire pour pratiquer le français à l'oral, animé par des bénévoles de Caritas.",
-                'why_interesting': RESOURCE_WHY.get("Atelier conversation français (Caritas)", ''),
-                'how_to': h3('Comment participer') + ul(
-                    'Venez sans inscription le mardi après-midi',
-                    'Gratuit et ouvert à tous les niveaux',
-                ),
-                'location': h3('Caritas Neuchâtel') + ul(
-                    '<b>Adresse :</b> Rue du Vieux-Châtel 4, 2000 Neuchâtel',
-                    '<b>Téléphone :</b> 032 886 80 70',
-                ),
                 'author': guest_orgs['Caritas Neuchâtel'],
                 'status': Resource.STATUS_PENDING,
             },
         )
         demo.author = guest_orgs['Caritas Neuchâtel']
         demo.status = Resource.STATUS_PENDING
-        demo.why_interesting = RESOURCE_WHY.get("Atelier conversation français (Caritas)", demo.why_interesting)
-        demo.how_to = RESOURCE_HOW.get("Atelier conversation français (Caritas)", demo.how_to)
-        demo_places = extract_places_from_html(demo.location)
+        demo.save(update_fields=['author', 'status'])
+        demo_places = extract_places_from_html(demo_location)
         if demo_places:
-            demo.location = ''
-        demo.save(update_fields=['author', 'status', 'location', 'why_interesting', 'how_to'])
-        demo.body = section_stream_blocks(demo.why_interesting, demo.how_to, demo.location)
+            demo_location = ''
+        demo.body = section_stream_blocks(demo_why, demo_how, demo_location)
         demo.save(update_fields=['body'])
         add_places(demo, demo_places)
         self.stdout.write(f'  {"+" if demo_created else "~"} Démo en attente: {demo.name}')
@@ -4035,14 +4029,13 @@ class Command(BaseCommand):
                 res, res_created = Resource.objects.get_or_create(
                     name=res_data['name'],
                     category=None,
-                    defaults={**section_values, 'author': cosm, 'status': Resource.STATUS_APPROVED},
+                    defaults={'description': section_values['description'], 'author': cosm, 'status': Resource.STATUS_APPROVED},
                 )
                 res.tags.set([tag_map[t] for t in tag_labels if t in tag_map])
-                for f, v in section_values.items():
-                    setattr(res, f, v)
+                res.description = section_values['description']
                 res.author = cosm
                 res.status = Resource.STATUS_APPROVED
-                res.save(update_fields=list(SECTION_FIELDS) + ['author', 'status'])
+                res.save(update_fields=['description', 'author', 'status'])
                 res.body = section_stream_blocks(
                     section_values['why_interesting'], section_values['how_to'], section_values['location'])
                 res.save(update_fields=['body'])

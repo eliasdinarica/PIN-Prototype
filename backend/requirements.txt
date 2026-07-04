@@ -5,6 +5,7 @@ django-extensions==4.1
 django-modelcluster==6.5
 django-taggit==6.1.0
 djangorestframework==3.17.1
+edge-tts==7.2.8
 gunicorn==23.0.0
 python-dotenv==1.2.2
 sqlparse==0.5.5

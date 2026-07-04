@@ -80,6 +80,11 @@ class Command(BaseCommand):
         parser.add_argument('--lang', default='uk', help='Target language code (default: uk).')
         parser.add_argument('--limit', type=int, default=0, help='Only translate the first N resources (0 = all).')
         parser.add_argument('--force', action='store_true', help='Re-translate even if a translation already exists.')
+        parser.add_argument(
+            '--pending', type=int, default=10,
+            help='Keep this many standalone fiches pending review to showcase the '
+                 'validation workflow (default: 10). Every other translation is '
+                 'auto-approved and shown in the app. Use 0 to approve everything.')
 
     def handle(self, *args, **options):
         lang = options['lang']
@@ -95,6 +100,25 @@ class Command(BaseCommand):
         translated_ids = set(
             ResourceTranslation.objects.filter(language=lang).values_list('resource_id', flat=True)
         )
+
+        # A small sample of standalone fiches is kept pending so the COSM
+        # validation workflow is visible out of the box; everything else is
+        # auto-approved and shown in the app. The sample is spread evenly across
+        # the fiches (every ~Nth one) rather than bunched together, so no single
+        # category ends up entirely untranslated. The choice is deterministic, so
+        # it is stable across runs (incremental or --force).
+        fiche_ids = list(
+            Resource.objects
+            .filter(status=Resource.STATUS_APPROVED, category__isnull=False)
+            .order_by('id')
+            .values_list('id', flat=True)
+        )
+        n_pending = max(options['pending'], 0)
+        if n_pending and fiche_ids:
+            step = max(1, len(fiche_ids) // n_pending)
+            pending_ids = set(fiche_ids[::step][:n_pending])
+        else:
+            pending_ids = set()
 
         # Decide what needs (re)translating, based on the source content hash.
         todo = []
@@ -140,12 +164,14 @@ class Command(BaseCommand):
                     'content': translated.get(f'content_{i}') or section['content'],
                 }))
 
-            # Standalone fiches enter the validation queue (pending). Guide-step
-            # resources (no category) are not validated individually — they are
-            # reviewed with their guide — so their translation is auto-approved.
+            # Auto-approved by default so the app shows the translated content.
+            # Only the small sample of standalone fiches selected above stays
+            # pending, to keep the COSM validation queue visible. (Guide-step
+            # resources are never in that sample — they are reviewed with their
+            # guide, not individually.)
             status = (
-                ResourceTranslation.STATUS_APPROVED if resource.category_id is None
-                else ResourceTranslation.STATUS_PENDING
+                ResourceTranslation.STATUS_PENDING if resource.id in pending_ids
+                else ResourceTranslation.STATUS_APPROVED
             )
             ResourceTranslation.objects.update_or_create(
                 resource=resource, language=lang,

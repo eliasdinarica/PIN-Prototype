@@ -1,0 +1,73 @@
+digraph reco_model {
+    rankdir=LR;
+    graph [fontname="Helvetica", fontsize=13, splines=true, nodesep=0.45, ranksep=1.1, bgcolor="white"];
+    node  [shape=plaintext, fontname="Helvetica", fontsize=12];
+    edge  [fontname="Helvetica", fontsize=10, color="#555555", penwidth=1.4];
+
+    /* ---------- Entrée : le profil ---------- */
+    Profile [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#eef3fb">
+        <tr><td bgcolor="#3b6ea5"><font color="white"><b>Profil de l'usager</b></font></td></tr>
+        <tr><td align="left">langue, statut, niveau de français</td></tr>
+        <tr><td align="left">enfants, ancienneté, âge</td></tr>
+        <tr><td align="left">formation, secteur, aisance numérique</td></tr>
+        <tr><td align="left"><i>+ ressources enregistrées et aimées</i></td></tr>
+        </table>>];
+
+    /* ---------- Pilier 1 : COSM (éditorial) ---------- */
+    System [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#fdecec">
+        <tr><td bgcolor="#dc2626"><font color="white"><b>1 — Le COSM (éditorial)</b></font></td></tr>
+        <tr><td align="left">Audience = persona défini par le COSM</td></tr>
+        <tr><td align="left">le profil remplit ses conditions</td></tr>
+        <tr><td align="left">on en tire les tags pertinents</td></tr>
+        <tr><td align="left">ressource : au moins 2 tags partagés</td></tr>
+        <tr><td bgcolor="#fbe0e0" align="left"><font color="#b03a3a">« Recommandé par les administrateurs »</font></td></tr>
+        </table>>];
+
+    /* ---------- Pilier 2 : la communauté ---------- */
+    Community [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#e6f6fa">
+        <tr><td bgcolor="#0891b2"><font color="white"><b>2 — La communauté</b></font></td></tr>
+        <tr><td align="left">profils similaires au vôtre</td></tr>
+        <tr><td align="left">similarité = attributs communs identiques</td></tr>
+        <tr><td align="left">seuil : au moins la moitié</td></tr>
+        <tr><td align="left">ressource aimée par au moins 2 d'entre eux</td></tr>
+        <tr><td bgcolor="#d3edf4" align="left"><font color="#0e7490">« Utile à des profils similaires »</font></td></tr>
+        </table>>];
+
+    /* ---------- Pilier 3 : l'usager (affinité) ---------- */
+    Affinity [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#f3ecfd">
+        <tr><td bgcolor="#7c3aed"><font color="white"><b>3 — Vous (affinité)</b></font></td></tr>
+        <tr><td align="left">vos ressources enregistrées et aimées</td></tr>
+        <tr><td align="left">on en tire les tags</td></tr>
+        <tr><td align="left">ressource : au moins 2 tags en commun</td></tr>
+        <tr><td bgcolor="#e7dbfb" align="left"><font color="#6d28d9">« Basé sur ce que vous avez enregistré et aimé »</font></td></tr>
+        </table>>];
+
+    /* ---------- Combinaison ---------- */
+    Score [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#f3f4f6">
+        <tr><td bgcolor="#374151"><font color="white"><b>Score et tri</b></font></td></tr>
+        <tr><td align="left">score = pilier 1 + pilier 2 + pilier 3</td></tr>
+        <tr><td align="left">les ressources recommandées remontent</td></tr>
+        <tr><td align="left"><i>le regard humain du COSM reste central</i></td></tr>
+        </table>>];
+
+    Result [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="7" bgcolor="#eafbef">
+        <tr><td bgcolor="#2e8b57"><font color="white"><b>Ressources classées</b></font></td></tr>
+        <tr><td align="left">les recommandées d'abord, avec leur mention</td></tr>
+        <tr><td align="left">puis le reste du catalogue</td></tr>
+        </table>>];
+
+    /* ---------- Flux ---------- */
+    Profile -> System    [label="correspondance"];
+    Profile -> Community [label="similarité"];
+    Profile -> Affinity  [label="contenu aimé"];
+    System    -> Score;
+    Community -> Score;
+    Affinity  -> Score;
+    Score -> Result;
+}

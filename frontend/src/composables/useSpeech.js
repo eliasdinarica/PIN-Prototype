@@ -1,9 +1,10 @@
 import { ref } from 'vue'
 
-// Short resource language codes -> BCP-47 tags the speech engine understands.
-const LANG_MAP = {
-  fr: 'fr-FR', uk: 'uk-UA', ru: 'ru-RU', en: 'en-GB',
-}
+// Audio is synthesised on the server (see backend `pin_prototype/tts.py`) and
+// returned as an MP3 the browser just plays. This is why it now sounds the same
+// on every device: it no longer depends on voices installed on the visitor's
+// machine (which is what made Ukrainian silent before).
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export function stripHtml(html) {
   if (!html) return ''
@@ -11,67 +12,59 @@ export function stripHtml(html) {
   return doc.body.textContent || ''
 }
 
-// Chrome stops long utterances after a few seconds, so we read sentence-sized chunks.
-function chunkText(text, max = 200) {
-  const out = []
-  let buf = ''
-  for (const sentence of text.split(/(?<=[.!?。])\s+/)) {
-    if (buf && (buf + ' ' + sentence).length > max) { out.push(buf); buf = sentence }
-    else buf = buf ? buf + ' ' + sentence : sentence
-  }
-  if (buf) out.push(buf)
-  return out
-}
-
-// Shared singleton state: only one block speaks at a time across the whole page,
+// Shared singleton state: only one block plays at a time across the whole page,
 // and speakingId identifies which button is currently active.
-const supported = typeof window !== 'undefined' && 'speechSynthesis' in window
+const supported = typeof window !== 'undefined' && 'Audio' in window
 const speakingId = ref(null)
 
+let audio = null
+let currentUrl = null
+// Bumped on every stop()/new play so a slow fetch that resolves late can tell it
+// has been superseded and must not start playing.
+let token = 0
+
+function teardown() {
+  if (audio) {
+    audio.onended = audio.onerror = null
+    try { audio.pause() } catch { /* ignore */ }
+    audio = null
+  }
+  if (currentUrl) {
+    URL.revokeObjectURL(currentUrl)
+    currentUrl = null
+  }
+}
+
 function stop() {
-  if (!supported) return
-  window.speechSynthesis.cancel()
+  token++
+  teardown()
   speakingId.value = null
 }
 
-// Among the voices that match the language, pick the most natural-sounding one.
-// Online voices (Google, Microsoft Natural, Apple enhanced…) sound far better
-// than the default offline engine, so we score and prefer them.
-function pickVoice(voices, lang, bcp) {
-  const short = (lang || 'fr')
-  const candidates = voices.filter(v => {
-    const l = (v.lang || '').replace('_', '-')
-    return l === bcp || l.toLowerCase().startsWith(short)
-  })
-  if (!candidates.length) return null
-  const score = (v) => {
-    let s = 0
-    const n = (v.name || '').toLowerCase()
-    if (!v.localService) s += 4
-    if (/google|natural|neural|enhanced|premium|wavenet|siri/.test(n)) s += 3
-    if (v.default) s += 1
-    return s
-  }
-  return [...candidates].sort((a, b) => score(b) - score(a))[0]
-}
-
-function speak(id, text, lang) {
+async function speak(id, text, lang) {
   if (!supported) return
-  window.speechSynthesis.cancel()
   const clean = (text || '').replace(/\s+/g, ' ').trim()
   if (!clean) return
-  const bcp = LANG_MAP[lang] || lang || 'fr-FR'
-  const voice = pickVoice(window.speechSynthesis.getVoices(), lang, bcp)
-  const chunks = chunkText(clean)
+  stop()
+  const mine = ++token
   speakingId.value = id
-  chunks.forEach((part, i) => {
-    const u = new SpeechSynthesisUtterance(part)
-    u.lang = bcp
-    if (voice) u.voice = voice
-    if (i === chunks.length - 1) u.onend = () => { if (speakingId.value === id) speakingId.value = null }
-    u.onerror = () => { if (speakingId.value === id) speakingId.value = null }
-    window.speechSynthesis.speak(u)
-  })
+  try {
+    const resp = await fetch(`${API}/api/tts/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: clean, lang: lang || 'fr' }),
+    })
+    if (!resp.ok) throw new Error(`tts ${resp.status}`)
+    const blob = await resp.blob()
+    if (mine !== token) return // stopped or replaced while fetching
+    currentUrl = URL.createObjectURL(blob)
+    audio = new Audio(currentUrl)
+    audio.onended = () => { if (mine === token) stop() }
+    audio.onerror = () => { if (mine === token) stop() }
+    await audio.play()
+  } catch {
+    if (mine === token) { teardown(); speakingId.value = null }
+  }
 }
 
 function toggle(id, text, lang) {
